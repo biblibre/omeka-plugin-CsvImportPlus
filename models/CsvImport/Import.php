@@ -318,6 +318,30 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     }
 
     /**
+     * Returns whether the import is processing (in progress).
+     *
+     * @return boolean Whether the import is processing
+     */
+    public function isProcessing()
+    {
+        return $this->status == self::STATUS_IN_PROGRESS
+            || $this->status == self::STATUS_IN_PROGRESS_UNDO;
+    }
+
+    /**
+     * Returns whether the import is queued or processing.
+     *
+     * @return boolean Whether the import is queued or processing
+     */
+    public function isQueuedOrProcessing()
+    {
+        return $this->status == self::STATUS_QUEUED
+            || $this->status == self::STATUS_QUEUED_UNDO
+            || $this->status == self::STATUS_IN_PROGRESS
+            || $this->status == self::STATUS_IN_PROGRESS_UNDO;
+    }
+
+    /**
      * Returns whether the import is completed.
      *
      * @return boolean Whether the import is completed
@@ -421,6 +445,33 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         }
 
         return !$this->isError();
+    }
+
+    /**
+     * Stops manually the import.
+     * Sets import status to self::STATUS_STOPPED
+     *
+     * @return boolean Whether the import or undo import was stopped manually.
+     */
+    public function stopProcess()
+    {
+        if (!$this->isQueuedOrProcessing()) {
+            return false;
+        }
+
+        // The import or undo import loop was stopped manually.
+        if ($this->isProcessing()) {
+            $logMsg = __('Stopped csv import %d manually.', $this->id);
+        }
+        // The import or undo import loop was queued and stopped manually.
+        else {
+            $logMsg = __('Stopped csv import %d manually before the first import of a row.',
+                $this->id);
+        }
+        $this->status = self::STATUS_STOPPED;
+        $this->save();
+        $this->_log($logMsg, Zend_Log::WARN);
+        return true;
     }
 
     /**

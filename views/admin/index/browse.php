@@ -63,7 +63,7 @@
                             ),
                             'default');
                 ?>
-                    <a href="<?php echo html_escape($undoImportUrl); ?>" class="csv-undo-import delete-button"><?php echo html_escape(__('Undo Import')); ?></a>
+                    <a href="<?php echo html_escape($undoImportUrl); ?>" class="csv-undo-import button red"><?php echo html_escape(__('Undo Import')); ?></a>
                 <?php
                     elseif (
                         ($csvImport->isUndone()
@@ -77,7 +77,16 @@
                             ),
                             'default');
                 ?>
-                    <a href="<?php echo html_escape($clearHistoryImportUrl); ?>" class="csv-clear-history delete-button"><?php echo html_escape(__('Clear History')); ?></a>
+                    <a href="<?php echo html_escape($clearHistoryImportUrl); ?>" class="csv-clear-history button green"><?php echo html_escape(__('Clear History')); ?></a>
+                <?php
+                    elseif ($csvImport->isQueuedOrProcessing()):
+                        $clearHistoryImportUrl = $this->url(array(
+                                'action' => 'stop-process',
+                                'id' => $csvImport->id,
+                            ),
+                            'default');
+                ?>
+                    <a href="<?php echo html_escape($clearHistoryImportUrl); ?>" class="csv-stop-process button blue"><?php echo html_escape(__('Stop Process')); ?></a>
                 <?php
                     else:
                         echo __('No action');

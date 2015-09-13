@@ -749,6 +749,22 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
     }
 
     /**
+     * Stop a process queued or in progress.
+     */
+    public function stopProcessAction()
+    {
+        $csvImport = $this->_helper->db->findById();
+        if ($csvImport->isQueuedOrProcessing()) {
+            $result = $csvImport->stopProcess();
+            $this->_helper->flashMessenger(__('The process is stopping.'), 'success');
+        } else {
+            $this->_helper->flashMessenger(__('The process cannot be stopped because it is not queued or in progress.'), 'error');
+        }
+
+        $this->_helper->redirector->goto('browse');
+    }
+
+    /**
      * Undo the import.
      */
     public function undoImportAction()
