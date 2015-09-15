@@ -1955,6 +1955,14 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         $msg = str_replace('%memory%', memory_get_usage(), $msg);
         $msg = str_replace('%time%', date('Y-m-d G:i:s'), $msg);
         _log("$prefix $msg", $priority);
+
+        $csvImportLog = new CsvImport_Log();
+        $csvImportLog->setArray(array(
+            'import_id' => $this->id,
+            'priority' => $priority,
+            'message' => $msg,
+        ));
+        $csvImportLog->save();
     }
 
     /**

@@ -62,8 +62,14 @@
                                 'id' => $csvImport->id,
                             ),
                             'default');
+                        $logsUrl = $this->url(array(
+                            'action' => 'logs',
+                            'id' => $csvImport->id
+                        ), 'default');
                 ?>
                     <a href="<?php echo html_escape($undoImportUrl); ?>" class="csv-undo-import button red"><?php echo html_escape(__('Undo Import')); ?></a>
+                    <br>
+                    <a href="<?php echo html_escape($logsUrl);  ?>" class="csv-logs delete-button"><?php echo html_escape(__('Logs')); ?></a>
                 <?php
                     elseif (
                         ($csvImport->isUndone()
