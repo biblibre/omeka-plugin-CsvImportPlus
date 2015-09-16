@@ -374,7 +374,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         $this->status = self::STATUS_IN_PROGRESS;
         $this->_countRows();
         $this->save();
-        $this->_log("Started import.");
+        $this->_log('Started import.');
         $this->_importLoop($this->file_position);
         return !$this->isError();
     }
@@ -388,14 +388,13 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     public function complete()
     {
         if ($this->isCompleted()) {
-            $this->_log("Cannot complete an import that is already completed.");
+            $this->_log('Cannot complete an import that is already completed.');
             return false;
         }
         $this->status = self::STATUS_COMPLETED;
         $this->save();
-        $this->_log("Completed importing $this->_importedCount items ("
-            . "updated $this->updated_record_count rows, "
-            . "skipped $this->skipped_row_count rows).");
+        $this->_log('Completed importing %1$s items (updated %2$s rows, skipped %3$s rows).',
+            array($this->_importedCount, $this->updated_record_count, $this->skipped_row_count));
         return true;
     }
 
@@ -408,12 +407,12 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     public function completeUndo()
     {
         if ($this->isUndone()) {
-            $this->_log("Cannot complete an undo import that is already undone.");
+            $this->_log('Cannot complete an undo import that is already undone.');
             return false;
         }
         $this->status = self::STATUS_COMPLETED_UNDO;
         $this->save();
-        $this->_log("Completed undoing the import.");
+        $this->_log('Completed undoing the import.');
         return true;
     }
 
@@ -426,7 +425,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     public function resume()
     {
         if (!$this->isQueued() && !$this->isQueuedUndo()) {
-            $this->_log("Cannot resume an import or undo import that has not been queued.");
+            $this->_log('Cannot resume an import or undo import that has not been queued.');
             return false;
         }
 
@@ -435,12 +434,12 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         if ($this->isQueued()) {
             $this->status = self::STATUS_IN_PROGRESS;
             $this->save();
-            $this->_log("Resumed import.");
+            $this->_log('Resumed import.');
             $this->_importLoop($this->file_position);
         } else {
             $this->status = self::STATUS_IN_PROGRESS_UNDO;
             $this->save();
-            $this->_log("Resumed undo import.");
+            $this->_log('Resumed undo import.');
             $this->_undoImportLoop();
         }
 
@@ -461,16 +460,15 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         // The import or undo import loop was stopped manually.
         if ($this->isProcessing()) {
-            $logMsg = __('Stopped csv import %d manually.', $this->id);
+            $logMsg = 'Stopped csv import manually.';
         }
         // The import or undo import loop was queued and stopped manually.
         else {
-            $logMsg = __('Stopped csv import %d manually before the first import of a row.',
-                $this->id);
+            $logMsg = 'Stopped csv import manually before the first import of a row.';
         }
         $this->status = self::STATUS_STOPPED;
         $this->save();
-        $this->_log($logMsg, Zend_Log::WARN);
+        $this->_log($logMsg, array(), Zend_Log::WARN);
         return true;
     }
 
@@ -491,15 +489,19 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         }
 
         // The import or undo import loop was prematurely stopped
-        $logMsg = "Stopped import or undo import due to error";
+        $logMsg = 'Stopped import or undo import due to error';
+        $logParams = array();
         if ($error = error_get_last()) {
-            $logMsg .= sprintf('[file %s, line %d]: %s', $error['file'], $error['line'], $error['message']);
+            $logMsg .= ' [file %s, line %d]: %s';
+            $logParams[] = $error['file'];
+            $logParams[] = $error['line'];
+            $logParams[] = $error['message'];
         } else {
             $logMsg .= '.';
         }
         $this->status = self::STATUS_STOPPED;
         $this->save();
-        $this->_log($logMsg, Zend_Log::ERR);
+        $this->_log($logMsg, $logParams, Zend_Log::ERR);
         return true; // stopped with an error
     }
 
@@ -512,28 +514,28 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     public function queue()
     {
         if ($this->isError()) {
-            $this->_log("Cannot queue an import that has an error.");
+            $this->_log('Cannot queue an import that has an error.');
             return false;
         }
 
         if ($this->isStopped()) {
-            $this->_log("Cannot queue an import that has been stopped.");
+            $this->_log('Cannot queue an import that has been stopped.');
             return false;
         }
 
         if ($this->isCompleted()) {
-            $this->_log("Cannot queue an import that has been completed.");
+            $this->_log('Cannot queue an import that has been completed.');
             return false;
         }
 
         if ($this->isUndone()) {
-            $this->_log("Cannot queue an import that has been undone.");
+            $this->_log('Cannot queue an import that has been undone.');
             return false;
         }
 
         $this->status = self::STATUS_QUEUED;
         $this->save();
-        $this->_log("Queued import.");
+        $this->_log('Queued import.');
         return true;
     }
 
@@ -546,28 +548,28 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     public function queueUndo()
     {
         if ($this->isUndoImportError()) {
-            $this->_log("Cannot queue an undo import that has an undo import error.");
+            $this->_log('Cannot queue an undo import that has an undo import error.');
             return false;
         }
 
         if ($this->isOtherError()) {
-            $this->_log("Cannot queue an undo import that has an error.");
+            $this->_log('Cannot queue an undo import that has an error.');
             return false;
         }
 
         if ($this->isStopped()) {
-            $this->_log("Cannot queue an undo import that has been stopped.");
+            $this->_log('Cannot queue an undo import that has been stopped.');
             return false;
         }
 
         if ($this->isUndone()) {
-            $this->_log("Cannot queue an undo import that has been undone.");
+            $this->_log('Cannot queue an undo import that has been undone.');
             return false;
         }
 
         $this->status = self::STATUS_QUEUED_UNDO;
         $this->save();
-        $this->_log("Queued undo import.");
+        $this->_log('Queued undo import.');
         return true;
     }
 
@@ -581,7 +583,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     {
         $this->status = self::STATUS_IN_PROGRESS_UNDO;
         $this->save();
-        $this->_log("Started undo import.");
+        $this->_log('Started undo import.');
         $this->_undoImportLoop();
         return !$this->isError();
     }
@@ -689,8 +691,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             }
 
             $rows->skipInvalidRows(true);
-            $this->_log("Running item import loop at %time%.");
-            $this->_log("Memory usage: %memory%.");
+            $this->_log('Running item import loop. Memory usage: %s.',
+                array(memory_get_usage()));
             while ($rows->valid()) {
                 $row = $rows->current();
                 $index = $rows->key();
@@ -731,7 +733,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
                 if (empty($record)) {
                     $this->skipped_record_count++;
-                    $this->_log("Skipped record on row #{$index}.", Zend_Log::WARN);
+                    $this->_log('Skipped record on row #%s.', array($index), Zend_Log::WARN);
                 }
                 elseif ($record === CsvImport_ColumnMap_Action::ACTION_SKIP) {
                     $this->skipped_record_count++;
@@ -742,8 +744,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
                 $this->file_position = $this->getCsvFile()->getIterator()->tell();
                 if ($this->_batchSize && ($index % $this->_batchSize == 0)) {
-                    $this->_log("Completed processing batch of $this->_batchSize items at %time%.");
-                    $this->_log("Memory usage: %memory%.");
+                    $this->_log('Completed importing batch of %1$s items. Memory usage %2$s.',
+                        array($this->_batchSize, memory_get_usage()));
                     return $this->queue();
                 }
                 $rows->next();
@@ -757,7 +759,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         } catch (Exception $e) {
             $this->status = self::STATUS_IMPORT_ERROR;
             $this->save();
-            $this->_log($e, Zend_Log::ERR);
+            $this->_log($e, array(), Zend_Log::ERR);
             throw $e;
         }
     }
@@ -805,8 +807,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                                 'record_id IN (' . $db->quote($recordIds) . ')',
                             ));
                         }
-                        $this->_log("Completed undoing the import of a batch of $batchSize items.");
-                        $this->_log("Memory usage: %memory%.");
+                        $this->_log('Completed undoing the import of a batch of %1$s items. Memory usage %2$s.',
+                            array($this->_batchSize, memory_get_usage()));
                         return $this->queueUndo();
                     }
                 }
@@ -833,7 +835,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         } catch (Exception $e) {
             $this->status = self::STATUS_UNDO_IMPORT_ERROR;
             $this->save();
-            $this->_log($e, Zend_Log::ERR);
+            $this->_log($e, array(), Zend_Log::ERR);
             throw $e;
         }
     }
@@ -947,8 +949,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                     CsvImport_ColumnMap_Action::ACTION_UPDATE_ELSE_CREATE,
                     CsvImport_ColumnMap_Action::ACTION_CREATE,
                 ))) {
-                $msg = __('Cannot process this row: no record found with the identifier "%s".', $identifier);
-                $this->_log($msg, Zend_Log::WARN);
+                $msg = 'Cannot process this row: no record found with the identifier "%s".';
+                $this->_log($msg, array($identifier), Zend_Log::WARN);
                 return false;
             }
             $record = null;
@@ -959,8 +961,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         if ($record && $action == CsvImport_ColumnMap_Action::ACTION_CREATE) {
             // A same identifier is possible only for different record (internal id).
             if ($identifierField != 'internal id' || get_class($record) == $recordType) {
-                $msg = __('Cannot create a second record with the same identifier "%s".', $identifier);
-                $this->_log($msg, Zend_Log::WARN);
+                $msg = 'Cannot create a second record with the same identifier "%s".';
+                $this->_log($msg, array($identifier), Zend_Log::WARN);
                 return false;
             }
         }
@@ -984,8 +986,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                         break;
                     case 'Any':
                     default:
-                        $msg = __('Type of the record to create is not set.');
-                        $this->_log($msg, Zend_Log::WARN);
+                        $msg = 'The type of the record to create is not set.';
+                        $this->_log($msg, array(), Zend_Log::WARN);
                         return false;
                 }
                 break;
@@ -1100,10 +1102,10 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         try {
             $record = $this->_insert_item($recordMetadata, $elementTexts, array(), $extraData);
         } catch (Omeka_Validator_Exception $e) {
-            $this->_log($e, Zend_Log::ERR);
+            $this->_log($e, array(), Zend_Log::ERR);
             return false;
         } catch (Omeka_Record_Builder_Exception $e) {
-            $this->_log($e, Zend_Log::ERR);
+            $this->_log($e, array(), Zend_Log::ERR);
             return false;
         }
 
@@ -1148,13 +1150,13 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             // Check if the file url is present.
             $fileUrl = $map[CsvImport_ColumnMap::TYPE_FILE];
             if (count($fileUrl) > 1) {
-                $msg = __('A file can have only one url or path.');
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'A file can have only one url or path.';
+                $this->_log($msg, array(), Zend_Log::ERR);
                 return false;
             }
             if (empty($fileUrl)) {
-                $msg = __('You should give the path or the url of the file to import.');
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'You should give the path or the url of the file to import.';
+                $this->_log($msg, array(), Zend_Log::ERR);
                 return false;
             }
             $fileUrl = reset($fileUrl);
@@ -1168,8 +1170,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                     $item = $this->_createRecordFromIdentifier($itemIdentifier, 'Item', $this->_defaultValues['IdentifierField']);
                 }
                 if (empty($item)) {
-                    $msg = __('No item with the identifier "%s" for the file "%s".', $itemIdentifier, $fileUrl);
-                    $this->_log($msg, Zend_Log::ERR);
+                    $msg = 'No item with the identifier "%s" for the file "%s".';
+                    $this->_log($msg, array($itemIdentifier, $fileUrl), Zend_Log::ERR);
                     return false;
                 }
             }
@@ -1179,14 +1181,14 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             // Check if the file url is present.
             $fileUrl = $map[CsvImport_ColumnMap::TYPE_FILE];
             if (empty($fileUrl)) {
-                $msg = __('You should give the path or the url of the file to import.');
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'You should give the path or the url of the file to import.';
+                $this->_log($msg, array(), Zend_Log::ERR);
                 return false;
             }
             elseif (is_array($fileUrl)) {
                 if (count($fileUrl) > 1) {
-                    $msg = __('A file can have only one url or path.');
-                    $this->_log($msg, Zend_Log::ERR);
+                    $msg = 'A file can have only one url or path.';
+                    $this->_log($msg, array(), Zend_Log::ERR);
                     return false;
                 }
                 $fileUrl = reset($fileUrl);
@@ -1194,8 +1196,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
             // Check if the source item id is present.
             if (empty($map[CsvImport_ColumnMap::TYPE_SOURCE_ITEM_ID])) {
-                $msg = __('No indication of the source item to which attach filename.', $fileUrl);
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'No indication of the source item to which attach filename.';
+                $this->_log($msg, array($fileUrl), Zend_Log::ERR);
                 return false;
             }
 
@@ -1207,9 +1209,9 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                     'import_id' => $this->id,
                 ), 1);
             if (empty($csvImportedRecords)) {
-                $msg = __('No item with the source item id "%s" does exist in the database.', $sourceItemId)
-                    . ' ' . __('With depracted "Mix" and "Update" formats, file rows should always be imported after the item to which they are attached.');
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'No item with the source item id "%s" does exist in the database.'
+                    . ' ' . 'With depracted "Mix" and "Update" formats, file rows should always be imported after the item to which they are attached.';
+                $this->_log($msg, array($sourceItemId), Zend_Log::ERR);
                 return false;
             }
             $csvImportedRecord = reset($csvImportedRecords);
@@ -1222,8 +1224,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             $transferStrategy = 'Filesystem';
             $fileUrl = $parsedFileUrl['path'];
             if (!$this->_allowLocalPath($fileUrl)) {
-                $msg = __('Local paths are not allowed by the administrator (%s).', $fileUrl);
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'Local paths are not allowed by the administrator (%s).';
+                $this->_log($msg, array($fileUrl), Zend_Log::ERR);
                 return false;
             }
         }
@@ -1239,9 +1241,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $fileUrl,
                 array('ignore_invalid_files' => false));
         } catch (Omeka_File_Ingest_InvalidException $e) {
-            $msg = __("Error occurred when attempting to ingest '%s' as a file: %s",
-                $fileUrl, $e->getMessage());
-            $this->_log($msg, Zend_Log::ERR);
+            $msg = 'Error occurred when attempting to ingest "%s" as a file: %s';
+            $this->_log($msg, array($fileUrl, $e->getMessage()), Zend_Log::ERR);
             return false;
         }
         // Need to release file in order to update all current data, because
@@ -1293,10 +1294,10 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         try {
             $record = $this->_insert_collection($recordMetadata, $elementTexts, $extraData);
         } catch (Omeka_Validator_Exception $e) {
-            $this->_log($e, Zend_Log::ERR);
+            $this->_log($e, array(), Zend_Log::ERR);
             return false;
         } catch (Omeka_Record_Builder_Exception $e) {
-            $this->_log($e, Zend_Log::ERR);
+            $this->_log($e, array(), Zend_Log::ERR);
             return false;
         }
 
@@ -1331,8 +1332,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         // No record can be updated.
         if (empty($record)) {
-            $msg = __('You try to update the record "%s", but it does not exist.', $recordIdentifier);
-            $this->_log($msg, Zend_Log::ERR);
+            $msg = 'You try to update the record "%s", but it does not exist.';
+            $this->_log($msg, array($recordIdentifier), Zend_Log::ERR);
             return false;
         }
 
@@ -1367,14 +1368,14 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         $fileUrl = $map[CsvImport_ColumnMap::TYPE_FILE];
         if (empty($fileUrl)) {
-            $msg = __('You should give the internal id or the original filename or the url of the file to import.');
-            $this->_log($msg, Zend_Log::ERR);
+            $msg = 'You should give the internal id or the original filename or the url of the file to import.';
+            $this->_log($msg, array(), Zend_Log::ERR);
             return false;
         }
         elseif (is_array($fileUrl)) {
             if (count($fileUrl) > 1) {
-                $msg = __('A file can have only one url or path.');
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'A file can have only one url or path.';
+                $this->_log($msg, array(), Zend_Log::ERR);
                 return false;
             }
             $fileUrl = reset($fileUrl);
@@ -1387,10 +1388,10 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             : get_db()->getTable('File')->findBySql('original_filename = ?', array($fileUrl), true);
 
         if (empty($file)) {
-            $msg = __('File "%s" does not exist in the database.', $fileUrl)
-                . ' ' . __('No item associated with it was found.')
-                . ' ' . __('Add items first before importing file metadata.');
-            $this->_log($msg, Zend_Log::ERR);
+            $msg = 'File "%s" does not exist in the database.'
+                . ' ' . 'No item associated with it was found.'
+                . ' ' . 'Add items first before importing file metadata.';
+            $this->_log($msg, array($fileUrl), Zend_Log::ERR);
             return false;
         }
 
@@ -1623,8 +1624,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $transferStrategy = 'Filesystem';
                 $fileUrl = $parsedFileUrl['path'];
                 if (!$this->_allowLocalPath($fileUrl)) {
-                    $msg = __('Local paths are not allowed by the administrator (%s).', $fileUrl);
-                    $this->_log($msg, Zend_Log::ERR);
+                    $msg = 'Local paths are not allowed by the administrator (%s).';
+                    $this->_log($msg, array($fileUrl), Zend_Log::ERR);
                     if ($itemDelete) {
                         $item->delete();
                     }
@@ -1644,18 +1645,16 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                     $fileUrl,
                     array('ignore_invalid_files' => false));
             } catch (Omeka_File_Ingest_InvalidException $e) {
-                $msg = __("Invalid file URL '%s': %s",
-                    $fileUrl, $e->getMessage());
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'Invalid file URL "%s": %s';
+                $this->_log($msg, array($fileUrl, $e->getMessage()), Zend_Log::ERR);
                 if ($itemDelete) {
                     $item->delete();
                 }
                 release_object($item);
                 return false;
             } catch (Omeka_File_Ingest_Exception $e) {
-                $msg = __("Could not import file '%s': %s",
-                    $fileUrl, $e->getMessage());
-                $this->_log($msg, Zend_Log::ERR);
+                $msg = 'Could not import file "%s": %s';
+                $this->_log($msg, array($fileUrl, $e->getMessage()), Zend_Log::ERR);
                 if ($itemDelete) {
                     $item->delete();
                 }
@@ -1765,10 +1764,10 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             try {
                 $record = $record->delete();
             } catch (Omeka_Record_Exception $e) {
-                $this->_log($e, Zend_Log::WARN);
+                $this->_log($e, array(), Zend_Log::WARN);
                 return false;
             } catch (Exception $e) {
-                $this->_log($e, Zend_Log::ERR);
+                $this->_log($e, array(), Zend_Log::ERR);
                 return false;
             }
             $this->updated_record_count++;
@@ -1944,16 +1943,14 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     /**
      * Log an import message
      * Every message will log the import ID.
-     * Messages that have %memory% will include memory usage information.
      *
      * @param string $msg The message to log
+     * @param array $params Params to pass the translation function __()
      * @param int $priority The priority of the message
      */
-    protected function _log($msg, $priority = Zend_Log::DEBUG)
+    protected function _log($msg, $params = array(), $priority = Zend_Log::DEBUG)
     {
         $prefix = "[CsvImport][#{$this->id}]";
-        $msg = str_replace('%memory%', memory_get_usage(), $msg);
-        $msg = str_replace('%time%', date('Y-m-d G:i:s'), $msg);
         _log("$prefix $msg", $priority);
 
         $csvImportLog = new CsvImport_Log();
@@ -1961,6 +1958,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             'import_id' => $this->id,
             'priority' => $priority,
             'message' => $msg,
+            'params' => serialize($params),
         ));
         $csvImportLog->save();
     }

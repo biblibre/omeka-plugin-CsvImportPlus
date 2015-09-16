@@ -124,6 +124,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
                 `priority` tinyint unsigned NOT NULL,
                 `created` timestamp DEFAULT CURRENT_TIMESTAMP,
                 `message` text NOT NULL,
+                `params` text DEFAULT NULL,
                 PRIMARY KEY (`id`),
                 KEY (`import_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -273,6 +274,14 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
                     PRIMARY KEY (`id`),
                     KEY (`import_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+            ";
+            $db->query($sql);
+        }
+
+        if (version_compare($oldVersion, '2.1.4-full', '<=')) {
+            $sql = "
+                ALTER TABLE `{$db->CsvImport_Log}`
+                ADD COLUMN `params` text DEFAULT NULL
             ";
             $db->query($sql);
         }
