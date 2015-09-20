@@ -11,7 +11,7 @@
         <thead>
             <tr>
                 <?php
-                $browseHeadings[__('Import date')] = 'added';
+                $browseHeadings[__('Import date / Log')] = 'added';
                 $browseHeadings[__('CSV file')] = 'original_filename';
                 $browseHeadings[__('Import type')] = null;
                 $browseHeadings[__('Row count')] = 'row_count';
@@ -29,8 +29,21 @@
             <?php $key = 0; ?>
             <?php foreach (loop('CsvImport_Import') as $csvImport): ?>
             <tr class="<?php if (++$key%2 == 1) echo 'odd'; else echo 'even'; ?>">
-
-                <td><?php echo html_escape(format_date($csvImport->added, Zend_Date::DATETIME_SHORT)); ?></td>
+                <td>
+                    <?php
+                        $importDate = html_escape(format_date($csvImport->added, Zend_Date::DATETIME_SHORT));
+                        $logs = get_db()->getTable('CsvImport_Log')->findByImportId($csvImport->id);
+                        if (empty($logs)):
+                            echo $importDate;
+                        else:
+                            $logsUrl = $this->url(array(
+                                'action' => 'logs',
+                                'id' => $csvImport->id
+                            ), 'default');
+                        ?>
+                    <a href="<?php echo html_escape($logsUrl);  ?>" class="csv-logs delete-button"><?php echo $importDate; ?></a>
+                    <?php endif; ?>
+                </td>
                 <td><?php echo html_escape($csvImport->original_filename); ?></td>
                 <td><?php switch ($csvImport->format) {
                     case 'Manage': echo __('Manage records'); break;
@@ -62,14 +75,8 @@
                                 'id' => $csvImport->id,
                             ),
                             'default');
-                        $logsUrl = $this->url(array(
-                            'action' => 'logs',
-                            'id' => $csvImport->id
-                        ), 'default');
                 ?>
                     <a href="<?php echo html_escape($undoImportUrl); ?>" class="csv-undo-import button red"><?php echo html_escape(__('Undo Import')); ?></a>
-                    <br>
-                    <a href="<?php echo html_escape($logsUrl);  ?>" class="csv-logs delete-button"><?php echo html_escape(__('Logs')); ?></a>
                 <?php
                     elseif (
                         ($csvImport->isUndone()
