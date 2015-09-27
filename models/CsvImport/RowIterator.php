@@ -22,6 +22,7 @@ class CsvImport_RowIterator implements SeekableIterator
     private $_valid = true;
     private $_colNames = array();
     private $_colCount = 0;
+    private $_isEmpty = true;
     private $_skipInvalidRows = false;
     private $_skippedRowCount = 0;
 
@@ -194,6 +195,16 @@ class CsvImport_RowIterator implements SeekableIterator
     }
 
     /**
+     * Check if the current row is empty.
+     *
+     * @return boolean
+     */
+    public function isEmpty()
+    {
+        return $this->_isEmpty;
+    }
+
+    /**
      * Returns array of column names.
      *
      * @return array
@@ -280,12 +291,16 @@ class CsvImport_RowIterator implements SeekableIterator
      */
     protected function _getNextRow()
     {
-        $currentRow = array();
+        $row = array();
         $handle = $this->_getFileHandle();
         while (($row = fgetcsv($handle, 0, $this->_columnDelimiter, $this->_enclosure)) !== FALSE) {
             $this->_currentRowNumber++;
+            // Keep strings like "0", "0.0" or "false" but remove empty ones "".
+            $checkedRow = array_filter($row, 'strlen');
+            $this->_isEmpty = empty($checkedRow);
             return $row;
         }
+        $this->_isEmpty = true;
     }
 
     /**

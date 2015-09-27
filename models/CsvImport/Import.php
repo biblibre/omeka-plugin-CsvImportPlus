@@ -698,48 +698,57 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $index = $rows->key();
                 $this->skipped_row_count += $rows->getSkippedCount();
 
-                // TODO Mapping row process may be used to clean and normalize
-                // data, so the process here (and in all the plugin) may be
-                // simpler.
-
-                // Map the row to identified columns.
-                $this->_currentMap = $this->getColumnMaps()->map($row);
-                $map = &$this->_currentMap;
-
-                // Process returns the record if any, true if success but no
-                // record (delete), false in case of error and null in other
-                // cases (true skip).
-                switch ($this->format) {
-                    case 'Manage':
-                        $record = $this->_manageFromMappedRow();
-                        break;
-                    case 'Report':
-                    case 'Item':
-                        $record = $this->_addItemFromMappedRow();
-                        break;
-                    // Deprecated.
-                    case 'File':
-                        $record = $this->_updateFileFromMappedRow();
-                        break;
-                    case 'Mix':
-                        $record = $this->_mixFromMappedRow();
-                        break;
-                    case 'Update':
-                        $record = $this->_updateFromMappedRow();
-                        break;
-                    default:
-                        $record = false;
+                // Check if the current row is empty. This is checked here,
+                // because getColumnMaps() may add default values.
+                if ($rows->isEmpty()) {
+                    $this->skipped_row_count++;
+                    $this->_log('Skipped empty row #%s.', array($index), Zend_Log::NOTICE);
                 }
+                // Non empty row.
+                else {
+                    // TODO Mapping row process may be used to clean and normalize
+                    // data, so the process here (and in all the plugin) may be
+                    // simpler.
 
-                if (empty($record)) {
-                    $this->skipped_record_count++;
-                    $this->_log('Skipped record on row #%s.', array($index), Zend_Log::WARN);
-                }
-                elseif ($record === CsvImport_ColumnMap_Action::ACTION_SKIP) {
-                    $this->skipped_record_count++;
-                }
-                elseif (is_object($record)) {
-                    release_object($record);
+                    // Map the row to identified columns.
+                    $this->_currentMap = $this->getColumnMaps()->map($row);
+                    $map = &$this->_currentMap;
+
+                    // Process returns the record if any, true if success but no
+                    // record (delete), false in case of error and null in other
+                    // cases (true skip).
+                    switch ($this->format) {
+                        case 'Manage':
+                            $record = $this->_manageFromMappedRow();
+                            break;
+                        case 'Report':
+                        case 'Item':
+                            $record = $this->_addItemFromMappedRow();
+                            break;
+                        // Deprecated.
+                        case 'File':
+                            $record = $this->_updateFileFromMappedRow();
+                            break;
+                        case 'Mix':
+                            $record = $this->_mixFromMappedRow();
+                            break;
+                        case 'Update':
+                            $record = $this->_updateFromMappedRow();
+                            break;
+                        default:
+                            $record = false;
+                    }
+
+                    if (empty($record)) {
+                        $this->skipped_record_count++;
+                        $this->_log('Skipped record on row #%s.', array($index), Zend_Log::WARN);
+                    }
+                    elseif ($record === CsvImport_ColumnMap_Action::ACTION_SKIP) {
+                        $this->skipped_record_count++;
+                    }
+                    elseif (is_object($record)) {
+                        release_object($record);
+                    }
                 }
 
                 $this->file_position = $this->getCsvFile()->getIterator()->tell();
