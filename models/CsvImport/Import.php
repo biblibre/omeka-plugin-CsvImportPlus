@@ -1959,9 +1959,6 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
      */
     protected function _log($msg, $params = array(), $priority = Zend_Log::DEBUG)
     {
-        $prefix = "[CsvImport][#{$this->id}]";
-        _log("$prefix $msg", $priority);
-
         $csvImportLog = new CsvImport_Log();
         $csvImportLog->setArray(array(
             'import_id' => $this->id,
@@ -1970,6 +1967,10 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             'params' => serialize($params),
         ));
         $csvImportLog->save();
+
+        $prefix = "[CsvImport][#{$this->id}]";
+        $msg = vsprintf($msg, $params);
+        _log("$prefix $msg", $priority);
     }
 
     /**
