@@ -1,8 +1,8 @@
 <?php
 /**
- * CsvImport_ColumnMap_ExportedElement class
+ * CsvImportPlus_ColumnMap_ExportedElement class
  * Works with csv files exported from another Omeka installation using
- * CSV Report.  Differs from CsvImport_ColumnMap_Element in the structure of the
+ * CSV Report.  Differs from CsvImportPlus_ColumnMap_Element in the structure of the
  * result coming from map(). Also assumes all elements are, or not, HTML and that
  * they're already purified, which is only slightly more naughty that the usual
  * import, which sets isHTML at the Element level, while in practice it is set
@@ -12,7 +12,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_ColumnMap_ExportedElement extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_ExportedElement extends CsvImportPlus_ColumnMap
 {
     const DEFAULT_COLUMN_NAME_DELIMITER = ':';
     const DEFAULT_ELEMENT_DELIMITER = '^^';
@@ -28,7 +28,7 @@ class CsvImport_ColumnMap_ExportedElement extends CsvImport_ColumnMap
     public function __construct($columnName)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_ELEMENT;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_ELEMENT;
         $this->_columnNameDelimiter = self::DEFAULT_COLUMN_NAME_DELIMITER;
         $this->_elementDelimiter = self::DEFAULT_ELEMENT_DELIMITER;
         $this->_isHtml = true;

@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_ColumnMap_Featured class
+ * CsvImportPlus_ColumnMap_Featured class
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_ColumnMap_Featured extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_Featured extends CsvImportPlus_ColumnMap
 {
     const DEFAULT_FEATURED = false;
 
@@ -19,7 +19,7 @@ class CsvImport_ColumnMap_Featured extends CsvImport_ColumnMap
     public function __construct($columnName, $isFeatured = null)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_FEATURED;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_FEATURED;
         $filter = new Omeka_Filter_Boolean;
         $this->_isFeatured = is_null($isFeatured)
             ? self::DEFAULT_FEATURED

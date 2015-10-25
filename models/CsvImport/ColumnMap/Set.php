@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_ColumnMap_Set class
+ * CsvImportPlus_ColumnMap_Set class
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_ColumnMap_Set
+class CsvImportPlus_ColumnMap_Set
 {
     private $_maps = array();
 
@@ -21,9 +21,9 @@ class CsvImport_ColumnMap_Set
     /**
      * Adds a column map to the set.
      *
-     * @param CsvImport_ColumnMap $map The column map
+     * @param CsvImportPlus_ColumnMap $map The column map
      */
-    public function add(CsvImport_ColumnMap $map)
+    public function add(CsvImportPlus_ColumnMap $map)
     {
         $this->_maps[] = $map;
     }
@@ -39,25 +39,25 @@ class CsvImport_ColumnMap_Set
     public function map(array $row)
     {
         $allResults = array(
-            CsvImport_ColumnMap::TYPE_ACTION => null,
-            CsvImport_ColumnMap::TYPE_IDENTIFIER => null,
-            CsvImport_ColumnMap::TYPE_IDENTIFIER_FIELD => null,
-            CsvImport_ColumnMap::TYPE_RECORD_TYPE => null,
-            CsvImport_ColumnMap::TYPE_ITEM => null,
+            CsvImportPlus_ColumnMap::TYPE_ACTION => null,
+            CsvImportPlus_ColumnMap::TYPE_IDENTIFIER => null,
+            CsvImportPlus_ColumnMap::TYPE_IDENTIFIER_FIELD => null,
+            CsvImportPlus_ColumnMap::TYPE_RECORD_TYPE => null,
+            CsvImportPlus_ColumnMap::TYPE_ITEM => null,
             // Deprecated.
-            CsvImport_ColumnMap::TYPE_SOURCE_ITEM_ID => null,
-            CsvImport_ColumnMap::TYPE_UPDATE_MODE => null,
-            CsvImport_ColumnMap::TYPE_UPDATE_IDENTIFIER => null,
-            CsvImport_ColumnMap::TYPE_RECORD_IDENTIFIER => null,
+            CsvImportPlus_ColumnMap::TYPE_SOURCE_ITEM_ID => null,
+            CsvImportPlus_ColumnMap::TYPE_UPDATE_MODE => null,
+            CsvImportPlus_ColumnMap::TYPE_UPDATE_IDENTIFIER => null,
+            CsvImportPlus_ColumnMap::TYPE_RECORD_IDENTIFIER => null,
             // Used with any import type.
-            CsvImport_ColumnMap::TYPE_ITEM_TYPE => null,
-            CsvImport_ColumnMap::TYPE_COLLECTION => null,
-            CsvImport_ColumnMap::TYPE_PUBLIC => null,
-            CsvImport_ColumnMap::TYPE_FEATURED => null,
-            CsvImport_ColumnMap::TYPE_ELEMENT => array(),
-            CsvImport_ColumnMap::TYPE_EXTRA_DATA => array(),
-            CsvImport_ColumnMap::TYPE_TAG => array(),
-            CsvImport_ColumnMap::TYPE_FILE => array(),
+            CsvImportPlus_ColumnMap::TYPE_ITEM_TYPE => null,
+            CsvImportPlus_ColumnMap::TYPE_COLLECTION => null,
+            CsvImportPlus_ColumnMap::TYPE_PUBLIC => null,
+            CsvImportPlus_ColumnMap::TYPE_FEATURED => null,
+            CsvImportPlus_ColumnMap::TYPE_ELEMENT => array(),
+            CsvImportPlus_ColumnMap::TYPE_EXTRA_DATA => array(),
+            CsvImportPlus_ColumnMap::TYPE_TAG => array(),
+            CsvImportPlus_ColumnMap::TYPE_FILE => array(),
         );
         foreach ($this->_maps as $map) {
             $subset = $allResults[$map->getType()];

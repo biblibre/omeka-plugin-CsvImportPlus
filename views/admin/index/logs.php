@@ -1,4 +1,4 @@
-<?php echo head(array('title' => __('CSV Import'))); ?>
+<?php echo head(array('title' => __('CSV Import+'))); ?>
 
 <?php echo common('csvimport-nav'); ?>
 

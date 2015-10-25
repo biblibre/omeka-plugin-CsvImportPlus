@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_ColumnMap_ExtraData class
+ * CsvImportPlus_ColumnMap_ExtraData class
  *
  * Same as MixElement, but for extra data that are not elements.
  *
  * @package CsvImport
  */
-class CsvImport_ColumnMap_ExtraData extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_ExtraData extends CsvImportPlus_ColumnMap
 {
     const DEFAULT_COLUMN_NAME_DELIMITER = ':';
     const ELEMENT_DELIMITER_OPTION_NAME = 'csv_import_element_delimiter';
@@ -24,7 +24,7 @@ class CsvImport_ColumnMap_ExtraData extends CsvImport_ColumnMap
     public function __construct($columnName, $elementDelimiter = null)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_EXTRA_DATA;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_EXTRA_DATA;
         $this->_columnNameDelimiter = self::DEFAULT_COLUMN_NAME_DELIMITER;
 
         $this->_elementDelimiter = $elementDelimiter === null

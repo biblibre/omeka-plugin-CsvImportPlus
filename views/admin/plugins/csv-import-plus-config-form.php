@@ -1,7 +1,7 @@
 <fieldset id="fieldset-csv-import-rights"><legend><?php echo __('Rights and Roles'); ?></legend>
     <div class="field">
         <div class="two columns alpha">
-            <?php echo $this->formLabel('csv_import_allow_roles', __('Roles that can use Csv Import')); ?>
+            <?php echo $this->formLabel('csv_import_allow_roles', __('Roles that can use Csv Import+')); ?>
         </div>
         <div class="inputs five columns omega">
             <div class="input-block">

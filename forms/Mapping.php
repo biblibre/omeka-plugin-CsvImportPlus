@@ -1,13 +1,13 @@
 <?php
 /**
- * CsvImport_Form_Mapping class - represents the form on csv-import/index/map-columns.
+ * CsvImportPlus_Form_Mapping class - represents the form on csv-import/index/map-columns.
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
 
-class CsvImport_Form_Mapping extends Omeka_Form
+class CsvImportPlus_Form_Mapping extends Omeka_Form
 {
     // Internal parameters for all formats.
     private $_format;
@@ -516,26 +516,26 @@ class CsvImport_Form_Mapping extends Omeka_Form
      *
      * @param int $index The subform row index
      * @param string $columnName The name of the CSV file column
-     * @return CsvImport_ColumnMap|array|null A ColumnMap or an array of ColumnMaps
+     * @return CsvImportPlus_ColumnMap|array|null A ColumnMap or an array of ColumnMaps
      */
     protected function _getColumnMap($index, $columnName)
     {
         $columnMap = array();
 
         if ($this->_isTagMapped($index)) {
-            $columnMap[] = new CsvImport_ColumnMap_Tag($columnName, $this->_tagDelimiter);
+            $columnMap[] = new CsvImportPlus_ColumnMap_Tag($columnName, $this->_tagDelimiter);
         }
 
         if ($this->_isFileMapped($index)) {
-            $columnMap[] = new CsvImport_ColumnMap_File($columnName, $this->_fileDelimiter);
+            $columnMap[] = new CsvImportPlus_ColumnMap_File($columnName, $this->_fileDelimiter);
         }
 
         if ($this->_isFileUrlMapped($index)) {
-            $columnMap[] = new CsvImport_ColumnMap_File($columnName, '', true);
+            $columnMap[] = new CsvImportPlus_ColumnMap_File($columnName, '', true);
         }
 
         if ($this->_isExtraDataMapped($index)) {
-            $columnMap[] = new CsvImport_ColumnMap_ExtraData($columnName, $this->_elementDelimiter);
+            $columnMap[] = new CsvImportPlus_ColumnMap_ExtraData($columnName, $this->_elementDelimiter);
         }
 
         $elementIds = $this->_getMappedElementId($index);
@@ -546,7 +546,7 @@ class CsvImport_Form_Mapping extends Omeka_Form
                 continue;
             }
 
-            $elementMap = new CsvImport_ColumnMap_Element($columnName, $this->_elementDelimiter);
+            $elementMap = new CsvImportPlus_ColumnMap_Element($columnName, $this->_elementDelimiter);
             $elementMap->setOptions(array(
                 'elementId' => $elementId,
                 'isHtml' => $isHtml,
@@ -557,60 +557,60 @@ class CsvImport_Form_Mapping extends Omeka_Form
         $specialValue = $this->_getMappedSpecialValue($index);
         switch ($specialValue) {
             case 'Identifier':
-                $columnMap[] = new CsvImport_ColumnMap_Identifier($columnName);
+                $columnMap[] = new CsvImportPlus_ColumnMap_Identifier($columnName);
                 break;
             // Deprecated.
             case 'sourceItemId':
-                $columnMap[] = new CsvImport_ColumnMap_SourceItemId($columnName);
+                $columnMap[] = new CsvImportPlus_ColumnMap_SourceItemId($columnName);
                 break;
             // Deprecated.
             case 'updateMode':
-                $columnMap[] = new CsvImport_ColumnMap_UpdateMode($columnName);
+                $columnMap[] = new CsvImportPlus_ColumnMap_UpdateMode($columnName);
                 break;
             case 'Action':
-                $columnMap[] = new CsvImport_ColumnMap_Action($columnName, $this->_action);
+                $columnMap[] = new CsvImportPlus_ColumnMap_Action($columnName, $this->_action);
                 break;
             case 'IdentifierField':
-                $columnMap[] = new CsvImport_ColumnMap_IdentifierField($columnName, $this->_identifierField);
+                $columnMap[] = new CsvImportPlus_ColumnMap_IdentifierField($columnName, $this->_identifierField);
                 break;
             // Deprecated.
             case 'updateIdentifier':
-                $columnMap[] = new CsvImport_ColumnMap_UpdateIdentifier($columnName);
+                $columnMap[] = new CsvImportPlus_ColumnMap_UpdateIdentifier($columnName);
                 break;
             case 'RecordType':
-                $columnMap[] = new CsvImport_ColumnMap_RecordType($columnName);
+                $columnMap[] = new CsvImportPlus_ColumnMap_RecordType($columnName);
                 break;
             // Deprecated.
             case 'recordIdentifier':
-                $columnMap[] = new CsvImport_ColumnMap_RecordIdentifier($columnName);
+                $columnMap[] = new CsvImportPlus_ColumnMap_RecordIdentifier($columnName);
                 break;
             case 'ItemType':
-                $columnMap[] = new CsvImport_ColumnMap_ItemType($columnName, $this->_itemTypeId);
+                $columnMap[] = new CsvImportPlus_ColumnMap_ItemType($columnName, $this->_itemTypeId);
                 break;
             case 'Item':
-                $columnMap[] = new CsvImport_ColumnMap_Item($columnName);
+                $columnMap[] = new CsvImportPlus_ColumnMap_Item($columnName);
                 break;
             case 'Collection':
-                $columnMap[] = new CsvImport_ColumnMap_Collection($columnName,
+                $columnMap[] = new CsvImportPlus_ColumnMap_Collection($columnName,
                     $this->_collectionId,
                     $this->_createCollections,
                     $this->_format == 'Manage');
                 break;
             case 'Public':
-                $columnMap[] = new CsvImport_ColumnMap_Public($columnName, $this->_isPublic);
+                $columnMap[] = new CsvImportPlus_ColumnMap_Public($columnName, $this->_isPublic);
                 break;
             case 'Featured':
-                $columnMap[] = new CsvImport_ColumnMap_Featured($columnName, $this->_isFeatured);
+                $columnMap[] = new CsvImportPlus_ColumnMap_Featured($columnName, $this->_isFeatured);
                 break;
             // Deprecated.
             case 'fileUrl':
-                $columnMap[] = new CsvImport_ColumnMap_File($columnName, '', true);
+                $columnMap[] = new CsvImportPlus_ColumnMap_File($columnName, '', true);
                 break;
             case 'File':
-                $columnMap[] = new CsvImport_ColumnMap_File($columnName, $this->_fileDelimiter);
+                $columnMap[] = new CsvImportPlus_ColumnMap_File($columnName, $this->_fileDelimiter);
                 break;
             case 'Tags':
-                $columnMap[] = new CsvImport_ColumnMap_Tag($columnName, $this->_tagDelimiter);
+                $columnMap[] = new CsvImportPlus_ColumnMap_Tag($columnName, $this->_tagDelimiter);
                 break;
         }
 

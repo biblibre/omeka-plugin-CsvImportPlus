@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_IndexController class - represents the Csv Import index controller
+ * CsvImportPlus_IndexController class - represents the Csv Import index controller
  *
  * @copyright Copyright 2008-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_IndexController extends Omeka_Controller_AbstractActionController
+class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionController
 {
     protected $_browseRecordsPerPage = 10;
     protected $_pluginConfig = array();
@@ -16,8 +16,8 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
      */
     public function init()
     {
-        $this->session = new Zend_Session_Namespace('CsvImport');
-        $this->_helper->db->setDefaultModelName('CsvImport_Import');
+        $this->session = new Zend_Session_Namespace('CsvImportPlus');
+        $this->_helper->db->setDefaultModelName('CsvImportPlus_Import');
     }
 
     /**
@@ -54,7 +54,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             ? $enclosuresList[$enclosureName]
             : $form->getValue('enclosure');
 
-        $file = new CsvImport_File($filePath, $columnDelimiter, $enclosure);
+        $file = new CsvImportPlus_File($filePath, $columnDelimiter, $enclosure);
 
         if (!$file->parse()) {
             $this->_helper->flashMessenger(__('Your file is incorrectly formatted.')
@@ -104,16 +104,16 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         $this->session->ownerId = $this->getInvokeArg('bootstrap')->currentuser->id;
 
         // All is valid, so we save settings.
-        set_option(CsvImport_ColumnMap_IdentifierField::IDENTIFIER_FIELD_OPTION_NAME, $this->session->identifierField);
-        set_option(CsvImport_RowIterator::COLUMN_DELIMITER_OPTION_NAME, $this->session->columnDelimiter);
-        set_option(CsvImport_RowIterator::ENCLOSURE_OPTION_NAME, $this->session->enclosure);
-        set_option(CsvImport_ColumnMap_Element::ELEMENT_DELIMITER_OPTION_NAME, $this->session->elementDelimiter);
-        set_option(CsvImport_ColumnMap_Tag::TAG_DELIMITER_OPTION_NAME, $this->session->tagDelimiter);
-        set_option(CsvImport_ColumnMap_File::FILE_DELIMITER_OPTION_NAME, $this->session->fileDelimiter);
-        set_option('csv_import_html_elements', $this->session->elementsAreHtml);
-        set_option('csv_import_create_collections', $this->session->createCollections);
-        set_option('csv_import_extra_data', $this->session->containsExtraData);
-        set_option('csv_import_automap_columns', $this->session->automapColumns);
+        set_option(CsvImportPlus_ColumnMap_IdentifierField::IDENTIFIER_FIELD_OPTION_NAME, $this->session->identifierField);
+        set_option(CsvImportPlus_RowIterator::COLUMN_DELIMITER_OPTION_NAME, $this->session->columnDelimiter);
+        set_option(CsvImportPlus_RowIterator::ENCLOSURE_OPTION_NAME, $this->session->enclosure);
+        set_option(CsvImportPlus_ColumnMap_Element::ELEMENT_DELIMITER_OPTION_NAME, $this->session->elementDelimiter);
+        set_option(CsvImportPlus_ColumnMap_Tag::TAG_DELIMITER_OPTION_NAME, $this->session->tagDelimiter);
+        set_option(CsvImportPlus_ColumnMap_File::FILE_DELIMITER_OPTION_NAME, $this->session->fileDelimiter);
+        set_option('csv_import_plus_html_elements', $this->session->elementsAreHtml);
+        set_option('csv_import_plus_create_collections', $this->session->createCollections);
+        set_option('csv_import_plus_extra_data', $this->session->containsExtraData);
+        set_option('csv_import_plus_automap_columns', $this->session->automapColumns);
 
         if ($this->session->containsExtraData == 'manual' && $this->session->format != 'Report') {
             $this->_helper->redirector->goto('map-columns');
@@ -182,7 +182,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
                 break;
         }
 
-        $form = new CsvImport_Form_Mapping($parameters);
+        $form = new CsvImportPlus_Form_Mapping($parameters);
         if (!$form) {
             $this->_helper->flashMessenger(__('Invalid form input. Please try again.'), 'error');
             $this->_helper->redirector->goto('index');
@@ -208,7 +208,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         if ($this->session->format == 'Manage') {
             $isSetIdentifier = false;
             foreach ($columnMaps as $columnMap) {
-                if ($columnMap instanceof CsvImport_ColumnMap_Identifier) {
+                if ($columnMap instanceof CsvImportPlus_ColumnMap_Identifier) {
                     $isSetIdentifier = true;
                     break;
                 }
@@ -526,48 +526,48 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         foreach ($headings as $heading) {
             switch ($heading) {
                 case 'Identifier':
-                    $columnMaps[] = new CsvImport_ColumnMap_Identifier($heading);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_Identifier($heading);
                     $isSetIdentifier = true;
                     break;
                 // Deprecated.
                 case 'sourceItemId':
-                    $columnMaps[] = new CsvImport_ColumnMap_SourceItemId($heading);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_SourceItemId($heading);
                     break;
                 // Deprecated.
                 case 'updateMode':
-                    $columnMaps[] = new CsvImport_ColumnMap_UpdateMode($heading);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_UpdateMode($heading);
                     break;
                 case 'Action':
-                    $columnMaps[] = new CsvImport_ColumnMap_Action($heading, $action);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_Action($heading, $action);
                     break;
                 case 'IdentifierField':
-                    $columnMaps[] = new CsvImport_ColumnMap_IdentifierField($heading, $identifierField);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_IdentifierField($heading, $identifierField);
                     break;
                 // Deprecated.
                 case 'updateIdentifier':
-                    $columnMaps[] = new CsvImport_ColumnMap_UpdateIdentifier($heading);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_UpdateIdentifier($heading);
                     break;
                 case 'RecordType':
                 // Deprecated.
                 case 'recordType':
-                    $columnMaps[] = new CsvImport_ColumnMap_RecordType($heading);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_RecordType($heading);
                     break;
                 // Deprecated.
                 case 'recordIdentifier':
-                    $columnMaps[] = new CsvImport_ColumnMap_RecordIdentifier($heading);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_RecordIdentifier($heading);
                     break;
                 case 'ItemType':
                 // Used by Csv Report.
                 case 'itemType':
-                    $columnMaps[] = new CsvImport_ColumnMap_ItemType($heading, $itemTypeId);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_ItemType($heading, $itemTypeId);
                     break;
                 case 'Item':
-                    $columnMaps[] = new CsvImport_ColumnMap_Item($heading);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_Item($heading);
                     break;
                 case 'Collection':
                 // Used by Csv Report, Mixed and Update.
                 case 'collection':
-                    $columnMaps[] = new CsvImport_ColumnMap_Collection($heading,
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_Collection($heading,
                         $collectionId,
                         $createCollections,
                         $format == 'Manage');
@@ -575,26 +575,26 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
                 case 'Public':
                 // Used by Csv Report.
                 case 'public':
-                    $columnMaps[] = new CsvImport_ColumnMap_Public($heading, $isPublic);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_Public($heading, $isPublic);
                     break;
                 case 'Featured':
                 // Used by Csv Report.
                 case 'featured':
-                    $columnMaps[] = new CsvImport_ColumnMap_Featured($heading, $isFeatured);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_Featured($heading, $isFeatured);
                     break;
                 case 'Tags':
                 // Used by Csv Report.
                 case 'tags':
-                    $columnMaps[] = new CsvImport_ColumnMap_Tag($heading, $tagDelimiter);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_Tag($heading, $tagDelimiter);
                     break;
                 // Deprecated.
                 case 'fileUrl':
-                    $columnMaps[] = new CsvImport_ColumnMap_File($heading, '', true);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_File($heading, '', true);
                     break;
                 case 'File':
                 // Used by Csv Report.
                 case 'file':
-                    $columnMaps[] = new CsvImport_ColumnMap_File($heading, $fileDelimiter);
+                    $columnMaps[] = new CsvImportPlus_ColumnMap_File($heading, $fileDelimiter);
                     break;
                 // Default can be a normal element or, if not, an extra data
                 // element that can be added via the hook csv_import_extra_data.
@@ -602,7 +602,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
                 default:
                     switch ($format) {
                         case 'Report':
-                            $columnMap = new CsvImport_ColumnMap_ExportedElement($heading);
+                            $columnMap = new CsvImportPlus_ColumnMap_ExportedElement($heading);
                             $options = array(
                                 'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
                                 'elementDelimiter' => $elementMap::DEFAULT_ELEMENT_DELIMITER,
@@ -613,7 +613,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
                         // Deprecated.
                         case 'Mix':
                         case 'Update':
-                            $columnMap = new CsvImport_ColumnMap_MixElement($heading, $elementDelimiter);
+                            $columnMap = new CsvImportPlus_ColumnMap_MixElement($heading, $elementDelimiter);
                             // If extra data are not used or if this is an element.
                             if ($containsExtraData != 'yes' || $columnMap->getElementId()) {
                                 $options = array(
@@ -624,7 +624,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
                             }
                             // Allow extra data when this is not a true element.
                             else {
-                                $columnMap = new CsvImport_ColumnMap_ExtraData($heading, $elementDelimiter);
+                                $columnMap = new CsvImportPlus_ColumnMap_ExtraData($heading, $elementDelimiter);
                                 $options = array(
                                     'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
                                     'elementDelimiter' => $elementDelimiter,
@@ -634,9 +634,9 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
                             // Memorize the identifier if needed, after cleaning.
                             if ($format == 'Manage' && $isSetIdentifier === false) {
                                 $cleanHeading = explode(
-                                    CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
+                                    CsvImportPlus_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
                                     $heading);
-                                $cleanHeading = implode(CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
+                                $cleanHeading = implode(CsvImportPlus_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
                                     array_map('trim', $cleanHeading));
                                 if ($identifierField == $cleanHeading) {
                                     $isSetIdentifier = null;
@@ -656,7 +656,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             // Manage format require that a column for identifier, but this
             // canbe any column, specially Dublin Core:Identifier.
             if ($isSetIdentifier === null) {
-                $columnMaps[] = new CsvImport_ColumnMap_Identifier($identifierHeading);
+                $columnMaps[] = new CsvImportPlus_ColumnMap_Identifier($identifierHeading);
                 $isSetIdentifier = true;
             }
             if (!$isSetIdentifier) {
@@ -680,14 +680,14 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
     protected function _setDefaultValues()
     {
         $defaultValues = array();
-        $defaultValues[CsvImport_ColumnMap::TYPE_ITEM_TYPE] = $this->session->itemTypeId;
-        $defaultValues[CsvImport_ColumnMap::TYPE_COLLECTION] = $this->session->collectionId;
-        $defaultValues[CsvImport_ColumnMap::TYPE_PUBLIC] = $this->session->recordsArePublic;
-        $defaultValues[CsvImport_ColumnMap::TYPE_FEATURED] = $this->session->recordsAreFeatured;
+        $defaultValues[CsvImportPlus_ColumnMap::TYPE_ITEM_TYPE] = $this->session->itemTypeId;
+        $defaultValues[CsvImportPlus_ColumnMap::TYPE_COLLECTION] = $this->session->collectionId;
+        $defaultValues[CsvImportPlus_ColumnMap::TYPE_PUBLIC] = $this->session->recordsArePublic;
+        $defaultValues[CsvImportPlus_ColumnMap::TYPE_FEATURED] = $this->session->recordsAreFeatured;
         switch ($this->session->format) {
             case 'Manage':
-                $defaultValues[CsvImport_ColumnMap::TYPE_ACTION] = $this->session->action;
-                $defaultValues[CsvImport_ColumnMap::TYPE_IDENTIFIER_FIELD] = $this->session->identifierField;
+                $defaultValues[CsvImportPlus_ColumnMap::TYPE_ACTION] = $this->session->action;
+                $defaultValues[CsvImportPlus_ColumnMap::TYPE_IDENTIFIER_FIELD] = $this->session->identifierField;
                 $defaultValues['createCollections'] = true;
                 break;
             case 'Report':
@@ -709,7 +709,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
      */
     protected function _launchImport()
     {
-        $csvImport = new CsvImport_Import();
+        $csvImport = new CsvImportPlus_Import();
 
         $this->_setDefaultValues();
 
@@ -726,7 +726,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         }
 
         if ($csvImport->queue()) {
-            $this->_dispatchImportTask($csvImport, CsvImport_ImportTask::METHOD_START);
+            $this->_dispatchImportTask($csvImport, CsvImportPlus_ImportTask::METHOD_START);
             $this->_helper->flashMessenger(__('Import started. Reload this page for status updates.'), 'success');
         }
         else {
@@ -771,7 +771,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
     {
         $csvImport = $this->_helper->db->findById();
         if ($csvImport->queueUndo()) {
-            $this->_dispatchImportTask($csvImport, CsvImport_ImportTask::METHOD_UNDO);
+            $this->_dispatchImportTask($csvImport, CsvImportPlus_ImportTask::METHOD_UNDO);
             $this->_helper->flashMessenger(__('Undo import started. Reload this page for status updates.'), 'success');
         } else {
             $this->_helper->flashMessenger(__('Undo import could not be started. Please check error logs for more details.'), 'error');
@@ -784,7 +784,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
     {
         $db = $this->_helper->db;
         $csvImport = $db->findById();
-        $logs = $db->getTable('CsvImport_Log')->findByImportId($csvImport->id);
+        $logs = $db->getTable('CsvImportPlus_Log')->findByImportId($csvImport->id);
 
         $this->view->csvImport = $csvImport;
         $this->view->logs = $logs;
@@ -813,13 +813,13 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
     /**
      * Get the main Csv Import form.
      *
-     * @return CsvImport_Form_Main
+     * @return CsvImportPlus_Form_Main
      */
     protected function _getMainForm()
     {
         require_once CSV_IMPORT_DIRECTORY . '/forms/Main.php';
         $csvConfig = $this->_getPluginConfig();
-        $form = new CsvImport_Form_Main($csvConfig);
+        $form = new CsvImportPlus_Form_Main($csvConfig);
         return $form;
     }
 
@@ -893,13 +893,13 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
     /**
      * Dispatch an import task.
      *
-     * @param CsvImport_Import $csvImport The import object
-     * @param string $method The method name to run in the CsvImport_Import object
+     * @param CsvImportPlus_Import $csvImport The import object
+     * @param string $method The method name to run in the CsvImportPlus_Import object
      */
     protected function _dispatchImportTask($csvImport, $method = null)
     {
         if ($method === null) {
-            $method = CsvImport_ImportTask::METHOD_START;
+            $method = CsvImportPlus_ImportTask::METHOD_START;
         }
         $csvConfig = $this->_getPluginConfig();
 
@@ -911,11 +911,11 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         );
 
         $jobDispatcher = Zend_Registry::get('job_dispatcher');
-        $jobDispatcher->setQueueName(CsvImport_ImportTask::QUEUE_NAME);
+        $jobDispatcher->setQueueName(CsvImportPlus_ImportTask::QUEUE_NAME);
         try {
-            $jobDispatcher->sendLongRunning('CsvImport_ImportTask', $options);
+            $jobDispatcher->sendLongRunning('CsvImportPlus_ImportTask', $options);
         } catch (Exception $e) {
-            $csvImport->setStatus(CsvImport_Import::STATUS_OTHER_ERROR);
+            $csvImport->setStatus(CsvImportPlus_Import::STATUS_OTHER_ERROR);
             $csvImport->save();
             throw $e;
         }

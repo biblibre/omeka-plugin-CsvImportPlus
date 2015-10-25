@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_RowIterator class
+ * CsvImportPlus_RowIterator class
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_RowIterator implements SeekableIterator
+class CsvImportPlus_RowIterator implements SeekableIterator
 {
     const COLUMN_DELIMITER_OPTION_NAME = 'csv_import_column_delimiter';
     const DEFAULT_COLUMN_DELIMITER = ',';
@@ -70,7 +70,7 @@ class CsvImport_RowIterator implements SeekableIterator
      * Rewind the Iterator to the first element.
      * Similar to the reset() function for arrays in PHP.
      *
-     * @throws CsvImport_DuplicateColumnException
+     * @throws CsvImportPlus_DuplicateColumnException
      */
     public function rewind()
     {
@@ -86,7 +86,7 @@ class CsvImport_RowIterator implements SeekableIterator
         $this->_colCount = count($colRow);
         $uniqueColCount = count($this->_colNames);
         if ($uniqueColCount != $this->_colCount) {
-            throw new CsvImport_DuplicateColumnException("Header row "
+            throw new CsvImportPlus_DuplicateColumnException("Header row "
                 . "contains $uniqueColCount unique column name(s) for "
                 . $this->_colCount . " columns.");
         }
@@ -125,7 +125,7 @@ class CsvImport_RowIterator implements SeekableIterator
     {
         try {
             $this->_moveNext();
-        } catch (CsvImport_MissingColumnException $e) {
+        } catch (CsvImportPlus_MissingColumnException $e) {
             if ($this->_skipInvalidRows) {
                 $this->_skippedRowCount++;
                 $this->next();
@@ -247,7 +247,7 @@ class CsvImport_RowIterator implements SeekableIterator
      * Formats a row.
      *
      * @throws LogicException
-     * @throws CsvImport_MissingColumnException
+     * @throws CsvImportPlus_MissingColumnException
      * @return array The formatted row
      */
     protected function _formatRow($row)
@@ -259,7 +259,7 @@ class CsvImport_RowIterator implements SeekableIterator
         }
         if (count($row) != $this->_colCount) {
             $printable = substr(join($this->_columnDelimiter, $row), 0, 30) . '...';
-            throw new CsvImport_MissingColumnException("Row beginning with "
+            throw new CsvImportPlus_MissingColumnException("Row beginning with "
                 . "'$printable' does not have the required {$this->_colCount} "
                 . "rows.");
         }

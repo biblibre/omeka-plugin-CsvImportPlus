@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_File class - represents a csv file
+ * CsvImportPlus_File class - represents a csv file
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_File implements IteratorAggregate
+class CsvImportPlus_File implements IteratorAggregate
 {
     private $_filePath;
     private $_columnNames = array();
@@ -77,12 +77,12 @@ class CsvImport_File implements IteratorAggregate
     /**
      * Get an iterator for the rows in the CSV file.
      *
-     * @return CsvImport_RowIterator
+     * @return CsvImportPlus_RowIterator
      */
     public function getIterator()
     {
         if (!$this->_rowIterator) {
-            $this->_rowIterator = new CsvImport_RowIterator(
+            $this->_rowIterator = new CsvImportPlus_RowIterator(
                 $this->getFilePath(), $this->_columnDelimiter, $this->_enclosure);
         }
         return $this->_rowIterator;
@@ -103,11 +103,11 @@ class CsvImport_File implements IteratorAggregate
         try {
             $this->_columnNames = $rowIterator->getColumnNames();
             $this->_columnExamples = $rowIterator->current();
-        } catch (CsvImport_DuplicateColumnException $e) {
+        } catch (CsvImportPlus_DuplicateColumnException $e) {
             $this->_parseErrors[] = $e->getMessage()
                 . ' ' . __('Please ensure that all column names are unique.');
             return false;
-        } catch (CsvImport_MissingColumnException $e) {
+        } catch (CsvImportPlus_MissingColumnException $e) {
             $this->_parseErrors[] = $e->getMessage()
                 . ' ' . __('Please ensure that the CSV file is formatted correctly'
                 . ' and contains the expected number of columns for each row.');

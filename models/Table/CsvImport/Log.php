@@ -1,6 +1,6 @@
 <?php
 
-class Table_CsvImport_Log extends Omeka_Db_Table
+class Table_CsvImportPlus_Log extends Omeka_Db_Table
 {
     public function findByImportId($importId)
     {

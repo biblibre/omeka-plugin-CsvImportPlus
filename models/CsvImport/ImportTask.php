@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_ImportTask class
+ * CsvImportPlus_ImportTask class
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_ImportTask extends Omeka_Job_AbstractJob
+class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
 {
     const QUEUE_NAME = 'csv_import_imports';
     const METHOD_START = 'start';
@@ -97,10 +97,10 @@ class CsvImport_ImportTask extends Omeka_Job_AbstractJob
     /**
      * Returns the import of the import task.
      *
-     * @return CsvImport_Import The import of the import task
+     * @return CsvImportPlus_Import The import of the import task
      */
     protected function _getImport()
     {
-        return $this->_db->getTable('CsvImport_Import')->find($this->_importId);
+        return $this->_db->getTable('CsvImportPlus_Import')->find($this->_importId);
     }
 }

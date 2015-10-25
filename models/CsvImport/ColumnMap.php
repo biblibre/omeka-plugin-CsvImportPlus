@@ -1,6 +1,6 @@
 <?php
 /**
- * CsvImport_ColumnMap class
+ * CsvImportPlus_ColumnMap class
  * Represents a mapping from a column in a csv file to an item element, file, or
  * tag.
  *
@@ -8,7 +8,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-abstract class CsvImport_ColumnMap
+abstract class CsvImportPlus_ColumnMap
 {
     // Used with "Manage records".
     const TYPE_ACTION = 'Action';

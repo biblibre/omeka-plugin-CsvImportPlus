@@ -1,10 +1,10 @@
 <?php
 /**
- * CsvImport_ColumnMap_Action class
+ * CsvImportPlus_ColumnMap_Action class
  *
  * @package CsvImport
  */
-class CsvImport_ColumnMap_Action extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_Action extends CsvImportPlus_ColumnMap
 {
     const ACTION_UPDATE_ELSE_CREATE = 'Update else create';
     const ACTION_CREATE = 'Create';
@@ -26,7 +26,7 @@ class CsvImport_ColumnMap_Action extends CsvImport_ColumnMap
     public function __construct($columnName, $action = null)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_ACTION;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_ACTION;
         $this->_action = $this->_checkAction($action)
             ? $action
             : self::DEFAULT_ACTION;

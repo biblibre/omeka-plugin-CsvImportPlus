@@ -1,12 +1,12 @@
 <?php
-    echo head(array('title' => __('CSV Import')));
+    echo head(array('title' => __('CSV Import+')));
 ?>
 <?php echo common('csvimport-nav'); ?>
 <div id="primary">
     <h2><?php echo __('Status'); ?></h2>
     <?php echo flash(); ?>
     <div class="pagination"><?php echo pagination_links(); ?></div>
-    <?php if (iterator_count(loop('CsvImport_Import'))): ?>
+    <?php if (iterator_count(loop('CsvImportPlus_Import'))): ?>
     <table class="simple" cellspacing="0" cellpadding="0">
         <thead>
             <tr>
@@ -27,12 +27,12 @@
         </thead>
         <tbody>
             <?php $key = 0; ?>
-            <?php foreach (loop('CsvImport_Import') as $csvImport): ?>
+            <?php foreach (loop('CsvImportPlus_Import') as $csvImport): ?>
             <tr class="<?php if (++$key%2 == 1) echo 'odd'; else echo 'even'; ?>">
                 <td>
                     <?php
                         $importDate = html_escape(format_date($csvImport->added, Zend_Date::DATETIME_SHORT));
-                        $logs = get_db()->getTable('CsvImport_Log')->findByImportId($csvImport->id);
+                        $logs = get_db()->getTable('CsvImportPlus_Log')->findByImportId($csvImport->id);
                         if (empty($logs)):
                             echo $importDate;
                         else:

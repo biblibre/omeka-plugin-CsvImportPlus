@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_ColumnMap_UpdateIdentifier class
+ * CsvImportPlus_ColumnMap_UpdateIdentifier class
  *
  * @deprecated Since 2.1.1-full.
  *
  * @package CsvImport
  */
-class CsvImport_ColumnMap_UpdateIdentifier extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_UpdateIdentifier extends CsvImportPlus_ColumnMap
 {
     /**
      * @param string $columnName
@@ -14,7 +14,7 @@ class CsvImport_ColumnMap_UpdateIdentifier extends CsvImport_ColumnMap
     public function __construct($columnName)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_UPDATE_IDENTIFIER;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_UPDATE_IDENTIFIER;
     }
 
     /**

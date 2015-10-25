@@ -1,13 +1,13 @@
 <?php
 /**
- * CsvImport_ColumnMap_MixElement class
+ * CsvImportPlus_ColumnMap_MixElement class
  *
- * A merge of the classes CsvImport_ColumnMap_ExportedElement and
- * CsvImport_ColumnMap_Element.
+ * A merge of the classes CsvImportPlus_ColumnMap_ExportedElement and
+ * CsvImportPlus_ColumnMap_Element.
  *
  * @package CsvImport
  */
-class CsvImport_ColumnMap_MixElement extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_MixElement extends CsvImportPlus_ColumnMap
 {
     const DEFAULT_COLUMN_NAME_DELIMITER = ':';
     const ELEMENT_DELIMITER_OPTION_NAME = 'csv_import_element_delimiter';
@@ -25,7 +25,7 @@ class CsvImport_ColumnMap_MixElement extends CsvImport_ColumnMap
     public function __construct($columnName, $elementDelimiter = null)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_ELEMENT;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_ELEMENT;
         $this->_columnNameDelimiter = self::DEFAULT_COLUMN_NAME_DELIMITER;
 
         $this->_elementDelimiter = ($elementDelimiter !== null)

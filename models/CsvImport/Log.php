@@ -1,6 +1,6 @@
 <?php
 
-class CsvImport_Log extends Omeka_Record_AbstractRecord
+class CsvImportPlus_Log extends Omeka_Record_AbstractRecord
 {
     public $id;
     public $import_id;

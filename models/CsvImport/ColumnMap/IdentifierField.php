@@ -1,10 +1,10 @@
 <?php
 /**
- * CsvImport_ColumnMap_IdentifierField class
+ * CsvImportPlus_ColumnMap_IdentifierField class
  *
  * @package CsvImport
  */
-class CsvImport_ColumnMap_IdentifierField extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_IdentifierField extends CsvImportPlus_ColumnMap
 {
     const IDENTIFIER_FIELD_OPTION_NAME = 'csv_import_identifier_field';
     const DEFAULT_IDENTIFIER_FIELD = 'internal id';
@@ -17,7 +17,7 @@ class CsvImport_ColumnMap_IdentifierField extends CsvImport_ColumnMap
     public function __construct($columnName, $identiferField = null)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_IDENTIFIER_FIELD;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_IDENTIFIER_FIELD;
 
         $this->_identifierField = empty($identiferField)
             ? $this->getDefaultIdentifierField()

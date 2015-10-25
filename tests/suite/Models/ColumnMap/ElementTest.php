@@ -1,20 +1,20 @@
 <?php
 /**
- * CsvImport_ColumnMap_ElementTest class
+ * CsvImportPlus_ColumnMap_ElementTest class
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
+class CsvImportPlus_ColumnMap_ElementTest extends CsvImportPlus_Test_AppTestCase
 {
     public function testConstructWithoutElementDelimiter()
     {
         $columnName = 'title';
         
-        $map = new CsvImport_ColumnMap_Element($columnName);
-        $this->assertInstanceOf('CsvImport_ColumnMap_Element', $map);
-        $this->assertEquals(CsvImport_ColumnMap::TYPE_ELEMENT, $map->getType());
+        $map = new CsvImportPlus_ColumnMap_Element($columnName);
+        $this->assertInstanceOf('CsvImportPlus_ColumnMap_Element', $map);
+        $this->assertEquals(CsvImportPlus_ColumnMap::TYPE_ELEMENT, $map->getType());
     }
 
     public function testConstructWithElementDelimiter()
@@ -22,9 +22,9 @@ class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
         $columnName = 'title';
         $elementDelimiter = ',';
         
-        $map = new CsvImport_ColumnMap_Element($columnName, $elementDelimiter);
-        $this->assertInstanceOf('CsvImport_ColumnMap_Element', $map);
-        $this->assertEquals(CsvImport_ColumnMap::TYPE_ELEMENT, $map->getType());
+        $map = new CsvImportPlus_ColumnMap_Element($columnName, $elementDelimiter);
+        $this->assertInstanceOf('CsvImportPlus_ColumnMap_Element', $map);
+        $this->assertEquals(CsvImportPlus_ColumnMap::TYPE_ELEMENT, $map->getType());
         $this->assertEquals($elementDelimiter, $map->getElementDelimiter());
     }
 
@@ -35,7 +35,7 @@ class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
         $elementId = 1;
         
         $elementDelimiter = '';
-        $this->assertEquals($elementDelimiter, CsvImport_ColumnMap_Element::getDefaultElementDelimiter());
+        $this->assertEquals($elementDelimiter, CsvImportPlus_ColumnMap_Element::getDefaultElementDelimiter());
         
         $beforeElementArray = array('a','B','c D ');
         $afterElementArray = array(
@@ -49,7 +49,7 @@ class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
         
         $row = array($columnName => $elementString);
         
-        $map = new CsvImport_ColumnMap_Element($columnName);
+        $map = new CsvImportPlus_ColumnMap_Element($columnName);
         $map->setOptions(
             array(
                 'isHtml' => $isHtml ? 1 : 0,
@@ -57,7 +57,7 @@ class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
             )
         );
         
-        $this->assertInstanceOf('CsvImport_ColumnMap_Element', $map);
+        $this->assertInstanceOf('CsvImportPlus_ColumnMap_Element', $map);
         $this->assertEquals($afterElementArray, $map->map($row, array()));
     }
     
@@ -68,7 +68,7 @@ class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
         $elementId = 1;
         
         $defaultElementDelimiter = '';
-        $this->assertEquals($defaultElementDelimiter, CsvImport_ColumnMap_Element::getDefaultElementDelimiter());
+        $this->assertEquals($defaultElementDelimiter, CsvImportPlus_ColumnMap_Element::getDefaultElementDelimiter());
         
         $elementDelimiter = ',';
         $beforeElementArray = array('a','B','c D ');
@@ -93,7 +93,7 @@ class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
         
         $row = array($columnName => $elementString);
         
-        $map = new CsvImport_ColumnMap_Element($columnName, $elementDelimiter);
+        $map = new CsvImportPlus_ColumnMap_Element($columnName, $elementDelimiter);
         $map->setOptions(
             array(
                 'isHtml' => $isHtml,
@@ -101,7 +101,7 @@ class CsvImport_ColumnMap_ElementTest extends CsvImport_Test_AppTestCase
             )
         );
         
-        $this->assertInstanceOf('CsvImport_ColumnMap_Element', $map);
+        $this->assertInstanceOf('CsvImportPlus_ColumnMap_Element', $map);
         $this->assertEquals($afterElementArray, $map->map($row, array()));
     }
 }

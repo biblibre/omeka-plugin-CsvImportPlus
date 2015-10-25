@@ -1,10 +1,10 @@
 <?php
 /**
- * CsvImport_ColumnMap_RecordType class
+ * CsvImportPlus_ColumnMap_RecordType class
  *
  * @package CsvImport
  */
-class CsvImport_ColumnMap_RecordType extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_RecordType extends CsvImportPlus_ColumnMap
 {
     // Because Omeka is built to display items, Item is the default type.
     const DEFAULT_RECORD_TYPE = 'Item';
@@ -17,7 +17,7 @@ class CsvImport_ColumnMap_RecordType extends CsvImport_ColumnMap
     public function __construct($columnName)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_RECORD_TYPE;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_RECORD_TYPE;
     }
 
     /**

@@ -1,12 +1,12 @@
 <?php
 /**
- * CsvImport_ColumnMap_Collection class
+ * CsvImportPlus_ColumnMap_Collection class
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
-class CsvImport_ColumnMap_Collection extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_Collection extends CsvImportPlus_ColumnMap
 {
     private $_collectionId;
 
@@ -32,7 +32,7 @@ class CsvImport_ColumnMap_Collection extends CsvImport_ColumnMap
     public function __construct($columnName, $collectionId = null, $createCollection = false, $advanced = false)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_COLLECTION;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_COLLECTION;
         $this->_collectionId = (integer) $collectionId;
         $this->_createCollection = (boolean) $createCollection;
         $this->_advanced = $advanced;

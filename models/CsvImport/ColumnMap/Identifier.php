@@ -1,10 +1,10 @@
 <?php
 /**
- * CsvImport_ColumnMap_Identifier class
+ * CsvImportPlus_ColumnMap_Identifier class
  *
  * @package CsvImport
  */
-class CsvImport_ColumnMap_Identifier extends CsvImport_ColumnMap
+class CsvImportPlus_ColumnMap_Identifier extends CsvImportPlus_ColumnMap
 {
     /**
      * @param string $columnName
@@ -12,7 +12,7 @@ class CsvImport_ColumnMap_Identifier extends CsvImport_ColumnMap
     public function __construct($columnName)
     {
         parent::__construct($columnName);
-        $this->_type = CsvImport_ColumnMap::TYPE_IDENTIFIER;
+        $this->_type = CsvImportPlus_ColumnMap::TYPE_IDENTIFIER;
     }
 
     /**

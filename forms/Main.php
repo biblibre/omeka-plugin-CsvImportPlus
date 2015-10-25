@@ -1,13 +1,13 @@
 <?php
 /**
- * CsvImport_Form_Main class - represents the form on csv-import/index/index.
+ * CsvImportPlus_Form_Main class - represents the form on csv-import/index/index.
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
 
-class CsvImport_Form_Main extends Omeka_Form
+class CsvImportPlus_Form_Main extends Omeka_Form
 {
     private $_columnDelimiter;
     private $_enclosure;
@@ -24,11 +24,11 @@ class CsvImport_Form_Main extends Omeka_Form
     {
         parent::init();
 
-        $this->_columnDelimiter = CsvImport_RowIterator::getDefaultColumnDelimiter();
-        $this->_enclosure = CsvImport_RowIterator::getDefaultEnclosure();
-        $this->_elementDelimiter = CsvImport_ColumnMap_Element::getDefaultElementDelimiter();
-        $this->_tagDelimiter = CsvImport_ColumnMap_Tag::getDefaultTagDelimiter();
-        $this->_fileDelimiter = CsvImport_ColumnMap_File::getDefaultFileDelimiter();
+        $this->_columnDelimiter = CsvImportPlus_RowIterator::getDefaultColumnDelimiter();
+        $this->_enclosure = CsvImportPlus_RowIterator::getDefaultEnclosure();
+        $this->_elementDelimiter = CsvImportPlus_ColumnMap_Element::getDefaultElementDelimiter();
+        $this->_tagDelimiter = CsvImportPlus_ColumnMap_Tag::getDefaultTagDelimiter();
+        $this->_fileDelimiter = CsvImportPlus_ColumnMap_File::getDefaultFileDelimiter();
 
         $this->setAttrib('id', 'csvimport');
         $this->setMethod('post');
@@ -83,19 +83,19 @@ class CsvImport_Form_Main extends Omeka_Form
         $this->addElement('select', 'action', array(
             'label' => __('Action'),
             'multiOptions' => label_table_options(array(
-                CsvImport_ColumnMap_Action::ACTION_UPDATE_ELSE_CREATE
+                CsvImportPlus_ColumnMap_Action::ACTION_UPDATE_ELSE_CREATE
                     => __('Update the record if it exists, else create one'),
-                CsvImport_ColumnMap_Action::ACTION_CREATE
+                CsvImportPlus_ColumnMap_Action::ACTION_CREATE
                     => __('Create a new record'),
-                CsvImport_ColumnMap_Action::ACTION_UPDATE
+                CsvImportPlus_ColumnMap_Action::ACTION_UPDATE
                     => __('Update values of specific fields'),
-                CsvImport_ColumnMap_Action::ACTION_ADD
+                CsvImportPlus_ColumnMap_Action::ACTION_ADD
                     => __('Add values to specific fields'),
-                CsvImport_ColumnMap_Action::ACTION_REPLACE
+                CsvImportPlus_ColumnMap_Action::ACTION_REPLACE
                     => __('Replace values of all fields'),
-                CsvImport_ColumnMap_Action::ACTION_DELETE
+                CsvImportPlus_ColumnMap_Action::ACTION_DELETE
                     => __('Delete the record'),
-                CsvImport_ColumnMap_Action::ACTION_SKIP
+                CsvImportPlus_ColumnMap_Action::ACTION_SKIP
                     => __('Skip process of the record'),
             ), __('No default action')),
         ));
@@ -272,7 +272,7 @@ class CsvImport_Form_Main extends Omeka_Form
      */
     protected function _getHumanDelimiterText($delimiter)
     {
-        $delimitersList = CsvImport_IndexController::getDelimitersList();
+        $delimitersList = CsvImportPlus_IndexController::getDelimitersList();
 
         return in_array($delimiter, $delimitersList)
             ? array_search($delimiter, $delimitersList)
@@ -286,7 +286,7 @@ class CsvImport_Form_Main extends Omeka_Form
      */
     protected function _getDelimitersMenu()
     {
-        $delimitersListKeys = array_keys(CsvImport_IndexController::getDelimitersList());
+        $delimitersListKeys = array_keys(CsvImportPlus_IndexController::getDelimitersList());
         $values = array_combine($delimitersListKeys, $delimitersListKeys);
         $values['custom'] = 'custom';
         return $values;
@@ -300,7 +300,7 @@ class CsvImport_Form_Main extends Omeka_Form
         $delimiter = $this->_columnDelimiter;
         $humanDelimiterText = $this->_getHumanDelimiterText($delimiter);
 
-        $delimitersList = CsvImport_IndexController::getDelimitersList();
+        $delimitersList = CsvImportPlus_IndexController::getDelimitersList();
         $delimiterCurrent = in_array($delimiter, $delimitersList)
             ? array_search($delimiter, $delimitersList)
             : 'custom';
@@ -343,7 +343,7 @@ class CsvImport_Form_Main extends Omeka_Form
     protected function _addEnclosureElement()
     {
         $enclosure = $this->_enclosure;
-        $enclosuresList = CsvImport_IndexController::getEnclosuresList();
+        $enclosuresList = CsvImportPlus_IndexController::getEnclosuresList();
         $enclosureCurrent = in_array($enclosure, $enclosuresList)
             ? array_search($enclosure, $enclosuresList)
             : $enclosure;
@@ -386,7 +386,7 @@ class CsvImport_Form_Main extends Omeka_Form
         $delimiter = $this->_elementDelimiter;
         $humanDelimiterText = $this->_getHumanDelimiterText($delimiter);
 
-        $delimitersList = CsvImport_IndexController::getDelimitersList();
+        $delimitersList = CsvImportPlus_IndexController::getDelimitersList();
         $delimiterCurrent = in_array($delimiter, $delimitersList)
             ? array_search($delimiter, $delimitersList)
             : 'custom';
@@ -420,7 +420,7 @@ class CsvImport_Form_Main extends Omeka_Form
         $delimiter = $this->_tagDelimiter;
         $humanDelimiterText = $this->_getHumanDelimiterText($delimiter);
 
-        $delimitersList = CsvImport_IndexController::getDelimitersList();
+        $delimitersList = CsvImportPlus_IndexController::getDelimitersList();
         $delimiterCurrent = in_array($delimiter, $delimitersList)
             ? array_search($delimiter, $delimitersList)
             : 'custom';
@@ -454,7 +454,7 @@ class CsvImport_Form_Main extends Omeka_Form
         $delimiter = $this->_fileDelimiter;
         $humanDelimiterText = $this->_getHumanDelimiterText($delimiter);
 
-        $delimitersList = CsvImport_IndexController::getDelimitersList();
+        $delimitersList = CsvImportPlus_IndexController::getDelimitersList();
         $delimiterCurrent = in_array($delimiter, $delimitersList)
             ? array_search($delimiter, $delimitersList)
             : 'custom';
@@ -667,7 +667,7 @@ class CsvImport_Form_Main extends Omeka_Form
     {
         if (strlen($identifierField) > 0) {
             if ($parts = explode(
-                    CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
+                    CsvImportPlus_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
                     $identifierField)
                 ) {
                 if (count($parts) == 2) {
