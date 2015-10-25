@@ -145,7 +145,7 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
             return;
         }
 
-        require_once CSV_IMPORT_DIRECTORY . '/forms/Mapping.php';
+        require_once CSV_IMPORT_PLUS_DIRECTORY . '/forms/Mapping.php';
 
         $parameters = array(
             'format' => $this->session->format,
@@ -817,7 +817,7 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
      */
     protected function _getMainForm()
     {
-        require_once CSV_IMPORT_DIRECTORY . '/forms/Main.php';
+        require_once CSV_IMPORT_PLUS_DIRECTORY . '/forms/Main.php';
         $csvConfig = $this->_getPluginConfig();
         $form = new CsvImportPlus_Form_Main($csvConfig);
         return $form;

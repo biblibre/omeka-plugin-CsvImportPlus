@@ -7,7 +7,7 @@
  * @package CsvImport
  */
 
-defined('csv_import_plus_DIRECTORY') or define('csv_import_plus_DIRECTORY', dirname(__FILE__));
+defined('CSV_IMPORT_PLUS_DIRECTORY') or define('CSV_IMPORT_PLUS_DIRECTORY', dirname(__FILE__));
 
 /**
  * Csv Import plugin.
@@ -383,7 +383,7 @@ class CsvImportPlusPlugin extends Omeka_Plugin_AbstractPlugin
     }
 
     /**
-     * Add the Simple Pages link to the admin main navigation.
+     * Add the CSV Import+ link to the admin main navigation.
      *
      * @param array Navigation array.
      * @return array Filtered navigation array.

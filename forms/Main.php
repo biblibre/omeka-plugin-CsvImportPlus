@@ -56,7 +56,7 @@ class CsvImportPlus_Form_Main extends Omeka_Form
         $this->_addTagDelimiterElement();
         $this->_addFileDelimiterElement();
 
-        $identifierField = get_option('csv_import_identifier_field');
+        $identifierField = get_option('csv_import_plus_identifier_field');
         if (!empty($identifierField) && $identifierField != 'internal id') {
             $currentIdentifierField = $this->_getElementFromIdentifierField($identifierField);
             if ($currentIdentifierField) {
