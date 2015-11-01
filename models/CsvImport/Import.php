@@ -602,7 +602,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     }
 
     /**
-     * Returns the the default values for the import.
+     * Returns the default values for the import.
      *
      * @throws UnexpectedValueException
      * @return array The default values for the import
@@ -2227,7 +2227,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         $settings = Zend_Registry::get('csv_import');
 
         // Check the security setting.
-        if ($settings->local_folders->allow !== '1') {
+        if ($settings->local_folders->allow != '1') {
             return false;
         }
 
@@ -2239,10 +2239,12 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         }
 
         // Check the uri.
-        if (strpos(realpath($fileUrl), $realpath) !== 0
-                || !in_array(substr($fileUrl, strlen($realpath), 1), array('', '/'))
-            ) {
-            return false;
+        if ($settings->local_folders->check_realpath == '1') {
+            if (strpos(realpath($fileUrl), $realpath) !== 0
+                    || !in_array(substr($fileUrl, strlen($realpath), 1), array('', '/'))
+                ) {
+                return false;
+            }
         }
 
         return true;
