@@ -40,14 +40,16 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
      * @var array Options and their default values.
      */
     protected $_options = array(
-        self::MEMORY_LIMIT_OPTION_NAME => '',
-        self::PHP_PATH_OPTION_NAME => '',
-        CsvImport_ColumnMap_IdentifierField::IDENTIFIER_FIELD_OPTION_NAME => CsvImport_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD,
-        CsvImport_RowIterator::COLUMN_DELIMITER_OPTION_NAME => CsvImport_RowIterator::DEFAULT_COLUMN_DELIMITER,
-        CsvImport_RowIterator::ENCLOSURE_OPTION_NAME => CsvImport_RowIterator::DEFAULT_ENCLOSURE,
-        CsvImport_ColumnMap_Element::ELEMENT_DELIMITER_OPTION_NAME => CsvImport_ColumnMap_Element::DEFAULT_ELEMENT_DELIMITER,
-        CsvImport_ColumnMap_Tag::TAG_DELIMITER_OPTION_NAME => CsvImport_ColumnMap_Tag::DEFAULT_TAG_DELIMITER,
-        CsvImport_ColumnMap_File::FILE_DELIMITER_OPTION_NAME => CsvImport_ColumnMap_File::DEFAULT_FILE_DELIMITER,
+        // With some combinations of Apache/FPM/Varnish, the self constant
+        // can't be used as key for properties.
+        'csv_import_memory_limit' => '',
+        'csv_import_php_path' => '',
+        'csv_import_identifier_field' => CsvImport_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD,
+        'csv_import_column_delimiter' => CsvImport_RowIterator::DEFAULT_COLUMN_DELIMITER,
+        'csv_import_enclosure' => CsvImport_RowIterator::DEFAULT_ENCLOSURE,
+        'csv_import_element_delimiter' => CsvImport_ColumnMap_Element::DEFAULT_ELEMENT_DELIMITER,
+        'csv_import_tag_delimiter' => CsvImport_ColumnMap_Tag::DEFAULT_TAG_DELIMITER,
+        'csv_import_file_delimiter' => CsvImport_ColumnMap_File::DEFAULT_FILE_DELIMITER,
         // Option used during the first step only.
         'csv_import_html_elements' => FALSE,
         'csv_import_automap_columns' => TRUE,
