@@ -2234,7 +2234,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         // Check the base path.
         $path = $settings->local_folders->base_path;
         $realpath = realpath($path);
-        if ($path !== $realpath || strlen($realpath) <= 2) {
+        if (rtrim($path, '/') !== $realpath || strlen($realpath) <= 2) {
             return false;
         }
 
