@@ -57,7 +57,7 @@ class CsvImport_ColumnMap_Set
             CsvImport_ColumnMap::TYPE_ELEMENT => array(),
             CsvImport_ColumnMap::TYPE_EXTRA_DATA => array(),
             CsvImport_ColumnMap::TYPE_TAG => array(),
-            CsvImport_ColumnMap::TYPE_FILE => array(),
+            CsvImport_ColumnMap::TYPE_FILE => null,
         );
         foreach ($this->_maps as $map) {
             $subset = $allResults[$map->getType()];

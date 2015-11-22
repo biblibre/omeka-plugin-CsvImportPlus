@@ -393,8 +393,14 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         }
         $this->status = self::STATUS_COMPLETED;
         $this->save();
-        $this->_log('Completed importing %1$s items (updated %2$s rows, skipped %3$s rows).',
-            array($this->_importedCount, $this->updated_record_count, $this->skipped_row_count));
+        $this->_log('Completed importing %1$d items (updated %2$d rows, skipped %3$d rows) from "%4$s" (%5$d rows).',
+            array(
+                $this->_importedCount,
+                $this->updated_record_count,
+                $this->skipped_row_count,
+                $this->original_filename,
+                $this->row_count,
+            ));
         return true;
     }
 
@@ -927,8 +933,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         $record = $this->_getRecordByIdentifier($identifier, $recordType, $identifierField);
 
-        // Another way to find a file.
-        if (empty($record) && $recordType == 'File') {
+        // Another way to find a file when there is no identifier.
+        if (empty($identifier) && empty($record) && $recordType == 'File') {
             $file = $this->_getMappedValue(CsvImport_ColumnMap::TYPE_FILE);
             if (!empty($file) && count($file) == 1) {
                 $identifierField = 'original filename';
@@ -1601,8 +1607,9 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         if (get_class($record) == 'Item') {
             $fileUrls = $map[CsvImport_ColumnMap::TYPE_FILE];
-            // Check error. for files
-            if (!$this->_updateAttachedFilesOfItem($record, $fileUrls, false, $action)) {
+            // Check errors for files.
+            $result = $this->_updateAttachedFilesOfItem($record, $fileUrls, false, $action);
+            if (!$result) {
                 return false;
             }
         }
@@ -1695,6 +1702,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         // Sometime, fileUrls is a null or an empty string, but empty array
         // should be processed.
         // Null means no value, and empty string is incorrect here.
+        // Files updated without a column for url are not deleted.
         if (is_null($fileUrls) || $fileUrls == '') {
             return true;
         }
@@ -1779,6 +1787,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $this->_log($e, array(), Zend_Log::ERR);
                 return false;
             }
+            // There is no specific column in the table.
             $this->updated_record_count++;
             return true;
         }

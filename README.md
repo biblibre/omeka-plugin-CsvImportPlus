@@ -380,9 +380,10 @@ not case sensitive.
 * Update of attached files
 
 Files that are attached to an item can be fully updated. If the url is not the
-same than existing ones, the file will be added. If it is the same, no reimport
-will be done. To reimport a file with the same url, you should remove it first.
-This process avoids many careless errors.
+same than existing ones, the file will be added. If it is the same, the file
+will be reimported. To reimport a file with the same url, you should remove it
+first. This process avoids many careless errors. To update metadata of a file,
+the column for the url ("File") should be removed.
 Files are ordered according to the list of files.
 Note : This process works only when original filenames are unique.
 
