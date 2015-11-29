@@ -696,10 +696,15 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $rows->seek($startAt);
             }
 
+            $slowProcess = get_option('csv_import_slow_process');
             $rows->skipInvalidRows(true);
             $this->_log('Running item import loop. Memory usage: %s.',
                 array(memory_get_usage()));
             while ($rows->valid()) {
+                if ($slowProcess) {
+                    sleep($slowProcess);
+                }
+
                 $row = $rows->current();
                 $index = $rows->key();
                 $this->skipped_row_count += $rows->getSkippedCount();

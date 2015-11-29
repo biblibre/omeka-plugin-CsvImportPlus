@@ -57,6 +57,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
         'csv_import_extra_data' => 'manual',
         // With roles, in particular if Guest User is installed.
         'csv_import_allow_roles' => 'a:1:{i:0;s:5:"super";}',
+        'csv_import_slow_process' => 0,
     );
 
     /**
