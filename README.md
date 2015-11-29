@@ -13,6 +13,7 @@ This fork adds some improvments:
 - more options for import;
 - import of metadata of collections and files;
 - update of collections, items and files;
+- batch edit form to reorder files by filename;
 - import extra data of records that are not managed via standard elements but
 via specific tables.
 
@@ -464,7 +465,9 @@ Extra data are managed by plugins, so some differences should be noted.
 
 In some cases, in particular when the item is saved in another process while the
 import job is still working in background, order of files can be broken. In that
-case, simply reorder them.
+case, simply reorder them. A batch edit form can be do it automatically (select
+items in items/browse and click the main button "Edit", then check the box for
+Csv Import / Order files by filename).
 
 
 Warning

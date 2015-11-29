@@ -29,6 +29,8 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
         'config',
         'admin_head',
         'define_acl',
+        'admin_items_batch_edit_form',
+        'items_batch_edit_custom',
     );
 
     /**
@@ -400,5 +402,97 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
             'privilege' => 'index',
         );
         return $nav;
+    }
+
+    /**
+     * Add a partial batch edit form.
+     *
+     * @return void
+     */
+    public function hookAdminItemsBatchEditForm($args)
+    {
+        $view = get_view();
+        echo $view->partial(
+            'forms/csv-import-batch-edit.php'
+        );
+    }
+
+    /**
+     * Process the partial batch edit form.
+     *
+     * @return void
+     */
+    public function hookItemsBatchEditCustom($args)
+    {
+        $item = $args['item'];
+        $orderByFilename = $args['custom']['csvimport']['orderByFilename'];
+        $mixImages = $args['custom']['csvimport']['mixImages'];
+
+        if ($orderByFilename) {
+            $this->_sortFiles($item, (boolean) $mixImages);
+        }
+    }
+
+    /**
+     * Sort all files of an item by name and eventually sort images first.
+     *
+     * @param Item $item
+     * @param boolean $mixImages
+     * @return void
+     */
+    protected function _sortFiles($item, $mixImages = false)
+    {
+        if ($item->fileCount() < 2) {
+            return;
+        }
+
+        $list = $item->Files;
+        // Make a sort by name before sort by type.
+        usort($list, function($fileA, $fileB) {
+            return strcmp($fileA->original_filename, $fileB->original_filename);
+        });
+        // The sort by type doesn't remix all filenames.
+        if (!$mixImages) {
+            $images = array();
+            $nonImages = array();
+            foreach ($list as $file) {
+                // Image.
+                if (strpos($file->mime_type, 'image/') === 0) {
+                    $images[] = $file;
+                }
+                // Non image.
+                else {
+                    $nonImages[] = $file;
+                }
+            }
+            $list = array_merge($images, $nonImages);
+        }
+
+        // To avoid issues with unique index when updating (order should be
+        // unique for each file of an item), all orders are reset to null before
+        // true process.
+        $db = $this->_db;
+        $bind = array(
+            $item->id,
+        );
+        $sql = "
+            UPDATE `$db->File` files
+            SET files.order = NULL
+            WHERE files.item_id = ?
+        ";
+        $db->query($sql, $bind);
+
+        // To avoid multiple updates, a single query is used.
+        foreach ($list as &$file) {
+            $file = $file->id;
+        }
+        // The array is made unique, because a file can be repeated.
+        $list = implode(',', array_unique($list));
+        $sql = "
+            UPDATE `$db->File` files
+            SET files.order = FIND_IN_SET(files.id, '$list')
+            WHERE files.id in ($list)
+        ";
+        $db->query($sql);
     }
 }
