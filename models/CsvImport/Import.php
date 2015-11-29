@@ -393,9 +393,10 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         }
         $this->status = self::STATUS_COMPLETED;
         $this->save();
-        $this->_log('Completed importing %1$d items (updated %2$d rows, skipped %3$d rows) from "%4$s" (%5$d rows).',
+        $this->_log('Completed importing %1$d items for the last batch part (total %2$d records, updated %3$d rows, skipped %4$d rows) from "%5$s" (%6$d rows).',
             array(
                 $this->_importedCount,
+                $this->getImportedRecordCount(),
                 $this->updated_record_count,
                 $this->skipped_row_count,
                 $this->original_filename,
