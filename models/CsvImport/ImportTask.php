@@ -34,14 +34,70 @@ class CsvImport_ImportTask extends Omeka_Job_AbstractJob
         if ($this->_memoryLimit) {
             ini_set('memory_limit', $this->_memoryLimit);
         }
-        if (!($import = $this->_getImport())) {
+
+        $import = $this->_getImport();
+        if (empty($import)) {
             return;
         }
 
         $import->setBatchSize($this->_batchSize);
-        call_user_func(array($import, $this->_method));
+        try {
+            call_user_func(array($import, $this->_method));
+        } catch (Zend_Http_Client_Exception $e) {
+            $flagLoop = false;
+            $msg = $e->getMessage();
+            // This check avoids an error when files are stored on Amazon S3.
+            // Amazon S3 may stop the process randomly (about every 20 to 200
+            // files), when too many files are imported in one bucket.
+            $file = new File;
+            $storage = $file->getStorage();
+            $adapter = $storage ? $storage->getAdapter() : null;
+            if ($adapter && get_class($adapter) == 'Omeka_Storage_Adapter_ZendS3') {
+                // Message used in Zend_Http_Client(), line 1085.
+                if ($msg == 'Unable to read response, or response is empty') {
+                    $defaultValues = $import->getDefaultValues();
+                    $s3Loop = isset($defaultValues['amazonS3CurrentLoop'])
+                        ? $defaultValues['amazonS3CurrentLoop']
+                        : 0;
+                    $s3LoopMax = get_option('csv_import_repeat_amazon_s3');
+
+                    $logMsg = __('The previous error is related to Amazon S3.');
+                    if ($s3Loop < $s3LoopMax) {
+                        ++$s3Loop;
+                        $logMsg .= ' ' . __('CsvImport tries to relaunch the process #%d: %d/%d.',
+                            $this->_importId, $s3Loop, $s3LoopMax);
+                        $this->_log($logMsg, array(), Zend_Log::WARN);
+
+                        // The file position is not changed, so it will restart
+                        // from the row with the error.
+                        $defaultValues['amazonS3CurrentLoop'] = $s3Loop;
+                        $import->setDefaultValues($defaultValues);
+                        $import->status = CsvImport_Import::STATUS_QUEUED;
+                        $import->save();
+
+                        $flagLoop = true;
+                    }
+                    // Last loop.
+                    else {
+                        $logMsg .= ' ' . __('CsvImport tried to relaunch the process #%d %d times without success.',
+                            $this->_importId, $s3LoopMax);
+                        $logMsg .= ' ' . __('Try to slow process and to increase the number of repetitions in the config page of CsvImport.');
+                        $this->_log($logMsg, array(), Zend_Log::ERR);
+                    }
+                }
+            }
+
+            if (!$flagLoop) {
+                throw new Zend_Http_Client_Exception($msg);
+            }
+        }
+
 
         if ($import->isQueued() || $import->isQueuedUndo()) {
+            $slowProcess = get_option('csv_import_slow_process');
+            if ($slowProcess) {
+                sleep($slowProcess);
+            }
             $this->_dispatcher->setQueueName(self::QUEUE_NAME);
             $this->_dispatcher->sendLongRunning(__CLASS__,
                 array(
@@ -52,6 +108,32 @@ class CsvImport_ImportTask extends Omeka_Job_AbstractJob
                 )
             );
         }
+    }
+
+    /**
+     * Log an import message
+     * Every message will log the import ID.
+     *
+     * @internal See CsvImport_Import::_log(), but with the local import id.
+     *
+     * @param string $msg The message to log
+     * @param array $params Params to pass the translation function __()
+     * @param int $priority The priority of the message
+     */
+    protected function _log($msg, $params = array(), $priority = Zend_Log::DEBUG)
+    {
+        $csvImportLog = new CsvImport_Log();
+        $csvImportLog->setArray(array(
+            'import_id' => $this->_importId,
+            'priority' => $priority,
+            'message' => $msg,
+            'params' => serialize($params),
+        ));
+        $csvImportLog->save();
+
+        $prefix = "[CsvImport][#{$this->_importId}]";
+        $msg = vsprintf($msg, $params);
+        _log("$prefix $msg", $priority);
     }
 
     /**

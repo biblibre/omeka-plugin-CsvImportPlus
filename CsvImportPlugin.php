@@ -60,6 +60,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
         // With roles, in particular if Guest User is installed.
         'csv_import_allow_roles' => 'a:1:{i:0;s:5:"super";}',
         'csv_import_slow_process' => 0,
+        'csv_import_repeat_amazon_s3' => 100,
     );
 
     /**

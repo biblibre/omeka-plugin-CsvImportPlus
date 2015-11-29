@@ -700,6 +700,9 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             default:
                 $defaultValues['createCollections'] = false;
         }
+        // This value is not a value of the table, but is used to keep track of
+        // the current loop with Amazon S3. See CsvImport_ImportTask::perform().
+        $defaultValues['amazonS3CurrentLoop'] = 0;
 
         $this->session->defaultValues = $defaultValues;
     }

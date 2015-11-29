@@ -1968,6 +1968,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
      * Log an import message
      * Every message will log the import ID.
      *
+     * @internal See CsvImport_ImportTask::_log()
+     *
      * @param string $msg The message to log
      * @param array $params Params to pass the translation function __()
      * @param int $priority The priority of the message
