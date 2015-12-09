@@ -106,7 +106,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
             `serialized_default_values` text collate utf8_unicode_ci NOT NULL,
             `serialized_column_maps` text collate utf8_unicode_ci NOT NULL,
             `owner_id` int unsigned NOT NULL,
-            `added` timestamp NOT NULL default '0000-00-00 00:00:00',
+            `added` timestamp NOT NULL default '2000-01-01 00:00:00',
             PRIMARY KEY  (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 
@@ -247,7 +247,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
                 CHANGE `serialized_default_values` `serialized_default_values` text collate utf8_unicode_ci NOT NULL AFTER `file_path`,
                 CHANGE `serialized_column_maps` `serialized_column_maps` text collate utf8_unicode_ci NOT NULL AFTER `serialized_default_values`,
                 CHANGE `owner_id` `owner_id` int unsigned NOT NULL AFTER `serialized_column_maps`,
-                CHANGE `added` `added` timestamp NOT NULL default '0000-00-00 00:00:00' AFTER `owner_id`
+                CHANGE `added` `added` timestamp NOT NULL default '2000-01-01 00:00:00' AFTER `owner_id`
             ";
             $db->query($sql);
 
