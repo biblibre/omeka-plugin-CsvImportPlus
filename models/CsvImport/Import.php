@@ -498,7 +498,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         // The import or undo import loop was prematurely stopped
         $logMsg = 'Stopped import or undo import due to error';
         $logParams = array();
-        if ($error = error_get_last()) {
+        $error = error_get_last();
+        if ($error) {
             $logMsg .= ' [file %s, line %d]: %s';
             $logParams[] = $error['file'];
             $logParams[] = $error['line'];
@@ -1122,7 +1123,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         try {
             $record = $this->_insert_item($recordMetadata, $elementTexts, array(), $extraData);
-        } catch (Omeka_Validator_Exception $e) {
+        } catch (Omeka_Validate_Exception $e) {
             $this->_log($e, array(), Zend_Log::ERR);
             return false;
         } catch (Omeka_Record_Builder_Exception $e) {
@@ -1314,7 +1315,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         try {
             $record = $this->_insert_collection($recordMetadata, $elementTexts, $extraData);
-        } catch (Omeka_Validator_Exception $e) {
+        } catch (Omeka_Validate_Exception $e) {
             $this->_log($e, array(), Zend_Log::ERR);
             return false;
         } catch (Omeka_Record_Builder_Exception $e) {
@@ -2001,18 +2002,16 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         if (!isset($elements[$identifierField])) {
             $elements[$identifierField] = null;
-            if ($parts = explode(
+            $parts = explode(
                     CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
-                    $identifierField)
-                ) {
-                if (count($parts) == 2) {
-                    $elementSetName = trim($parts[0]);
-                    $elementName = trim($parts[1]);
-                    $element = get_db()->getTable('Element')
-                        ->findByElementSetNameAndElementName($elementSetName, $elementName);
-                    if ($element) {
-                        $elements[$identifierField] = $element;
-                    }
+                    $identifierField);
+            if (count($parts) == 2) {
+                $elementSetName = trim($parts[0]);
+                $elementName = trim($parts[1]);
+                $element = get_db()->getTable('Element')
+                    ->findByElementSetNameAndElementName($elementSetName, $elementName);
+                if ($element) {
+                    $elements[$identifierField] = $element;
                 }
             }
         }

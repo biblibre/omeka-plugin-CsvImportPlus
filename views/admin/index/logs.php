@@ -8,7 +8,7 @@
     <?php echo flash(); ?>
 
     <?php if (!empty($logs)): ?>
-        <table class="simple" cellspacing="0" cellpadding="0">
+        <table class="simple">
             <thead>
                 <tr>
                     <th><?php echo __('Time'); ?></th>

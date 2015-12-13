@@ -165,7 +165,8 @@ class CsvImport_RowIterator implements SeekableIterator
      */
     protected function _moveNext()
     {
-        if ($nextRow = $this->_getNextRow()) {
+        $nextRow = $this->_getNextRow();
+        if ($nextRow) {
             $this->_currentRow = $this->_formatRow($nextRow);
         } else {
             $this->_currentRow = array();

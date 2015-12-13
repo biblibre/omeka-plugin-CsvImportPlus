@@ -4,7 +4,7 @@
     $colNames = $this->columnNames;
     $colExamples = $this->columnExamples;
 ?>
-    <table id="column-mappings" class="simple" cellspacing="0" cellpadding="0">
+    <table id="column-mappings" class="simple">
     <thead>
     <tr>
         <th><?php echo __('Column header'); ?></th>
@@ -35,7 +35,7 @@
         <tr>
         <td><strong><?php echo html_escape($colNames[$i]); ?></strong></td>
         <?php $exampleString = $colExamples[$colNames[$i]]; ?>
-        <td><tt><?php echo html_escape(substr($exampleString, 0, 47)); ?><?php if (strlen($exampleString) > 47) { echo '&hellip;';} ?></tt></td>
+        <td><code><?php echo html_escape(substr($exampleString, 0, 47)); ?><?php if (strlen($exampleString) > 47) { echo '&hellip;';} ?></code></td>
         <?php echo $this->form->getSubForm("row$i"); ?>
         </tr>
 <?php endfor; ?>

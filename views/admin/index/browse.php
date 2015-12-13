@@ -7,7 +7,7 @@
     <?php echo flash(); ?>
     <div class="pagination"><?php echo pagination_links(); ?></div>
     <?php if (iterator_count(loop('CsvImport_Import'))): ?>
-    <table class="simple" cellspacing="0" cellpadding="0">
+    <table class="simple">
         <thead>
             <tr>
                 <?php

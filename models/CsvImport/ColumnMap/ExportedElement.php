@@ -90,13 +90,12 @@ class CsvImport_ColumnMap_ExportedElement extends CsvImport_ColumnMap
         $element = null;
         // $columnNameParts is an array like array('Element Set Name', 'Element Name')
         if (strlen($this->_columnNameDelimiter) > 0) {
-            if ($columnNameParts = explode($this->_columnNameDelimiter, $this->_columnName)) {
-                if (count($columnNameParts) == 2) {
-                    $elementSetName = $columnNameParts[0];
-                    $elementName = $columnNameParts[1];
-                    $element = get_db()->getTable('Element')
-                                       ->findByElementSetNameAndElementName($elementSetName, $elementName);
-                }
+            $columnNameParts = explode($this->_columnNameDelimiter, $this->_columnName);
+            if (count($columnNameParts) == 2) {
+                $elementSetName = $columnNameParts[0];
+                $elementName = $columnNameParts[1];
+                $element = get_db()->getTable('Element')
+                                   ->findByElementSetNameAndElementName($elementSetName, $elementName);
             }
         }
         return $element;

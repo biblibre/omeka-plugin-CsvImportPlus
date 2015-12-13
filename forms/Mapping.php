@@ -183,14 +183,13 @@ class CsvImport_Form_Mapping extends Omeka_Form
         $element = null;
         // $columnNameParts is an array like array('Element Set Name', 'Element Name')
         if (strlen($columnNameDelimiter) > 0) {
-            if ($columnNameParts = explode($columnNameDelimiter, $columnName)) {
-                if (count($columnNameParts) == 2) {
-                    $elementSetName = trim($columnNameParts[0]);
-                    $elementName = trim($columnNameParts[1]);
-                    $element = get_db()
-                        ->getTable('Element')
-                        ->findByElementSetNameAndElementName($elementSetName, $elementName);
-                }
+            $columnNameParts = explode($columnNameDelimiter, $columnName);
+            if (count($columnNameParts) == 2) {
+                $elementSetName = trim($columnNameParts[0]);
+                $elementName = trim($columnNameParts[1]);
+                $element = get_db()
+                    ->getTable('Element')
+                    ->findByElementSetNameAndElementName($elementSetName, $elementName);
             }
         }
         return $element;
