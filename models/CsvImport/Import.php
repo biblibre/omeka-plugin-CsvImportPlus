@@ -1244,10 +1244,11 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         $parsedFileUrl = parse_url($fileUrl);
         if (!isset($parsedFileUrl['scheme']) || $parsedFileUrl['scheme'] == 'file') {
             $transferStrategy = 'Filesystem';
+            $fileUrlOriginal = $fileUrl;
             $fileUrl = $parsedFileUrl['path'];
             if (!$this->_allowLocalPath($fileUrl)) {
-                $msg = 'Local paths are not allowed by the administrator (%s).';
-                $this->_log($msg, array($fileUrl), Zend_Log::ERR);
+                $msg = 'Local paths are not allowed by the administrator (%s) [%s].';
+                $this->_log($msg, array($fileUrlOriginal, !isset($parsedFileUrl['scheme']) ? 'no scheme' : 'file scheme'), Zend_Log::ERR);
                 return false;
             }
         }
@@ -1649,10 +1650,11 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             $parsedFileUrl = parse_url($fileUrl);
             if (!isset($parsedFileUrl['scheme']) || $parsedFileUrl['scheme'] == 'file') {
                 $transferStrategy = 'Filesystem';
+                $fileUrlOriginal = $fileUrl;
                 $fileUrl = $parsedFileUrl['path'];
                 if (!$this->_allowLocalPath($fileUrl)) {
-                    $msg = 'Local paths are not allowed by the administrator (%s).';
-                    $this->_log($msg, array($fileUrl), Zend_Log::ERR);
+                    $msg = 'Local paths are not allowed by the administrator (%s) [%s].';
+                    $this->_log($msg, array($fileUrlOriginal, !isset($parsedFileUrl['scheme']) ? 'no scheme' : 'file scheme'), Zend_Log::ERR);
                     if ($itemDelete) {
                         $item->delete();
                     }
