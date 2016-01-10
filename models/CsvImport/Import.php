@@ -781,7 +781,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         } catch (Exception $e) {
             $this->status = self::STATUS_IMPORT_ERROR;
             $this->save();
-            $this->_log($e, array(), Zend_Log::ERR);
+            $this->_log($e->getMessage(), array(), Zend_Log::ERR);
             throw $e;
         }
     }
@@ -857,7 +857,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         } catch (Exception $e) {
             $this->status = self::STATUS_UNDO_IMPORT_ERROR;
             $this->save();
-            $this->_log($e, array(), Zend_Log::ERR);
+            $this->_log($e->getMessage(), array(), Zend_Log::ERR);
             throw $e;
         }
     }
@@ -938,7 +938,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             }
         }
 
-        $record = $this->_getRecordByIdentifier($identifier, $recordType, $identifierField);
+        $record = $this->_getRecordFromIdentifier($identifier, $recordType, $identifierField);
 
         // Another way to find a file when there is no identifier.
         if (empty($identifier) && empty($record) && $recordType == 'File') {
@@ -946,7 +946,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             if (!empty($file) && count($file) == 1) {
                 $identifierField = 'original filename';
                 $identifier = reset($file);
-                $record = $this->_getRecordByIdentifier($identifier, $recordType, $identifierField);
+                $record = $this->_getRecordFromIdentifier($identifier, $recordType, $identifierField);
             }
         }
 
@@ -997,11 +997,11 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         switch ($action) {
             case CsvImport_ColumnMap_Action::ACTION_CREATE:
                 switch ($recordType) {
-                    case 'Item':
-                        $record = $this->_addItemFromMappedRow();
-                        break;
                     case 'File':
                         $record = $this->_addFileFromMappedRow();
+                        break;
+                    case 'Item':
+                        $record = $this->_addItemFromMappedRow();
                         break;
                     case 'Collection':
                         $record = $this->_addCollectionFromMappedRow();
@@ -1122,12 +1122,12 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         // Empty fields should not be removed. Fields are not trimmed.
 
         try {
-            $record = $this->_insert_item($recordMetadata, $elementTexts, array(), $extraData);
+            $record = $this->_insertItem($recordMetadata, $elementTexts, array(), $extraData);
         } catch (Omeka_Validate_Exception $e) {
-            $this->_log($e, array(), Zend_Log::ERR);
+            $this->_log($e->getMessage(), array(), Zend_Log::ERR);
             return false;
         } catch (Omeka_Record_Builder_Exception $e) {
-            $this->_log($e, array(), Zend_Log::ERR);
+            $this->_log($e->getMessage(), array(), Zend_Log::ERR);
             return false;
         }
 
@@ -1184,7 +1184,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             $fileUrl = reset($fileUrl);
 
             $itemIdentifier = $map[CsvImport_ColumnMap::TYPE_ITEM];
-            $item = $this->_getRecordByIdentifier($itemIdentifier, 'Item', $this->_defaultValues['IdentifierField']);
+            $item = $this->_getRecordFromIdentifier($itemIdentifier, 'Item', $this->_defaultValues['IdentifierField']);
 
             // Create item if it doesn't exist.
             if (empty($item)) {
@@ -1314,12 +1314,12 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         // Empty fields should not be removed. Fields are not trimmed.
 
         try {
-            $record = $this->_insert_collection($recordMetadata, $elementTexts, $extraData);
+            $record = $this->_insertCollection($recordMetadata, $elementTexts, $extraData);
         } catch (Omeka_Validate_Exception $e) {
-            $this->_log($e, array(), Zend_Log::ERR);
+            $this->_log($e->getMessage(), array(), Zend_Log::ERR);
             return false;
         } catch (Omeka_Record_Builder_Exception $e) {
-            $this->_log($e, array(), Zend_Log::ERR);
+            $this->_log($e->getMessage(), array(), Zend_Log::ERR);
             return false;
         }
 
@@ -1350,7 +1350,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         $recordIdentifier = $this->_getMappedValue(CsvImport_ColumnMap::TYPE_RECORD_IDENTIFIER, '');
 
-        $record = $this->_getRecordByIdentifier($recordIdentifier, $recordType, $updateIdentifier);
+        $record = $this->_getRecordFromIdentifier($recordIdentifier, $recordType, $updateIdentifier);
 
         // No record can be updated.
         if (empty($record)) {
@@ -1448,7 +1448,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         // Check collection, if any.
         $collectionId = $this->_getMappedValue(CsvImport_ColumnMap::TYPE_COLLECTION);
         if (!empty($collectionId) && $this->format == 'Manage') {
-            $collection = $this->_getRecordByIdentifier($collectionId, 'Collection', $this->_defaultValues['IdentifierField']);
+            $collection = $this->_getRecordFromIdentifier($collectionId, 'Collection', $this->_defaultValues['IdentifierField']);
             $collectionId = $collection ? $collection->id : null;
         }
         // Collection should be null, not 0 or "".
@@ -1515,6 +1515,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             return false;
         }
 
+        $recordType = get_class($record);
+
         // Builder doesn't allow action "Update", only add and replace, and
         // doesn't manage file directly.
 
@@ -1528,17 +1530,18 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         }
         // Overwrite existing element text values if wanted.
         if ($action == CsvImport_ColumnMap_Action::ACTION_UPDATE || $action == CsvImport_ColumnMap_Action::ACTION_REPLACE) {
-            foreach ($elementTexts as $key => $info) {
-                if ($info['element_id']) {
-                    $record->deleteElementTextsbyElementId((array) $info['element_id']);
+            foreach ($elementTexts as $key => $content) {
+                if ($content['element_id']) {
+                    $record->deleteElementTextsbyElementId((array) $content['element_id']);
                 }
             }
         }
         // To reset keys is needed to avoid bug when there is no DC Title.
         $elementTexts = array_values($elementTexts);
 
+        // Update the specific metadata and the element texts.
         // Update is different for each record type.
-        switch (get_class($record)) {
+        switch ($recordType) {
             case 'Item':
                 $recordMetadata = $this->_getItemMetadataFromMappedRow();
 
@@ -1609,10 +1612,11 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 return false;
         }
 
+        // Update the extra metadata.
         $extraData = $map[CsvImport_ColumnMap::TYPE_EXTRA_DATA];
         $this->_setExtraData($record, $extraData, $action);
 
-        if (get_class($record) == 'Item') {
+        if ($recordType == 'Item') {
             $fileUrls = $map[CsvImport_ColumnMap::TYPE_FILE];
             // Check errors for files.
             $result = $this->_updateAttachedFilesOfItem($record, $fileUrls, false, $action);
@@ -1788,10 +1792,10 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
             try {
                 $record = $record->delete();
             } catch (Omeka_Record_Exception $e) {
-                $this->_log($e, array(), Zend_Log::WARN);
+                $this->_log($e->getMessage(), array(), Zend_Log::WARN);
                 return false;
             } catch (Exception $e) {
-                $this->_log($e, array(), Zend_Log::ERR);
+                $this->_log($e->getMessage(), array(), Zend_Log::ERR);
                 return false;
             }
             // There is no specific column in the table.
@@ -1811,7 +1815,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
      *
      * @return Record|boolean The record to update or false if no one exists.
      */
-    protected function _getRecordByIdentifier(
+    protected function _getRecordFromIdentifier(
         $identifier,
         $recordType = CsvImport_ColumnMap_RecordType::DEFAULT_RECORD_TYPE,
         $identifierField = CsvImport_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD
@@ -1899,7 +1903,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     }
 
     /**
-     * Create a basic record from an identifier, that  should be an element.
+     * Create a basic record from an identifier, that should be an element.
      *
      * @param string $identifier The identifier of the record to create.
      * @param string $recordType The type of the record to update.
@@ -1913,7 +1917,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         $recordType = CsvImport_ColumnMap_RecordType::DEFAULT_RECORD_TYPE,
         $identifierField = CsvImport_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD
     ) {
-        if (!in_array($recordType, array('Collection', 'Item', 'File'))) {
+        if (!in_array($recordType, array('File', 'Item', 'Collection'))) {
             return false;
         }
 
@@ -2040,11 +2044,9 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     /**
      * Check if an element is an element without empty string .
      *
-     * @param string $element
-     *   Element to check.
+     * @param string $element Element to check.
      *
-     * @return boolean
-     *   True if the element is an element without empty string.
+     * @return boolean True if the element is an element without empty string.
      */
     private function _removeEmptyElement($element)
     {
@@ -2055,11 +2057,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
     /**
      * Check if an element is an element without empty string.
      *
-     * @param string $element
-     *   Element to check.
-     *
-     * @return array
-     *   Array of trimed element texts.
+     * @param string $element Element to check.
+     * @return array Array of trimed element texts.
      */
     private function _trimElementTexts($elementTexts)
     {
@@ -2102,7 +2101,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
      * @param array $postData
      * @return Item
      */
-    private function _insert_item($metadata = array(), $elementTexts = array(), $fileMetadata = array(), $postData = array())
+    private function _insertItem($metadata = array(), $elementTexts = array(), $fileMetadata = array(), $postData = array())
     {
         $record = insert_item($metadata, $elementTexts, $fileMetadata);
         $result = $this->_setExtraData($record, $postData, CsvImport_ColumnMap_Action::ACTION_ADD);
@@ -2121,7 +2120,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
      * @param array $postData
      * @return Item
      */
-    private function _insert_collection($metadata = array(), $elementTexts = array(), $postData = array())
+    private function _insertCollection($metadata = array(), $elementTexts = array(), $postData = array())
     {
         $record = insert_collection($metadata, $elementTexts);
         $result = $this->_setExtraData($record, $postData, CsvImport_ColumnMap_Action::ACTION_ADD);
@@ -2181,11 +2180,11 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $options = array('inputNamespace' => 'Omeka_Filter');
                 $filters = array(
                     // Foreign keys
-                    'item_type_id'  => 'ForeignKey',
-                    'collection_id' => 'ForeignKey',
+                    Builder_Item::ITEM_TYPE_ID  => 'ForeignKey',
+                    Builder_Item::COLLECTION_ID => 'ForeignKey',
                     // Booleans
-                    'public' => 'Boolean',
-                    'featured' => 'Boolean',
+                    Builder_Item::IS_PUBLIC => 'Boolean',
+                    Builder_Item::IS_FEATURED => 'Boolean',
                 );
                 $filter = new Zend_Filter_Input($filters, null, $post, $options);
                 $post = $filter->getUnescaped();
@@ -2203,8 +2202,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $options = array('inputNamespace' => 'Omeka_Filter');
                 // User form input does not allow HTML tags or superfluous whitespace
                 $filters = array(
-                    'public' => 'Boolean',
-                    'featured' => 'Boolean',
+                    Builder_Collection::IS_PUBLIC => 'Boolean',
+                    Builder_Collection::IS_FEATURED => 'Boolean',
                 );
                 $filter = new Zend_Filter_Input($filters, null, $post, $options);
                 $post = $filter->getUnescaped();

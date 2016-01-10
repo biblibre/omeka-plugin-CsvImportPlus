@@ -23,8 +23,8 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
     protected $_hooks = array(
         'initialize',
         'install',
-        'uninstall',
         'upgrade',
+        'uninstall',
         'config_form',
         'config',
         'admin_head',

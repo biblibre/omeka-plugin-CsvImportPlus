@@ -100,7 +100,6 @@ class CsvImport_Form_Main extends Omeka_Form
             ), __('No default action')),
         ));
 
-
         $values = get_table_options('ItemType', __('No default item type'));
         $this->addElement('select', 'item_type_id', array(
             'label' => __('Item type'),
