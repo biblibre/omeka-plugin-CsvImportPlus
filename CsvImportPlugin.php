@@ -54,8 +54,6 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
         'csv_import_file_delimiter' => CsvImport_ColumnMap_File::DEFAULT_FILE_DELIMITER,
         // Option used during the first step only.
         'csv_import_html_elements' => FALSE,
-        'csv_import_automap_columns' => TRUE,
-        'csv_import_create_collections' => FALSE,
         'csv_import_extra_data' => 'manual',
         // With roles, in particular if Guest User is installed.
         'csv_import_allow_roles' => 'a:1:{i:0;s:5:"super";}',
@@ -290,6 +288,11 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
                 ADD COLUMN `params` text DEFAULT NULL
             ";
             $db->query($sql);
+        }
+
+        if (version_compare($oldVersion, '2.2-full', '<')) {
+            delete_option('csv_import_automap_columns');
+            delete_option('csv_import_create_collections');
         }
     }
 

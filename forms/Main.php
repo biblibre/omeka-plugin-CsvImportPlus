@@ -35,26 +35,39 @@ class CsvImport_Form_Main extends Omeka_Form
 
         $this->_addFileElement();
 
-        $this->addElement('radio', 'format', array(
-            // 'label' => __('Import type'),
-            'description'=> __('Choose the type of record (the format of your file) you want to import.'),
-            'multiOptions' => array(
-                'Manage' => __('Manage records (import, update, remove)'),
-                'Report' => __('Omeka CSV Report'),
-                'Item' => __('Items'),
-                // Deprecated.
-                'File' => __('Files metadata (update)'),
-                'Mix' => __('Mixed records'),
-                'Update' => __('Update records'),
-            ),
-            'required' => TRUE,
-        ));
-
         $this->_addColumnDelimiterElement();
         $this->_addEnclosureElement();
         $this->_addElementDelimiterElement();
         $this->_addTagDelimiterElement();
         $this->_addFileDelimiterElement();
+
+        $values = get_table_options('ItemType', __('No default item type'));
+        $this->addElement('select', 'item_type_id', array(
+            'label' => __('Item type'),
+            'multiOptions' => $values,
+        ));
+
+        $values = get_table_options('Collection', __('No default collection'));
+        $this->addElement('select', 'collection_id', array(
+            'label' => __('Collection'),
+            'multiOptions' => $values,
+        ));
+
+        $this->addElement('checkbox', 'records_are_public', array(
+            'label' => __('Make records public'),
+            'description' => __('Check to make records (items or collections) public by default.'),
+        ));
+
+        $this->addElement('checkbox', 'records_are_featured', array(
+            'label' => __('Feature records'),
+            'description' => __('Check to make records (items or collections) featured by default.'),
+        ));
+
+        $this->addElement('checkbox', 'elements_are_html', array(
+            'label' => __('Elements are html'),
+            'description' => __('Set default format of all imported elements as html, else raw text.'),
+            'value' => get_option('csv_import_html_elements'),
+        ));
 
         $identifierField = get_option('csv_import_identifier_field');
         if (!empty($identifierField) && $identifierField != 'internal id') {
@@ -100,41 +113,6 @@ class CsvImport_Form_Main extends Omeka_Form
             ), __('No default action')),
         ));
 
-        $values = get_table_options('ItemType', __('No default item type'));
-        $this->addElement('select', 'item_type_id', array(
-            'label' => __('Item type'),
-            'multiOptions' => $values,
-        ));
-
-        $values = get_table_options('Collection', __('No default collection'));
-        $this->addElement('select', 'collection_id', array(
-            'label' => __('Collection'),
-            'multiOptions' => $values,
-        ));
-
-        $this->addElement('checkbox', 'records_are_public', array(
-            'label' => __('Make records public'),
-            'description' => __('Check to make records (items or collections) public by default.'),
-        ));
-
-        $this->addElement('checkbox', 'records_are_featured', array(
-            'label' => __('Feature records'),
-            'description' => __('Check to make records (items or collections) featured by default.'),
-        ));
-
-        $this->addElement('checkbox', 'elements_are_html', array(
-            'label' => __('Elements are html'),
-            'description' => __('Set default format of all imported elements as html, else raw text.'),
-            'value' => get_option('csv_import_html_elements'),
-        ));
-
-        $this->addElement('checkbox', 'create_collections', array(
-            'label' => __('Create collections'),
-            'description' => __("If the collection of an item doesn't exist, it will be created.") . '<br />'
-                .  __('Use "Update" to set metadata of a collection.'),
-            'value' => get_option('csv_import_create_collections'),
-        ));
-
        $this->addElement('select', 'contains_extra_data', array(
             'label' => __('Contains extra data'),
             'description' => __('Other columns can be used as values for non standard data.'),
@@ -147,17 +125,9 @@ class CsvImport_Form_Main extends Omeka_Form
             'value' => get_option('csv_import_extra_data'),
         ));
 
-        $this->addElement('checkbox', 'automap_columns', array(
-            'label' => __('Automap column names to elements'),
-            'description'=> __('Automatically maps columns to elements based on their column names.')
-                . ' ' . __('The column name must be in the form: {ElementSetName}:{ElementName}'),
-            'value' => get_option('csv_import_automap_columns'),
-        ));
-
         $this->addDisplayGroup(
             array(
                 'csv_file',
-                'format',
             ),
             'file_type'
         );
@@ -183,8 +153,6 @@ class CsvImport_Form_Main extends Omeka_Form
 
         $this->addDisplayGroup(
             array(
-                'identifier_field',
-                'action',
                 'item_type_id',
                 'collection_id',
                 'records_are_public',
@@ -199,13 +167,13 @@ class CsvImport_Form_Main extends Omeka_Form
 
         $this->addDisplayGroup(
             array(
-                'create_collections',
+                'identifier_field',
+                'action',
                 'contains_extra_data',
-                'automap_columns',
             ),
-            'import_features',
+            'import_process',
             array(
-                'legend' => __('Features to use'),
+                'legend' => __('Process'),
                 'description' => __('Set features used to process the file.'),
         ));
 

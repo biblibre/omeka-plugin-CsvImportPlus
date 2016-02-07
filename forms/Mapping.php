@@ -9,25 +9,20 @@
 
 class CsvImport_Form_Mapping extends Omeka_Form
 {
-    // Internal parameters for all formats.
-    private $_format;
+    // Internal parameters.
     private $_columnNames = array();
     private $_columnExamples = array();
     private $_elementDelimiter;
     private $_tagDelimiter;
     private $_fileDelimiter;
-    private $_automapColumns;
     // Parameters for all formats.
     private $_itemTypeId;
-    // Parameteres for "Manage".
     private $_action;
     private $_identifierField;
-    // Parameteres for "Manage", "Mix" and "Update".
     private $_collectionId;
     private $_isPublic;
     private $_isFeatured;
     private $_elementsAreHtml;
-    private $_createCollections;
 
     /**
      * Initialize the form.
@@ -38,66 +33,21 @@ class CsvImport_Form_Mapping extends Omeka_Form
         $this->setAttrib('id', 'csvimport-mapping');
         $this->setMethod('post');
 
-        // Prepare elements for each format.
-        switch ($this->_format) {
-            case 'Manage':
-                $elementsByElementSetName = $this->_getElementPairs(true);
-                $special = label_table_options(array(
-                    'Tags' => 'Tags',
-                    'Collection' => 'Collection (for item)',
-                    'Item' => 'Item (for file)',
-                    'File' => 'Files',
-                    'Action' => 'Action',
-                    'RecordType' => 'Record type',
-                    'itemType' => 'Item type',
-                    'IdentifierField' => 'Identifier field',
-                    'Identifier' => 'Identifier',
-                ));
-                break;
-            case 'Report':
-                return false;
-            case 'Item':
-                $elementsByElementSetName = $this->_getElementPairs($this->_itemTypeId);
-                break;
-            case 'File':
-                $elementsByElementSetName = $this->_getElementPairsForFiles();
-                break;
-            // Deprecated.
-            case 'Mix':
-                $elementsByElementSetName = $this->_getElementPairs(true);
-                $special = label_table_options(array(
-                    'Tags' => 'Tags',
-                    'Collection' => 'Collection',
-                    'fileUrl' => 'Zero or one file',
-                    'File' => 'Files',
-                    'RecordType' => 'Record type',
-                    'ItemType' => 'Item type',
-                    'Public' => 'Public',
-                    'Featured' => 'Featured',
-                    // Specific to "Mix" format.
-                    'sourceItemId' => 'Source Item Id',
-                ));
-                break;
-            case 'Update':
-                $elementsByElementSetName = $this->_getElementPairs(true);
-                $special = label_table_options(array(
-                    'Tags' => 'Tags',
-                    'Collection' => 'Collection',
-                    'fileUrl' => 'Zero or one file',
-                    'File' => 'Files',
-                    'RecordType' => 'Record type',
-                    'ItemType' => 'Item type',
-                    'Public' => 'Public',
-                    'Featured' => 'Featured',
-                    // Specific to "Update" format.
-                    'updateMode' => 'Update mode',
-                    'updateIdentifier' => 'Update identifier',
-                    'recordIdentifier' => 'Record identifier',
-                ));
-                break;
-            default:
-                return false;
-        }
+        $elementsByElementSetName = $this->_getElementPairs(true);
+        $special = label_table_options(array(
+            'Tags' => 'Tags',
+            'Collection' => 'Collection (for item)',
+            'Item' => 'Item (for file)',
+            'File' => 'Files',
+            'Public' => 'Public',
+            'Featured' => 'Featured',
+            'Action' => 'Action',
+            'RecordType' => 'Record type',
+            'itemType' => 'Item type',
+            'IdentifierField' => 'Identifier field',
+            'Identifier' => 'Identifier',
+        ));
+
         $elementsByElementSetName = label_table_options($elementsByElementSetName);
 
         foreach ($this->_columnNames as $index => $colName) {
@@ -110,43 +60,25 @@ class CsvImport_Form_Mapping extends Omeka_Form
                     'multiple' => false, // see ZF-8452
             ));
             $selectElement->setIsArray(true);
-            if ($this->_automapColumns) {
-                $selectElement->setValue($this->_getElementIdFromColumnName($colName));
-            }
+            $selectElement->setValue($this->_getElementIdFromColumnName($colName));
 
             $rowSubForm->addElement($selectElement);
             $rowSubForm->addElement('checkbox', 'html', array('value' => $this->_elementsAreHtml));
             // If import type is File, add checkbox for file url only because
             // files can't get tags and we just need the url.
-            switch ($this->_format) {
-                case 'Item':
-                    $rowSubForm->addElement('checkbox', 'tags');
-                    $rowSubForm->addElement('checkbox', 'file');
-                    break;
-                case 'File':
-                    $rowSubForm->addElement('checkbox', 'file_url');
-                    break;
-                case 'Manage':
-                // Deprecated.
-                case 'Mix':
-                case 'Update':
-                    $specialElement = $rowSubForm->createElement('select',
-                        'special',
-                        array(
-                            'class' => 'map-element',
-                            'multiOptions' => $special,
-                            'multiple' => false, // see ZF-8452
-                    ));
-                    // $specialElement->setIsArray(true);
-                    if ($this->_automapColumns) {
-                        $specialElement->setValue($this->_getSpecialValue($colName, $special));
-                    }
-                    $rowSubForm->addElement($specialElement);
-                    $rowSubForm->addElement('checkbox', 'extra_data', array(
-                        'label' => __('Extra data'),
-                    ));
-                    break;
-            }
+            $specialElement = $rowSubForm->createElement('select',
+                'special',
+                array(
+                    'class' => 'map-element',
+                    'multiOptions' => $special,
+                    'multiple' => false, // see ZF-8452
+            ));
+            // $specialElement->setIsArray(true);
+            $specialElement->setValue($this->_getSpecialValue($colName, $special));
+            $rowSubForm->addElement($specialElement);
+            $rowSubForm->addElement('checkbox', 'extra_data', array(
+                'label' => __('Extra data'),
+            ));
 
             $this->_setSubFormDecorators($rowSubForm);
             $this->addSubForm($rowSubForm, "row$index");
@@ -198,7 +130,13 @@ class CsvImport_Form_Mapping extends Omeka_Form
     protected function _getSpecialValue($colName, $special)
     {
         $array = array_combine(array_keys($special), array_map('strtolower', array_keys($special)));
-        return array_search(strtolower($colName), $array);
+        $result = array_search(strtolower($colName), $array);
+        if ($result) {
+            return $result;
+        }
+        if (strtolower($colName) == strtolower($this->_identifierField)) {
+            return $colName;
+        }
     }
 
     /**
@@ -211,21 +149,10 @@ class CsvImport_Form_Mapping extends Omeka_Form
                 'viewScript' => 'index/map-columns-form.php',
                 'itemTypeId' => $this->_itemTypeId,
                 'form' => $this,
-                'format' => $this->_format,
                 'columnExamples' => $this->_columnExamples,
                 'columnNames' => $this->_columnNames,
             )),
         ));
-    }
-
-    /**
-     * Set the import type.
-     *
-     * @param string $format The type of import
-     */
-    public function setFormat($format)
-    {
-        $this->_format = $format;
     }
 
     /**
@@ -277,16 +204,6 @@ class CsvImport_Form_Mapping extends Omeka_Form
     public function setFileDelimiter($fileDelimiter)
     {
         $this->_fileDelimiter = $fileDelimiter;
-    }
-
-    /**
-     * Set whether or not to automap column names to elements.
-     *
-     * @param boolean $flag Whether or not to automap column names to elements
-     */
-    public function setAutomapColumns($flag)
-    {
-        $this->_automapColumns = (boolean) $flag;
     }
 
     /**
@@ -362,16 +279,6 @@ class CsvImport_Form_Mapping extends Omeka_Form
     }
 
     /**
-     * Set whether or not to create collections or not.
-     *
-     * @param boolean $flag Whether or not to create collections
-     */
-    public function setCreateCollections($flag)
-    {
-        $this->_createCollections = (boolean) $flag;
-    }
-
-    /**
      * Returns array of column maps.
      *
      * @return array The array of column maps
@@ -415,19 +322,6 @@ class CsvImport_Form_Mapping extends Omeka_Form
     {
         if (isset($this->getSubForm("row$index")->file)) {
             return $this->getSubForm("row$index")->file->isChecked();
-        }
-    }
-
-    /**
-     * Returns whether a subform row contains a file url.
-     *
-     * @param int $index The subform row index
-     * @return bool Whether a subform row contains a file url
-     */
-    protected function _isFileUrlMapped($index)
-    {
-        if (isset($this->getSubForm("row$index")->file_url)) {
-            return $this->getSubForm("row$index")->file_url->isChecked();
         }
     }
 
@@ -529,10 +423,6 @@ class CsvImport_Form_Mapping extends Omeka_Form
             $columnMap[] = new CsvImport_ColumnMap_File($columnName, $this->_fileDelimiter);
         }
 
-        if ($this->_isFileUrlMapped($index)) {
-            $columnMap[] = new CsvImport_ColumnMap_File($columnName, '', true);
-        }
-
         if ($this->_isExtraDataMapped($index)) {
             $columnMap[] = new CsvImport_ColumnMap_ExtraData($columnName, $this->_elementDelimiter);
         }
@@ -558,31 +448,18 @@ class CsvImport_Form_Mapping extends Omeka_Form
             case 'Identifier':
                 $columnMap[] = new CsvImport_ColumnMap_Identifier($columnName);
                 break;
-            // Deprecated.
-            case 'sourceItemId':
-                $columnMap[] = new CsvImport_ColumnMap_SourceItemId($columnName);
-                break;
-            // Deprecated.
-            case 'updateMode':
-                $columnMap[] = new CsvImport_ColumnMap_UpdateMode($columnName);
-                break;
             case 'Action':
                 $columnMap[] = new CsvImport_ColumnMap_Action($columnName, $this->_action);
                 break;
+            case 'Identifier Field':
             case 'IdentifierField':
                 $columnMap[] = new CsvImport_ColumnMap_IdentifierField($columnName, $this->_identifierField);
                 break;
-            // Deprecated.
-            case 'updateIdentifier':
-                $columnMap[] = new CsvImport_ColumnMap_UpdateIdentifier($columnName);
-                break;
+            case 'Record Type':
             case 'RecordType':
                 $columnMap[] = new CsvImport_ColumnMap_RecordType($columnName);
                 break;
-            // Deprecated.
-            case 'recordIdentifier':
-                $columnMap[] = new CsvImport_ColumnMap_RecordIdentifier($columnName);
-                break;
+            case 'Item Type':
             case 'ItemType':
                 $columnMap[] = new CsvImport_ColumnMap_ItemType($columnName, $this->_itemTypeId);
                 break;
@@ -590,10 +467,7 @@ class CsvImport_Form_Mapping extends Omeka_Form
                 $columnMap[] = new CsvImport_ColumnMap_Item($columnName);
                 break;
             case 'Collection':
-                $columnMap[] = new CsvImport_ColumnMap_Collection($columnName,
-                    $this->_collectionId,
-                    $this->_createCollections,
-                    $this->_format == 'Manage');
+                $columnMap[] = new CsvImport_ColumnMap_Collection($columnName, $this->_collectionId);
                 break;
             case 'Public':
                 $columnMap[] = new CsvImport_ColumnMap_Public($columnName, $this->_isPublic);
@@ -601,11 +475,8 @@ class CsvImport_Form_Mapping extends Omeka_Form
             case 'Featured':
                 $columnMap[] = new CsvImport_ColumnMap_Featured($columnName, $this->_isFeatured);
                 break;
-            // Deprecated.
-            case 'fileUrl':
-                $columnMap[] = new CsvImport_ColumnMap_File($columnName, '', true);
-                break;
             case 'File':
+            case 'Files':
                 $columnMap[] = new CsvImport_ColumnMap_File($columnName, $this->_fileDelimiter);
                 break;
             case 'Tags':

@@ -16,40 +16,47 @@ class CsvImport_ColumnMap_CollectionTest extends CsvImport_Test_AppTestCase
     }
 
     public function testMapWithCollection()
-    {        
-        $collection = new Collection();        
+    {
+        $collection = new Collection();
         $collection->addElementTextsByArray(
             array('Dublin Core' => array(
                 'Title' => array(array('text' => 'Animals', 'html' => false)),
             ))
         );
         $collection->save();
-        
+
         $row = array(
             'title' => 'Animals',
             'description' => 'Foo',
         );
         $map = new CsvImport_ColumnMap_Collection('title');
-        
+
+        $this->markTestSkipped(
+            __('Since 2.2-full, collections are checked during import.')
+        );
+
         $this->assertEquals($collection->id, $map->map($row, array()));
     }
-    
+
     public function testMapWithoutCollection()
     {
-        $collection = new Collection();        
+        $collection = new Collection();
         $collection->addElementTextsByArray(
             array('Dublin Core' => array(
                 'Title' => array(array('text' => 'Plants', 'html' => false)),
             ))
         );
         $collection->save();
-        
+
         $row = array(
             'title' => 'Animals',
             'description' => 'Foo',
         );
         $map = new CsvImport_ColumnMap_Collection('title');
-        
+
+        $this->markTestSkipped(
+            __('Since 2.2-full, collections are checked during import.')
+        );
         $this->assertFalse($map->map($row, array()));
     }
 }

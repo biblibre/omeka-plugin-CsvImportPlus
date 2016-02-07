@@ -106,6 +106,11 @@ parent should be defined in the file "security.ini" of the plugin.
 Examples
 --------
 
+Since release 2.2-full, only the "Manage" format is available. Some tests are
+incompatible with this one, so change their headers to process them. Generally,
+to set the "Dublin Core : Title" of "Dublin Core : Identifier" as the required
+identifier is enough to process a test.
+
 Fourteen examples of csv files are available in the csv_files folder. They are
 many because a new one is built for each new feature. The last ones uses all of
 them.
@@ -119,11 +124,18 @@ have some examples.
 
 They use free images of [Wikipedia], so import speed depends on the connection.
 
+The first three tests use the same items from Wikipedia, so remove them between
+tests.
+
 1. `test.csv`
 
     A basic list of three books with images of Wikipedia, with non Dublin Core
     tags. To try it, you just need to check `Item metadata`, to use the default
     delimiters `,` and enclosure `"`.
+
+    With "Manage", choose the identifier field "Dublin Core : Title" and extra
+    data "Perhaps", so a manual mapping will be done, where the special value
+    "Identifier" will be set to the title.
 
 2. `test_automap.csv`
 
@@ -135,6 +147,8 @@ They use free images of [Wikipedia], so import speed depends on the connection.
     matching columns if field names are the same in your file and in the
     drop-down list.
 
+    With "Manage", cf. #1.
+
 3. `test_special_delimiters.csv`
 
     A file to try any delimiters. Special delimiters of this file are:
@@ -144,13 +158,22 @@ They use free images of [Wikipedia], so import speed depends on the connection.
     - Tag delimiter: double space
     - File delimiter: semi-colon
 
-4. `test_files_metadata.csv`
+    With "Manage", cf. #1. If extra data is set to "No", then the second step
+    will be skipped.
+
+4. `test_files_metadata.csv` (`test_files_metadata_manage.csv`)
 
     A file used to import metadata of files. To try it, you should import items
     before with any of previous csv files, select `tabulation` as column
     delimiter, no enclosure, and `|` as element, file and tag delimiters, and
     check `File metadata` in the first form and `Filename` in the first row of
     the second form.
+
+    This file is not importable by the format 'Manage". A column "Identifier Field"
+    should be added with "original filename" as content, for each row. Then,
+    select "no identifier field" and "perhaps", then set the special values
+    "identifier field" to the identifier field and "Identifier" to the filename.
+    See `test_files_metadata.csv`.
 
 5. `test_mixed_records.csv`
 
@@ -162,11 +185,15 @@ They use free images of [Wikipedia], so import speed depends on the connection.
     Note: in the csv file, the file rows should always be after the item to
     which they are attached, else they are skipped.
 
+    This file is not compatible with the release 2.2 (no metadata for files).
+
 6. `test_mixed_records_update.csv`
 
     A file used to show how to update metadata of item and files. To try it,
     import `test_mixed_recods.csv` above first, then choose this file and check
     `Update records` in the form.
+
+    This file is not compatible with the release 2.2 (no metadata for files).
 
 7. `test_collection.csv`
 
@@ -174,37 +201,42 @@ They use free images of [Wikipedia], so import speed depends on the connection.
     error occurs during import. Parameters are `Mixed records`, `tabulation` as
     column delimiter, no enclosure and `|` as element, file and tag delimiters.
 
+    This file is not compatible with the release 2.2 (no metadata for files).
+
 8. `test_collection_update.csv`
 
     Update metadata of a collection. Parameters are the same as in the previous
     file, except format.
+
+    This file is not compatible with the release 2.2 (no metadata for files).
 
 9. `test_extra_data.csv`
 
     Show import of extra data that are not managed as elements, but as data in
     a specific table. The mechanism processes data as post, so it can uses the
     default hooks, specially `after_save_item`.
-    The last row shows an example to import one item with attached files on one
-    row (unused columns, specially sourceItemId and recordtType, can be
-    removed). This simpler format can be used if you don't need files metadata
-    or if you don't have a lot of files attached to each item.
-    To try this test file, install [Geolocation] and check `Mixed records` with
-    `tabulation` as column delimiter, no enclosure, and `|` as element, file and
-    tag delimiters. You should set the option "Contains extra data" to "Yes" too
-    (or "Manual" to check manually).
+
+    To try this test file, install [Geolocation] first. Set `tabulation` as
+    column delimiter, no enclosure, and `|` as element, file and tag delimiters.
+    You should set the required identifier to "Dublin Core : Identifier", the
+    option "Contains extra data" to "Yes" too (or "Perhaps"  to check manually).
     Use the update below to get full data for all items.
+
+    The last row of this file shows an example to import one item with attached
+    files on one row (unused columns, specially Identifier and Record Type, can
+    be removed). This simpler format can be used if you don't need files
+    metadata or if you don't have a lot of files attached to each item.
 
 10. `test_extra_data_manual.csv`
 
     This file has the same content than the previous, but header are not set, so
-    you should set "Contains extra data" to "Manual" to map them to the Omeka
+    you should set "Contains extra data" to "Perhaps" to map them to the Omeka
     metadata. Note that extra data should kept their original headers.
 
 11. `test_extra_data_update.csv`
 
     Show update of extra data. To test it, you need to import one of the two
-    previous files first, then this one, with the same parameters, except the
-    `Update records` format.
+    previous files first, then this one, with the same parameters.
 
 12. `test_manage_one.csv`
 
@@ -215,8 +247,10 @@ They use free images of [Wikipedia], so import speed depends on the connection.
     These files show how to use the "Manage" process. They don't use a specific
     column, but any field. So, each row is independant from others.
     The first allows to import some data and the second, similar, has got new
-    and updated content. The third is like a script where each row is processed
-    one by one, with a different action for each row.
+    and updated content, because there are errors in the first. The third is
+    like a script where each row is processed one by one, with a different
+    action for each row.
+
     To try them, you may install [Geolocation] and to check `Manage Records`
     with `tabulation` as column delimiter, no enclosure, `|` as element, file,
     and tag delimiters, and `Dublin Core:Identifier` as the field identifier.
@@ -228,6 +262,9 @@ They use free images of [Wikipedia], so import speed depends on the connection.
 
 Formats
 -------
+
+Only the first format is available since the version 2.2-full. Use the upstream
+release for the other formats.
 
 1. `Manage Records`
 
@@ -386,7 +423,8 @@ will be reimported. To reimport a file with the same url, you should remove it
 first. This process avoids many careless errors. To update metadata of a file,
 the column for the url ("File") should be removed.
 Files are ordered according to the list of files.
-Note : This process works only when original filenames are unique.
+Note : This process works only when original filenames are unique. So, the
+simplest is to set a unique identifier for files too.
 
 * Status page
 
@@ -523,8 +561,8 @@ Copyright
 ---------
 
 * Copyright Center for History and New Media, 2008-2013
-* Copyright Daniel Berthereau, 2012-2015
 * Copyright Shawn Averkamp, 2012
+* Copyright Daniel Berthereau, 2012-2016
 
 
 [Omeka]: https://omeka.org

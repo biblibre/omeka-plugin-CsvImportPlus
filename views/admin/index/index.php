@@ -10,13 +10,6 @@
 <script type="text/javascript">
 //<![CDATA[
 jQuery(document).ready(function () {
-    jQuery('#format-Manage').click(Omeka.CsvImport.updateImportOptions);
-    jQuery('#format-Report').click(Omeka.CsvImport.updateImportOptions);
-    jQuery('#format-Item').click(Omeka.CsvImport.updateImportOptions);
-    // Deprecated.
-    jQuery('#format-File').click(Omeka.CsvImport.updateImportOptions);
-    jQuery('#format-Mix').click(Omeka.CsvImport.updateImportOptions);
-    jQuery('#format-Update').click(Omeka.CsvImport.updateImportOptions);
     jQuery('#column_delimiter_name').click(Omeka.CsvImport.updateColumnDelimiterField);
     jQuery('#enclosure_name').click(Omeka.CsvImport.updateEnclosureField);
     jQuery('#element_delimiter_name').click(Omeka.CsvImport.updateElementDelimiterField);
@@ -28,4 +21,3 @@ jQuery(document).ready(function () {
 </script>
 <?php
     echo foot();
-?>

@@ -13,7 +13,6 @@
                 <?php
                 $browseHeadings[__('Import date / Log')] = 'added';
                 $browseHeadings[__('CSV file')] = 'original_filename';
-                $browseHeadings[__('Import type')] = null;
                 $browseHeadings[__('Row count')] = 'row_count';
                 $browseHeadings[__('Skipped rows')] = 'skipped_row_count';
                 $browseHeadings[__('Imported records')] = null;
@@ -45,17 +44,6 @@
                     <?php endif; ?>
                 </td>
                 <td><?php echo html_escape($csvImport->original_filename); ?></td>
-                <td><?php switch ($csvImport->format) {
-                    case 'Manage': echo __('Manage records'); break;
-                    case 'Report': echo __('Csv Report'); break;
-                    case 'Item': echo __('Items'); break;
-                    // Deprecated, but kept for old imports.
-                    case 'File': echo __('Files metadata'); break;
-                    case 'Mix': echo __('Mixed records'); break;
-                    case 'Update': echo __('Update records'); break;
-                    // Imports made with the standard plugin.
-                    default: echo __('Unknown'); break;
-                } ?></td>
                 <?php $importedRecordCount = $csvImport->getImportedRecordCount(); ?>
                 <td><?php echo html_escape($csvImport->row_count); ?></td>
                 <td><?php echo html_escape($csvImport->skipped_row_count); ?></td>
@@ -66,8 +54,7 @@
                 <td><?php echo html_escape(__(Inflector::humanize($csvImport->status, 'all'))); ?></td>
                 <td>
                 <?php
-                    if (!in_array($csvImport->format, array('File', 'Update'))
-                        && (($csvImport->isCompleted() && $importedRecordCount > 0)
+                    if ((($csvImport->isCompleted() && $importedRecordCount > 0)
                             || $csvImport->isStopped()
                             || ($csvImport->isImportError() && $importedRecordCount > 0))):
                         $undoImportUrl = $this->url(array(

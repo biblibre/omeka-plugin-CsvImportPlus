@@ -67,7 +67,6 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         $this->session->setExpirationHops(2);
         $this->session->originalFilename = $_FILES['csv_file']['name'];
         $this->session->filePath = $filePath;
-        $this->session->format = $form->getValue('format');
         $this->session->action = $form->getValue('action');
         $this->session->identifierField = $identifierField;
         $this->session->itemTypeId = $form->getValue('item_type_id');
@@ -75,8 +74,6 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         $this->session->recordsArePublic = $form->getValue('records_are_public');
         $this->session->recordsAreFeatured = $form->getValue('records_are_featured');
         $this->session->elementsAreHtml = $form->getValue('elements_are_html');
-        $this->session->createCollections = $form->getValue('create_collections');
-        $this->session->automapColumns = $form->getValue('automap_columns');
         $this->session->containsExtraData = $form->getValue('contains_extra_data');
         $this->session->columnDelimiter = $columnDelimiter;
         $this->session->enclosure = $enclosure;
@@ -111,27 +108,13 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         set_option(CsvImport_ColumnMap_Tag::TAG_DELIMITER_OPTION_NAME, $this->session->tagDelimiter);
         set_option(CsvImport_ColumnMap_File::FILE_DELIMITER_OPTION_NAME, $this->session->fileDelimiter);
         set_option('csv_import_html_elements', $this->session->elementsAreHtml);
-        set_option('csv_import_create_collections', $this->session->createCollections);
         set_option('csv_import_extra_data', $this->session->containsExtraData);
-        set_option('csv_import_automap_columns', $this->session->automapColumns);
 
-        if ($this->session->containsExtraData == 'manual' && $this->session->format != 'Report') {
+        if ($this->session->containsExtraData == 'manual') {
             $this->_helper->redirector->goto('map-columns');
         }
 
-        switch ($this->session->format) {
-            case 'Manage':
-                $this->_helper->redirector->goto('check-manage-csv');
-            case 'Report':
-                $this->_helper->redirector->goto('check-omeka-csv');
-            //Deprecated.
-            case 'Mix':
-                $this->_helper->redirector->goto('check-mix-csv');
-            case 'Update':
-                $this->_helper->redirector->goto('check-update-csv');
-            default:
-                $this->_helper->redirector->goto('map-columns');
-        }
+        $this->_helper->redirector->goto('check-manage-csv');
     }
 
     /**
@@ -148,39 +131,22 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         require_once CSV_IMPORT_DIRECTORY . '/forms/Mapping.php';
 
         $parameters = array(
-            'format' => $this->session->format,
             'columnNames' => $this->session->columnNames,
             'columnExamples' => $this->session->columnExamples,
             'elementDelimiter' => $this->session->elementDelimiter,
             'tagDelimiter' => $this->session->tagDelimiter,
             'fileDelimiter' => $this->session->fileDelimiter,
-            // Parameters for all formats.
             'itemTypeId' => $this->session->itemTypeId,
-            'automapColumns' => $this->session->automapColumns,
-            // Previously managed at main level (saved separately in the base)
-            // for "Report", "Item" and "File".
             'collectionId' => $this->session->collectionId,
             'isPublic' => $this->session->recordsArePublic,
             'isFeatured' => $this->session->recordsAreFeatured,
             'elementsAreHtml' => $this->session->elementsAreHtml,
-            // Option "Create collections"" is false except below.
-            'createCollections' => false,
         );
-        switch ($this->session->format) {
-            case 'Manage':
-                $parameters += array(
-                    'action' => $this->session->action,
-                    'identifierField' => $this->session->identifierField,
-                    'createCollections' => true,
-                );
-                break;
-            case 'Mix':
-            case 'Update':
-                $parameters += array(
-                    'createCollections' => $this->session->createCollections,
-                );
-                break;
-        }
+
+        $parameters += array(
+            'action' => $this->session->action,
+            'identifierField' => $this->session->identifierField,
+        );
 
         $form = new CsvImport_Form_Mapping($parameters);
         if (!$form) {
@@ -204,19 +170,17 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             return;
         }
 
-        // Check if there is an identifier column for the format "Manage".
-        if ($this->session->format == 'Manage') {
-            $isSetIdentifier = false;
-            foreach ($columnMaps as $columnMap) {
-                if ($columnMap instanceof CsvImport_ColumnMap_Identifier) {
-                    $isSetIdentifier = true;
-                    break;
-                }
+        // Check if there is an identifier column.
+        $isSetIdentifier = false;
+        foreach ($columnMaps as $columnMap) {
+            if ($columnMap instanceof CsvImport_ColumnMap_Identifier) {
+                $isSetIdentifier = true;
+                break;
             }
-            if (!$isSetIdentifier) {
-                $this->_helper->flashMessenger(__('Please map a column to the special value "Identifier", or change the format.'), 'error');
-                return;
-            }
+        }
+        if (!$isSetIdentifier) {
+            $this->_helper->flashMessenger(__('Please map a column to the special value "Identifier".'), 'error');
+            return;
         }
 
         $this->session->columnMaps = $columnMaps;
@@ -244,88 +208,8 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         );
         // There is no required column: identifier can be any field.
         $requiredColumns = array();
-        // To avoid old mixed and update files.
-        $forbiddenColumns = array(
-            'updateMode',
-            'updateIdentifier',
-            'recordType',
-            'fileUrl',
-        );
-        $this->_checkCsv($skipColumns, $requiredColumns, $forbiddenColumns);
-    }
-
-    /**
-     * For import of Omeka.net CSV.
-     */
-    public function checkOmekaCsvAction()
-    {
-        $skipColumns = array(
-            'itemType',
-            'collection',
-            'public',
-            'featured',
-            'tags',
-            'file',
-        );
-        $this->_checkCsv($skipColumns);
-    }
-
-    /**
-     * For import with mixed records. Similar to Csv Report, but allows to
-     * import files one by one, to import metadata of files and to choose
-     * default values and delimiters.
-     *
-     * @deprecated Since 2.1.1-full.
-     */
-    public function checkMixCsvAction()
-    {
-        $skipColumns = array(
-            'sourceItemId',
-            'recordType',
-            'file',
-            'fileUrl',
-            'itemType',
-            'collection',
-            'public',
-            'featured',
-            'tags',
-        );
-        $forbiddenColumns = array(
-            'Action',
-            'Identifier',
-            'IdentifierField',
-        );
-        $this->_checkCsv($skipColumns, array(), $forbiddenColumns);
-    }
-
-    /**
-     * For update of records.
-     *
-     * @deprecated Since 2.1.1-full.
-     */
-    public function checkUpdateCsvAction()
-    {
-        $skipColumns = array(
-            'updateMode',
-            'updateIdentifier',
-            'recordType',
-            'file',
-            'fileUrl',
-            'itemType',
-            'collection',
-            'public',
-            'featured',
-            'tags',
-        );
-        $requiredColumns = array(
-            'recordIdentifier',
-        );
-        $forbiddenColumns = array(
-            'sourceItemId',
-            'Action',
-            'Identifier',
-            'IdentifierField',
-        );
+        // No more.
+        $forbiddenColumns = array();
         $this->_checkCsv($skipColumns, $requiredColumns, $forbiddenColumns);
     }
 
@@ -350,40 +234,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         }
         $skipColumnsText = '( ' . implode(', ', $skipColumnsWrapped) . ' )';
 
-        // For the formats Mix and Update, no check of element names is done if
-        // there are extra data or if they should be ignored.
         $hasError = false;
-        if (!(in_array($this->session->format, array('Manage', 'Mix', 'Update')) && $this->session->containsExtraData != 'no')) {
-            foreach ($this->session->columnNames as $columnName) {
-                if (!in_array($columnName, $skipColumns) && !in_array($columnName, $requiredColumns)) {
-                    $data = explode(':', $columnName);
-                    if (count($data) != 2) {
-                        $msg = __('Invalid column name: "%s".', $columnName)
-                            . ' ' . __('Column names must either be one of the following %s, or have the following format: {ElementSetName}:{ElementName}.', $skipColumnsText);
-                        $this->_helper->flashMessenger($msg, 'error');
-                        $hasError = true;
-                        break;
-                    }
-                }
-            }
-
-            if (!$hasError) {
-                foreach ($this->session->columnNames as $columnName) {
-                    if (!in_array($columnName, $skipColumns) && !in_array($columnName, $requiredColumns)) {
-                        $data = explode(':', $columnName);
-                        // $data is like array('Element Set Name', 'Element Name');
-                        $elementSetName = $data[0];
-                        $elementName = $data[1];
-                        $element = $elementTable->findByElementSetNameAndElementName($elementSetName, $elementName);
-                        if (empty($element)) {
-                            $msg = __('Element "%s" is not found in element set "%s".', $elementName, $elementSetName);
-                            $this->_helper->flashMessenger($msg, 'error');
-                            $hasError = true;
-                        }
-                    }
-                }
-            }
-        }
 
         // Check required columns.
         foreach ($this->session->columnNames as $columnName) {
@@ -393,7 +244,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             }
         }
         if (!empty($requiredColumns)) {
-            $msg = __('Columns "%s" are required with the format "%s".', implode('", "', $requiredColumns), $this->session->format);
+            $msg = __('Columns "%s" are required.', implode('", "', $requiredColumns));
             $this->_helper->flashMessenger($msg, 'error');
             $hasError = true;
         }
@@ -407,48 +258,45 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             }
         }
         if (!empty($forbiddenColumnsCheck)) {
-            $msg = __('Columns "%s" are forbidden with the format "%s".', implode('", "', $forbiddenColumnsCheck), $this->session->format);
+            $msg = __('Columns "%s" are forbidden.', implode('", "', $forbiddenColumnsCheck));
             $this->_helper->flashMessenger($msg, 'error');
             $hasError = true;
         }
 
-        // Special check for Manage format : the column from the IdentfierField
-        // is required when there is no IdentifierField column (else the check
-        // is done during import).
-        if ($this->session->format == 'Manage') {
-            if (!in_array('Identifier', $this->session->columnNames)
-                    && !in_array('IdentifierField', $this->session->columnNames)
-                ) {
-                $identifierField = $this->session->identifierField;
-                if (empty($identifierField)) {
-                    $msg = __('There is no "IdentifierField" column or a default identifier field.', $this->session->identifierField);
-                    $this->_helper->flashMessenger($msg, 'error');
-                    $hasError = true;
-                }
-                elseif ($identifierField != 'internal id') {
-                    $elementField = $identifierField;
-                    if (is_numeric($identifierField)) {
-                        $element = get_record_by_id('Element', $identifierField);
-                        if (!$element) {
-                            $msg = __('The identifier field "%s" does not exist.', $this->session->identifierField);
-                            $this->_helper->flashMessenger($msg, 'error');
-                            $hasError = true;
-                        }
-                        else {
-                            $elementField = $element->set_name . ':' . $element->name;
-                        }
-                    }
-                    if (!in_array($elementField, $this->session->columnNames)) {
-                        $msg = __('There is no "IdentifierField" column or the default "%s" column.', $elementField);
+        // The column from the IdentfierField is required when there is no
+        // IdentifierField column (else the check is done during import).
+        if (!in_array('Identifier', $this->session->columnNames)
+                && !in_array('IdentifierField', $this->session->columnNames)
+            ) {
+            $identifierField = $this->session->identifierField;
+            if (empty($identifierField)) {
+                $msg = __('There is no "IdentifierField" column or a default identifier field.', $this->session->identifierField);
+                $this->_helper->flashMessenger($msg, 'error');
+                $hasError = true;
+            }
+            elseif ($identifierField != 'internal id') {
+                $elementField = $identifierField;
+                if (is_numeric($identifierField)) {
+                    $element = get_record_by_id('Element', $identifierField);
+                    if (!$element) {
+                        $msg = __('The identifier field "%s" does not exist.', $this->session->identifierField);
                         $this->_helper->flashMessenger($msg, 'error');
                         $hasError = true;
                     }
+                    else {
+                        $elementField = $element->set_name . ':' . $element->name;
+                    }
+                }
+                if (!in_array($elementField, $this->session->columnNames)) {
+                    $msg = __('There is no "IdentifierField" column or the default "%s" column.', $elementField);
+                    $this->_helper->flashMessenger($msg, 'error');
+                    $hasError = true;
                 }
             }
         }
 
         if ($hasError) {
-            $msg = __('The file has error with format "%s", or parameters are not adapted to it. Check them.', $this->session->format);
+            $msg = __('The file has error, or parameters are not adapted. Check them.');
             $this->_helper->flashMessenger($msg, 'info');
             $this->_helper->redirector->goto('index');
         }
@@ -461,189 +309,103 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
      */
     public function omekaCsvAction()
     {
-        $format = $this->session->format;
-        // Specify the export format's file and tag delimiters.
-        switch ($format) {
-            case 'Manage':
-                $elementDelimiter = $this->session->elementDelimiter;
-                $tagDelimiter = $this->session->tagDelimiter;
-                $fileDelimiter = $this->session->fileDelimiter;
-                $itemTypeId = $this->session->itemTypeId;
-                $collectionId = $this->session->collectionId;
-                $isPublic = $this->session->recordsArePublic;
-                $isFeatured = $this->session->recordsAreFeatured;
-                $isHtml = $this->session->elementsAreHtml;
-                $identifierField = $this->session->identifierField;
-                $createCollections = true;
-                $containsExtraData = $this->session->containsExtraData;
-                if ($containsExtraData == 'manual') {
-                    $containsExtraData = 'no';
-                }
-                break;
-            case 'Report':
-                // Do not allow the user to specify it.
-                $tagDelimiter = ',';
-                $fileDelimiter = ',';
-                $itemTypeId = null;
-                $collectionId = null;
-                $action = null;
-                $identifierField = null;
-                $isPublic = null;
-                $isFeatured = null;
-                // Nevertheless, user can choose to import all elements as html
-                // or as raw text.
-                $isHtml = (boolean) $this->session->elementsAreHtml;
-                $createCollections = false;
-                $containsExtraData = 'no';
-                break;
-            // Deprecated.
-            case 'Mix':
-            case 'Update':
-                $elementDelimiter = $this->session->elementDelimiter;
-                $tagDelimiter = $this->session->tagDelimiter;
-                $fileDelimiter = $this->session->fileDelimiter;
-                $itemTypeId = $this->session->itemTypeId;
-                $collectionId = $this->session->collectionId;
-                $isPublic = $this->session->recordsArePublic;
-                $isFeatured = $this->session->recordsAreFeatured;
-                $isHtml = $this->session->elementsAreHtml;
-                $action = null;
-                $identifierField = null;
-                $createCollections = $this->session->createCollections;
-                $containsExtraData = $this->session->containsExtraData;
-                if ($containsExtraData == 'manual') {
-                    $containsExtraData = 'no';
-                }
-                break;
-            default:
-                $this->_helper->flashMessenger(__('Invalid call.'), 'error');
-                $this->_helper->redirector->goto('index');
+        $elementDelimiter = $this->session->elementDelimiter;
+        $tagDelimiter = $this->session->tagDelimiter;
+        $fileDelimiter = $this->session->fileDelimiter;
+        $itemTypeId = $this->session->itemTypeId;
+        $collectionId = $this->session->collectionId;
+        $isPublic = $this->session->recordsArePublic;
+        $isFeatured = $this->session->recordsAreFeatured;
+        $isHtml = $this->session->elementsAreHtml;
+        $identifierField = $this->session->identifierField;
+        $containsExtraData = $this->session->containsExtraData;
+        if ($containsExtraData == 'manual') {
+            $containsExtraData = 'no';
         }
 
         $headings = $this->session->columnNames;
         $columnMaps = array();
         $isSetIdentifier = false;
+        $unknowColumns = array();
         foreach ($headings as $heading) {
             switch ($heading) {
                 case 'Identifier':
                     $columnMaps[] = new CsvImport_ColumnMap_Identifier($heading);
                     $isSetIdentifier = true;
                     break;
-                // Deprecated.
-                case 'sourceItemId':
-                    $columnMaps[] = new CsvImport_ColumnMap_SourceItemId($heading);
-                    break;
-                // Deprecated.
-                case 'updateMode':
-                    $columnMaps[] = new CsvImport_ColumnMap_UpdateMode($heading);
-                    break;
                 case 'Action':
                     $columnMaps[] = new CsvImport_ColumnMap_Action($heading, $action);
                     break;
+                case 'Identifier Field':
                 case 'IdentifierField':
                     $columnMaps[] = new CsvImport_ColumnMap_IdentifierField($heading, $identifierField);
                     break;
-                // Deprecated.
-                case 'updateIdentifier':
-                    $columnMaps[] = new CsvImport_ColumnMap_UpdateIdentifier($heading);
-                    break;
+                case 'Record Type':
                 case 'RecordType':
-                // Deprecated.
-                case 'recordType':
                     $columnMaps[] = new CsvImport_ColumnMap_RecordType($heading);
                     break;
-                // Deprecated.
-                case 'recordIdentifier':
-                    $columnMaps[] = new CsvImport_ColumnMap_RecordIdentifier($heading);
-                    break;
+                case 'Item Type':
                 case 'ItemType':
-                // Used by Csv Report.
-                case 'itemType':
                     $columnMaps[] = new CsvImport_ColumnMap_ItemType($heading, $itemTypeId);
                     break;
                 case 'Item':
                     $columnMaps[] = new CsvImport_ColumnMap_Item($heading);
                     break;
                 case 'Collection':
-                // Used by Csv Report, Mixed and Update.
-                case 'collection':
-                    $columnMaps[] = new CsvImport_ColumnMap_Collection($heading,
-                        $collectionId,
-                        $createCollections,
-                        $format == 'Manage');
+                    $columnMaps[] = new CsvImport_ColumnMap_Collection($heading, $collectionId);
                     break;
                 case 'Public':
-                // Used by Csv Report.
-                case 'public':
                     $columnMaps[] = new CsvImport_ColumnMap_Public($heading, $isPublic);
                     break;
                 case 'Featured':
-                // Used by Csv Report.
-                case 'featured':
                     $columnMaps[] = new CsvImport_ColumnMap_Featured($heading, $isFeatured);
                     break;
                 case 'Tags':
-                // Used by Csv Report.
-                case 'tags':
                     $columnMaps[] = new CsvImport_ColumnMap_Tag($heading, $tagDelimiter);
                     break;
-                // Deprecated.
-                case 'fileUrl':
-                    $columnMaps[] = new CsvImport_ColumnMap_File($heading, '', true);
-                    break;
                 case 'File':
-                // Used by Csv Report.
-                case 'file':
+                case 'Files':
                     $columnMaps[] = new CsvImport_ColumnMap_File($heading, $fileDelimiter);
                     break;
                 // Default can be a normal element or, if not, an extra data
                 // element that can be added via the hook csv_import_extra_data.
-                // This doesn't work with "Report" format.
                 default:
-                    switch ($format) {
-                        case 'Report':
-                            $columnMap = new CsvImport_ColumnMap_ExportedElement($heading);
-                            $options = array(
-                                'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
-                                'elementDelimiter' => $elementMap::DEFAULT_ELEMENT_DELIMITER,
-                                'isHtml' => $isHtml,
-                            );
-                            break;
-                        case 'Manage':
-                        // Deprecated.
-                        case 'Mix':
-                        case 'Update':
-                            $columnMap = new CsvImport_ColumnMap_MixElement($heading, $elementDelimiter);
-                            // If extra data are not used or if this is an element.
-                            if ($containsExtraData != 'yes' || $columnMap->getElementId()) {
-                                $options = array(
-                                    'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
-                                    'elementDelimiter' => $elementDelimiter,
-                                    'isHtml' => $isHtml,
-                                );
-                            }
-                            // Allow extra data when this is not a true element.
-                            else {
-                                $columnMap = new CsvImport_ColumnMap_ExtraData($heading, $elementDelimiter);
-                                $options = array(
-                                    'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
-                                    'elementDelimiter' => $elementDelimiter,
-                                );
-                            }
+                    // Here, column names are already checked.
+                    $columnMap = new CsvImport_ColumnMap_MixElement($heading, $elementDelimiter);
+                    // If this is an element.
+                    $columnElementId = $columnMap->getElementId();
+                    if ($columnElementId) {
+                        $options = array(
+                            'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
+                            'elementDelimiter' => $elementDelimiter,
+                            'isHtml' => $isHtml,
+                        );
+                    }
+                    // Allow extra data when this is not a true element.
+                    elseif ($containsExtraData == 'yes') {
+                        $columnMap = new CsvImport_ColumnMap_ExtraData($heading, $elementDelimiter);
+                        $options = array(
+                            'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
+                            'elementDelimiter' => $elementDelimiter,
+                        );
+                    }
+                    // Illegal unknown column.
+                    elseif ($containsExtraData == 'no') {
+                        $unknowColumns[] = $heading;
+                    }
+                    // Else ignore the column.
 
-                            // Memorize the identifier if needed, after cleaning.
-                            if ($format == 'Manage' && $isSetIdentifier === false) {
-                                $cleanHeading = explode(
-                                    CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
-                                    $heading);
-                                $cleanHeading = implode(CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
-                                    array_map('trim', $cleanHeading));
-                                if ($identifierField == $cleanHeading) {
-                                    $isSetIdentifier = null;
-                                    $identifierHeading = $heading;
-                                }
-                            }
-                            break;
+                    // Memorize the identifier if needed, after cleaning.
+                    if ($isSetIdentifier === false) {
+                        $cleanHeading = explode(
+                            CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
+                            $heading);
+                        $cleanHeading = implode(CsvImport_ColumnMap_MixElement::DEFAULT_COLUMN_NAME_DELIMITER,
+                            array_map('trim', $cleanHeading));
+                        if ($identifierField == $cleanHeading) {
+                            $isSetIdentifier = null;
+                            $identifierHeading = $heading;
+                        }
                     }
                     $columnMap->setOptions($options);
                     $columnMaps[] = $columnMap;
@@ -651,19 +413,22 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             }
         }
 
-        // Manage requires et special check;
-        if ($format == 'Manage') {
-            // Manage format require that a column for identifier, but this
-            // canbe any column, specially Dublin Core:Identifier.
-            if ($isSetIdentifier === null) {
-                $columnMaps[] = new CsvImport_ColumnMap_Identifier($identifierHeading);
-                $isSetIdentifier = true;
-            }
-            if (!$isSetIdentifier) {
-                $msg = __('There is no "Identifier" or identifier field "%s" column.', $identifierField);
-                $this->_helper->flashMessenger($msg, 'error');
-                $this->_helper->redirector->goto('index');
-            }
+        if ($unknowColumns) {
+            $msg = __('Columns "%s" are unknown.', implode('", "', $unknowColumns));
+            $this->_helper->flashMessenger($msg, 'error');
+            $this->_helper->redirector->goto('index');
+        }
+
+        // A column for identifier is required. It can be any column, specially
+        // Dublin Core:Identifier.
+        if ($isSetIdentifier === null) {
+            $columnMaps[] = new CsvImport_ColumnMap_Identifier($identifierHeading);
+            $isSetIdentifier = true;
+        }
+        if (!$isSetIdentifier) {
+            $msg = __('There is no "Identifier" or identifier field "%s" column.', $identifierField);
+            $this->_helper->flashMessenger($msg, 'error');
+            $this->_helper->redirector->goto('index');
         }
 
         $this->session->columnMaps = $columnMaps;
@@ -684,22 +449,9 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         $defaultValues[CsvImport_ColumnMap::TYPE_COLLECTION] = $this->session->collectionId;
         $defaultValues[CsvImport_ColumnMap::TYPE_PUBLIC] = $this->session->recordsArePublic;
         $defaultValues[CsvImport_ColumnMap::TYPE_FEATURED] = $this->session->recordsAreFeatured;
-        switch ($this->session->format) {
-            case 'Manage':
-                $defaultValues[CsvImport_ColumnMap::TYPE_ACTION] = $this->session->action;
-                $defaultValues[CsvImport_ColumnMap::TYPE_IDENTIFIER_FIELD] = $this->session->identifierField;
-                $defaultValues['createCollections'] = true;
-                break;
-            case 'Report':
-                $defaultValues['createCollections'] = false;
-                break;
-            case 'Mix':
-            case 'Update':
-                $defaultValues['createCollections'] = $this->session->createCollections;
-                break;
-            default:
-                $defaultValues['createCollections'] = false;
-        }
+        $defaultValues[CsvImport_ColumnMap::TYPE_ACTION] = $this->session->action;
+        $defaultValues[CsvImport_ColumnMap::TYPE_IDENTIFIER_FIELD] = $this->session->identifierField;
+
         // This value is not a value of the table, but is used to keep track of
         // the current loop with Amazon S3. See CsvImport_ImportTask::perform().
         $defaultValues['amazonS3CurrentLoop'] = 0;
@@ -875,10 +627,8 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
     protected function _sessionIsValid()
     {
         $requiredKeys = array(
-            'format',
             'itemTypeId',
             'collectionId',
-            'createCollections',
             'recordsArePublic',
             'recordsAreFeatured',
             'elementsAreHtml',
