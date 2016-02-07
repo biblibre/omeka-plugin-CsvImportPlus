@@ -269,7 +269,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
             $db->query($sql);
         }
 
-        if (version_compare($oldVersion, '2.1.3-full', '<=')) {
+        if (version_compare($oldVersion, '2.1.3-full', '<')) {
             $sql = "
                 CREATE TABLE IF NOT EXISTS `{$db->CsvImport_Log}` (
                     `id` int(10) unsigned NOT NULL auto_increment,
@@ -284,7 +284,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
             $db->query($sql);
         }
 
-        if (version_compare($oldVersion, '2.1.4-full', '<=')) {
+        if (version_compare($oldVersion, '2.1.4-full', '<')) {
             $sql = "
                 ALTER TABLE `{$db->CsvImport_Log}`
                 ADD COLUMN `params` text DEFAULT NULL
