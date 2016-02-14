@@ -24,6 +24,20 @@ class CsvImport_Form_Mapping extends Omeka_Form
     private $_isFeatured;
     private $_elementsAreHtml;
 
+    protected $_specialValues = array(
+        'Tags' => 'Tags',
+        'Collection' => 'Collection (for item)',
+        'Item' => 'Item (for file)',
+        'File' => 'Files',
+        'Public' => 'Public',
+        'Featured' => 'Featured',
+        'Action' => 'Action',
+        'Record Type' => 'Record Type',
+        'Item Type' => 'Item Type',
+        'Identifier Field' => 'Identifier Field',
+        'Identifier' => 'Identifier',
+    );
+
     /**
      * Initialize the form.
      */
@@ -34,19 +48,7 @@ class CsvImport_Form_Mapping extends Omeka_Form
         $this->setMethod('post');
 
         $elementsByElementSetName = $this->_getElementPairs(true);
-        $special = label_table_options(array(
-            'Tags' => 'Tags',
-            'Collection' => 'Collection (for item)',
-            'Item' => 'Item (for file)',
-            'File' => 'Files',
-            'Public' => 'Public',
-            'Featured' => 'Featured',
-            'Action' => 'Action',
-            'RecordType' => 'Record type',
-            'itemType' => 'Item type',
-            'IdentifierField' => 'Identifier field',
-            'Identifier' => 'Identifier',
-        ));
+        $specialValues = label_table_options($this->_specialValues);
 
         $elementsByElementSetName = label_table_options($elementsByElementSetName);
 
@@ -70,11 +72,11 @@ class CsvImport_Form_Mapping extends Omeka_Form
                 'special',
                 array(
                     'class' => 'map-element',
-                    'multiOptions' => $special,
+                    'multiOptions' => $specialValues,
                     'multiple' => false, // see ZF-8452
             ));
             // $specialElement->setIsArray(true);
-            $specialElement->setValue($this->_getSpecialValue($colName, $special));
+            $specialElement->setValue($this->_getSpecialValue($colName));
             $rowSubForm->addElement($specialElement);
             $rowSubForm->addElement('checkbox', 'extra_data', array(
                 'label' => __('Extra data'),
@@ -127,15 +129,25 @@ class CsvImport_Form_Mapping extends Omeka_Form
         return $element;
     }
 
-    protected function _getSpecialValue($colName, $special)
+    protected function _getSpecialValue($colName)
     {
+        $special = $this->_specialValues;
+
+        // For compatibility purpose with old files.
+        $special['RecordType'] = 'Record Type';
+        $special['ItemType'] = 'Item Type';
+        $special['IdentifierField'] = 'Identifier Field';
+
         $array = array_combine(array_keys($special), array_map('strtolower', array_keys($special)));
         $result = array_search(strtolower($colName), $array);
         if ($result) {
+            if (in_array($colName, array('RecordType', 'ItemType', 'IdentifierField'))) {
+                $result = $special[$result];
+            }
             return $result;
         }
         if (strtolower($colName) == strtolower($this->_identifierField)) {
-            return $colName;
+            return 'Identifier';
         }
     }
 
