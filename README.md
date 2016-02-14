@@ -161,19 +161,15 @@ tests.
     With "Manage", cf. #1. If extra data is set to "No", then the second step
     will be skipped.
 
-4. `test_files_metadata.csv` (`test_files_metadata_manage.csv`)
+4. `test_files_metadata.csv`
 
     A file used to import metadata of files. To try it, you should import items
-    before with any of previous csv files, select `tabulation` as column
-    delimiter, no enclosure, and `|` as element, file and tag delimiters, and
-    check `File metadata` in the first form and `Filename` in the first row of
-    the second form.
-
-    This file is not importable by the format 'Manage". A column "Identifier Field"
-    should be added with "original filename" as content, for each row. Then,
-    select "no identifier field" and "perhaps", then set the special values
-    "identifier field" to the identifier field and "Identifier" to the filename.
-    See `test_files_metadata.csv`.
+    before with any of the previous csv files, select `tabulation` as column
+    delimiter, no enclosure, and `|` as element, file and tag delimiters. Then,
+    you can import it manually or automatically. If manually, set "Perhaps" for
+    extra data, then the special values "identifier field" to the identifier field and
+    "Identifier" to the filename. If automatically, simply set "No" or "Yes" for
+    the extra data.
 
 5. `test_mixed_records.csv`
 
@@ -319,8 +315,8 @@ release for the other formats.
     The column "Item" is required to identify the item to which the file is
     attached. It contains the same identifier as above.
 
-To import metadata of files alone, the column "Identifier Field" and "File" are
-required.
+    To import metadata of files alone, the column "Identifier Field" and "File"
+    are required.
 
 2. `Omeka Csv Report`
 
