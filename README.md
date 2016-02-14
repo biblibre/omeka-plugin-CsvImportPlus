@@ -111,13 +111,9 @@ incompatible with this one, so change their headers to process them. Generally,
 to set the "Dublin Core : Title" of "Dublin Core : Identifier" as the required
 identifier is enough to process a test.
 
-Fourteen examples of csv files are available in the csv_files folder. They are
+Fifteen examples of csv files are available in the csv_files folder. They are
 many because a new one is built for each new feature. The last ones uses all of
 them.
-
-They can be all imported with all formats (except "Omeka Report"). For this, you
-should select the manual mode. This is the only one for "Item" and "Files", but
-optional for others, with the parameter "Contains extra data".
 
 Some files may be updated with a second file to get full data. This is just to
 have some examples.
@@ -131,23 +127,16 @@ tests.
 
     A basic list of three books with images of Wikipedia, with non Dublin Core
     tags. To try it, you just need to check `Item metadata`, to use the default
-    delimiters `,` and enclosure `"`.
-
-    With "Manage", choose the identifier field "Dublin Core : Title" and extra
-    data "Perhaps", so a manual mapping will be done, where the special value
-    "Identifier" will be set to the title.
+    delimiters `,` and enclosure `"`. The identifier field is "Dublin Core : Title"
+    and extra data are "Perhaps", so a manual mapping will be done, where the
+    special value "Identifier" will be set to the title.
 
 2. `test_automap.csv`
 
     The same list with some Dublin Core attributes in order to automap the
     columns with the Omeka fields. To try it, use the same parameter than the
-    previous file and check option `Automap column`.
-
-    Note that even you don't use the Automap option, the plugin will try to get
-    matching columns if field names are the same in your file and in the
-    drop-down list.
-
-    With "Manage", cf. #1.
+    previous file. The plugin will try to get matching columns if field names
+    are the same in your file and in the drop-down list.
 
 3. `test_special_delimiters.csv`
 
@@ -158,7 +147,7 @@ tests.
     - Tag delimiter: double space
     - File delimiter: semi-colon
 
-    With "Manage", cf. #1. If extra data is set to "No", then the second step
+    Extra data can be set to "Perhaps". If set to "No", then the second step
     will be skipped.
 
 4. `test_files_metadata.csv`
@@ -181,7 +170,7 @@ tests.
     Note: in the csv file, the file rows should always be after the item to
     which they are attached, else they are skipped.
 
-    This file is not compatible with the release 2.2 (no metadata for files).
+    This file is not compatible with the release 2.2 for an automatic import.
 
 6. `test_mixed_records_update.csv`
 
@@ -189,7 +178,7 @@ tests.
     import `test_mixed_recods.csv` above first, then choose this file and check
     `Update records` in the form.
 
-    This file is not compatible with the release 2.2 (no metadata for files).
+    This file is not compatible with the release 2.2 for an automatic import.
 
 7. `test_collection.csv`
 
@@ -252,146 +241,69 @@ tests.
     like a script where each row is processed one by one, with a different
     action for each row.
 
-    To try them, you may install [Geolocation] and to check `Manage Records`
-    with `tabulation` as column delimiter, no enclosure, `|` as element, file,
-    and tag delimiters, and `Dublin Core:Identifier` as the field identifier.
+    To try them, you may install [Geolocation] and to use `tabulation` as column
+    delimiter, no enclosure, `|` as element, file, and tag delimiters, and
+    `Dublin Core:Identifier` as the field identifier.
     If you import them manually, the special value "Identifier" should be set
     too for the Dublin Core:Identifier, so this column will be used as
     identifier and as a metadata. The third should be imported after the first
     and the second to see changes.
 
 
-Formats
--------
+CSV Format
+----------
 
-Only the first format is available since the version 2.2-full. Use the upstream
-release for the other formats.
+Since the version 2.2-full, only one format is available. Use the upstream
+release for the other formats, or the release tagged "2.1.5-full", that is the
+last with all formats (but fixed bug aren't backported).
 
-1. `Manage Records`
+Anyway, this format, previously named `Manage records`, allows to manage
+creation, update and deletion of all records with the same file, or different
+ones if you want. See below for possible actions.
 
-    `Manage records` allows to manage creation, update and deletion of all
-    records with the same file (or different ones if you want). See below for
-    possible actions.
+Be warned that if you use always the same csv file and that you update records
+from the Omeka admin board too, they can be desynchronized and overwritten.
 
-    Be warned that if you use always the same csv file and that you update
-    records from the Omeka admin board too, they can be desynchronized and
-    overwritten.
+Each row is independant from the other. So a file can be imported before an item
+and an item in a collection that doesn't exist yet.
 
-    Each row is independant from the other. So a file can be imported before an
-    item and an item in a collection that doesn't exist yet.
+Three columns may be used to identify records between the csv file and Omeka. If
+they are not present, the default values will be used.
 
-    Three columns may be used to identify records between the csv file and
-    Omeka. If they are not present, the default values will be used.
+- `Identifier`
+All records should have a unique identifier. According to `IdentifierField`
+column or the default parameter, it can be an internal id or any other metadata
+field. It can be a specific identifier of the current file too, but in that
+case, the identifier is available only for the current import.
+When the identifier field is a metadata, this column is optional as long as this
+metadata has got a column.
+If it is empty and identifier is not set in a metadata column, the only
+available action is "Create". If the record doesn't exist when updating, the row
+will be skipped.
+Note: When the mapping is done manually and when the field is a metadata, the
+column should be mapped twice, one as a metadata and the second as a special
+value "Identifier".
 
-    - `Identifier`
-    All records should have a unique identifier. According to `IdentifierField`
-    column or the default parameter, it can be an internal id or any other
-    metadata field. It can be a specific identifier of the current file too, but
-    in that case, the identifier is available only for the current import.
-    When the identifier field is a metadata, this column is optional as long as
-    this metadata has got a column.
-    If it is empty and identifier is not set in a metadata column, the only
-    available action is "Create". If the record doesn't exist when updating, the
-    row will be skipped.
-    Note: When the mapping is done manually and when the field is a metadata,
-    the column should be mapped twice, one as a metadata and the second as a
-    special value "Identifier".
+- `Identifier Field`
+This column is optional: by default, the identifier field is set in the main
+form. It should be unique, else only the first existing record will be updated.
+It can be the "internal id" of the record in Omeka. Recommendation is to use a
+specific field, in particular "Dublin Core:Identifier" or an added internal
+field. Files can be identified by their "original filename", Omeka "filename"
+and "md5" authentication sum too.
 
-    - `IdentifierField`
-    This column is optional: by default, the identifier field is set in the main
-    form. It should be unique, else only the first existing record will be
-    updated. It can be the "internal id" of the record in Omeka. Recommendation
-    is to use a specific field, in particular "Dublin Core:Identifier" or an
-    added internal field. Files can be identified by their "original filename",
-    Omeka "filename" and "md5" authentication sum too.
+- `Record Type`
+The record type can be "Collection", "Item" or "File". "Any" can be used only
+when identifier is not the internal id and when the identifier is unique accross
+all records. If empty, the record type is determined according to other columns
+when possible. If not, the record is an item. This column is recommended to
+avoid useless processing.
 
-    - `RecordType`
-    The record type can be "Collection", "Item" or "File". "Any" can be used
-    only when identifier is not the internal id and when the identifier is
-    unique accross all records. If empty, the record type is determined
-    according to other columns when possible. If not, the record is an item.
-    This column is recommended to avoid useless processing.
+The column "Item" is required to identify the item to which the file is
+attached. It contains the same identifier as above.
 
-    The column "Item" is required to identify the item to which the file is
-    attached. It contains the same identifier as above.
-
-    To import metadata of files alone, the column "Identifier Field" and "File"
-    are required.
-
-2. `Omeka Csv Report`
-
-    This is an internal format of Omeka, that you can use if you have such a
-    file.
-
-3. `Items`
-
-    This is not really a format, because you can map manually any csv file in a
-    second step. See file example `test.csv` or `test_automap.csv.
-
-4. `Files metadata`
-
-    This format allows to update existing files with metadata. The files should
-    exist already. So, they should have been added or imported previously.
-
-    Files can be identified with their "internal id", their "original filename",
-    their Omeka "filename" or their md5 sum. If used, tjhe filename should be
-    unique to avoid update of a vrong file.
-
-    Like for `Items`, the names of the headers are free because a manual mapping
-    is made in a second step.
-
-    Because this format updates and overrides existing data if any, it cannot be
-    undone, but you can update data muliple times.
-
-5. `Mixed records` (deprecated)
-
-    The formats `Mixed records` and `Update` have been deprecated and replaced
-    by `Manage records`, that is simpler and more resilient.
-
-    The columns they use are the next ones.
-
-    - `sourceItemId` (removed)
-    Allows to set the relation between a file and an item. This is needed only
-    when files are imported separately.
-
-    - `recordType` (replaced by `RecordType`, see above)
-    This column is needed only when files that are attached to an item are
-    imported separately in order to add their metadata or to avoid a server
-    overload or timeout. If you don't use this column and want to import a file
-    separately, the file column header should be "fileUrl" or manually mapped to
-    "Zero or one file".
-
-    The mapping can be done manually in a second step if wished.
-
-    Files can be imported as in `Items`, with multiple paths or urls in the same
-    column and with other metadata of the item, or separately, with one file by
-    row, that can avoid avoid server overload or timeout when attached files are
-    big or many. To attach a file to an item with `Update`, use the column name
-    `file`.
-
-6. `Update records` (deprecated)
-
-    This format is the same than `Mixed records`, except it adds optional
-    columns.
-
-    - `updateMode` (replaced by `Action`, see below)
-    Only "Update" (default), "Add" and "Replace" modes are available. The
-    default is "Update".
-
-    - `recordIdentifier` (replaced by `Identifier`)
-    This column is mandatory when files are imported separately from the items.
-    According to `updateIdentifier` column, it can be an internal id or anything
-    else. If the record doesn't exist, the row is skipped.
-
-    - `updateIdentifier` (replaced by `IdentifierField`)
-    This column is optional: by default, the identifier is the "internal id"
-    of the record. If another one is used, for example "Dublin Core:Identifier",
-    "Dublin Core:Title", it should be unique, else only the first existing
-    record will be updated (at least unique for the record type). Files can be
-    identified too by their "original filename", Omeka "filename" and "md5" sum.
-
-    Because this format updates and overrides existing data if any, it cannot be
-    undone, but you can update data muliple times.
+To import metadata of files alone, the column "Identifier Field" and "File" are
+required.
 
 
 Notes
@@ -445,15 +357,13 @@ usually because of a bad url or a bad formatted row. You can check `error.log`
 for information.
 
 The count of imported records can be different from the number of rows, because
-some rows can be update ones. Furthermore, with "Manage" format, multiple
-records can be created with one row. Files attached directly to items are not
-counted.
+some rows can be update ones. Furthermore, multiple records can be created with
+one row. Files attached directly to items are not counted.
 
-* Available actions with `Manage` format
+* Available actions
 
-The column `Action` used with the `Manage` format allows to set the action to do
-for the current row. This parameter is optional and can be set in the first step
-of import.
+The column `Action` allows to set the action to do for the current row. This
+parameter is optional and can be set in the first step of import.
 
 The actions can be (not case sensitive):
     - Empty or "Update else create" (default): Update the record if it exists, else
@@ -476,8 +386,6 @@ in order to not be overwritten (this is the case for the [Geolocation] plugin).
 * Management of extra data
 
 Extra data are managed by plugins, so some differences should be noted.
-    - The formats `Manage records` should be used. `Mixed records` and
-    `Update records` can process them too.
     - The `Contains extra data` parameter should be set to "Yes" or "Manual".
     - The header of each extra data column should be the name used in the manual
     standard form.
