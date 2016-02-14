@@ -1016,16 +1016,29 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         $recordMetadata = $this->_getItemMetadataFromMappedRow();
 
-        // Create collection if needed.
+        // Set collection if needed.
         $collectionId = $this->_getMappedValue(CsvImport_ColumnMap::TYPE_COLLECTION);
         if (!empty($collectionId)
                 && empty($recordMetadata[Builder_Item::COLLECTION_ID])
             ) {
-            $collection = $this->_createRecordFromIdentifier(
-                $collectionId,
-                'Collection',
-                $this->_defaultValues['IdentifierField']);
-            if ($collection) {
+            // Normally, the collection should exist, but it may be deleted
+            // since the beginning of the import.
+            $collection = get_record_by_id('Collection', $collectionId);
+            if (empty($collection)) {
+                $collection = $this->_createRecordFromIdentifier(
+                    $collectionId,
+                    'Collection',
+                    $this->_defaultValues['IdentifierField']);
+            }
+            // If no collection, this is an error.
+            if (empty($collection)) {
+                $this->_log('Unable to set the collection "%1$s".',
+                    array(
+                        $collectionId,
+                    ), Zend_Log::WARN);
+            }
+            // Set the collection.
+            else {
                 $recordMetadata[Builder_Item::COLLECTION_ID] = $collection->id;
             }
         }

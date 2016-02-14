@@ -204,10 +204,18 @@ tests.
 
 8. `test_collection_update.csv`
 
-    Update metadata of a collection. Parameters are the same as in the previous
-    file.
+    Update metadata of a collection.
 
-9. `test_extra_data.csv`
+    Parameters are the same as in the previous file.
+
+9. `test_collection_update_bis.csv`
+
+    Insert a new item in a collection selected in the form.
+
+    Parameters are the same as in the previous file, but set a default
+    collection.
+
+10. `test_extra_data.csv`
 
     Show import of extra data that are not managed as elements, but as data in
     a specific table. The mechanism processes data as post, so it can uses the
@@ -224,22 +232,22 @@ tests.
     be removed). This simpler format can be used if you don't need files
     metadata or if you don't have a lot of files attached to each item.
 
-10. `test_extra_data_manual.csv`
+11. `test_extra_data_manual.csv`
 
     This file has the same content than the previous, but header are not set, so
     you should set "Contains extra data" to "Perhaps" to map them to the Omeka
     metadata. Note that extra data should kept their original headers.
 
-11. `test_extra_data_update.csv`
+12. `test_extra_data_update.csv`
 
     Show update of extra data. To test it, you need to import one of the two
     previous files first, then this one, with the same parameters.
 
-12. `test_manage_one.csv`
+13. `test_manage_one.csv`
 
-13. `test_manage_two.csv`
+14. `test_manage_two.csv`
 
-14. `test_manage_script.csv`
+15. `test_manage_script.csv`
 
     These files show how to use the "Manage" process. They don't use a specific
     column, but any field. So, each row is independant from others.
