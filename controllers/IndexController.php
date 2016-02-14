@@ -318,6 +318,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
         $isFeatured = $this->session->recordsAreFeatured;
         $isHtml = $this->session->elementsAreHtml;
         $identifierField = $this->session->identifierField;
+        $action = $this->session->action;
         $containsExtraData = $this->session->containsExtraData;
         if ($containsExtraData == 'manual') {
             $containsExtraData = 'no';
