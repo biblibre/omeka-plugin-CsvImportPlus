@@ -197,18 +197,15 @@ tests.
 
 7. `test_collection.csv`
 
-    Add an item into a new collection. A created collection is not removed if an
-    error occurs during import. Parameters are `Mixed records`, `tabulation` as
-    column delimiter, no enclosure and `|` as element, file and tag delimiters.
-
-    This file is not compatible with the release 2.2 (no metadata for files).
+    Add two items into a new collection. A created collection is not removed if
+    an error occurs during import. Parameters are `tabulation` as column
+    delimiter, no enclosure and `|` as element, file and tag delimiters. The
+    identifier is "Dublin Core : Identifier".
 
 8. `test_collection_update.csv`
 
     Update metadata of a collection. Parameters are the same as in the previous
-    file, except format.
-
-    This file is not compatible with the release 2.2 (no metadata for files).
+    file.
 
 9. `test_extra_data.csv`
 
