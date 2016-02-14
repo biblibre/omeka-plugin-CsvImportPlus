@@ -1609,6 +1609,14 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                     $field = 'authentication';
                 }
                 $record = get_db()->getTable('File')->findBySql($field . ' = ?', array($identifier), true);
+                if (empty($record)
+                        && $field == 'original_filename'
+                        // && plugin_is_active('ArchiveRepertory')
+                        && get_option('archive_repertory_file_base_original_name')
+                        && basename($identifier) != ''
+                    ) {
+                    $record = get_db()->getTable('File')->findBySql($field . ' = ?', array(basename($identifier)), true);
+                }
             }
         }
         // Record identifier is an existing element text or an internal
