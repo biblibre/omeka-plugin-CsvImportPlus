@@ -70,7 +70,7 @@ class CsvImport_Form_Main extends Omeka_Form
         ));
 
         $identifierField = get_option('csv_import_identifier_field');
-        if (!empty($identifierField) && $identifierField != 'internal id') {
+        if (!empty($identifierField) && $identifierField != 'table id' && $identifierField != 'internal id') {
             $currentIdentifierField = $this->_getElementFromIdentifierField($identifierField);
             if ($currentIdentifierField) {
                 $identifierField = $currentIdentifierField->id;
@@ -82,6 +82,7 @@ class CsvImport_Form_Main extends Omeka_Form
         ));
         $values = array(
             '' => __('No default identifier field'),
+            'table id' => __('Table identifier'),
             'internal id' => __('Internal id'),
             // 'filename' => __('Imported filename (to import files only)'),
             // 'original filename' => __('Original filename (to import files only)'),
@@ -204,8 +205,7 @@ class CsvImport_Form_Main extends Omeka_Form
         $byteSize->setType(Zend_Measure_Binary::BYTE);
 
         $fileValidators = array(
-            new Zend_Validate_File_Size(array(
-                'max' => $byteSize->getValue())),
+            new Zend_Validate_File_Size(array('max' => $byteSize->getValue())),
             new Zend_Validate_File_Count(1),
         );
         if ($this->_requiredExtensions) {
@@ -216,8 +216,7 @@ class CsvImport_Form_Main extends Omeka_Form
             $fileValidators[] =
                 new Omeka_Validate_File_MimeType($this->_requiredMimeTypes);
         }
-        // Random filename in the temporary directory.
-        // Prevents race condition.
+        // Random filename in the temporary directory to prevent race condition.
         $filter = new Zend_Filter_File_Rename($this->_fileDestinationDir
                     . '/' . md5(mt_rand() + microtime(true)));
         $this->addElement('file', 'csv_file', array(
@@ -579,8 +578,9 @@ class CsvImport_Form_Main extends Omeka_Form
         }
 
         if ($maxSize === false
-            || $maxSize === null
-            || $maxSize->compare($strictMaxSize) > 0) {
+                || $maxSize === null
+                || $maxSize->compare($strictMaxSize) > 0
+            ) {
             $maxSize = $strictMaxSize;
         }
 

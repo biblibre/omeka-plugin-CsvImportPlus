@@ -54,7 +54,9 @@
                 <td><?php echo html_escape(__(Inflector::humanize($csvImport->status, 'all'))); ?></td>
                 <td>
                 <?php
-                    if ((($csvImport->isCompleted() && $importedRecordCount > 0)
+                    // Kept to manage the display of old imports.
+                    if (!in_array($csvImport->format, array('File', 'Update'))
+                        && (($csvImport->isCompleted() && $importedRecordCount > 0)
                             || $csvImport->isStopped()
                             || ($csvImport->isImportError() && $importedRecordCount > 0))):
                         $undoImportUrl = $this->url(array(

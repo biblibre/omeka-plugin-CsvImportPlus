@@ -314,6 +314,9 @@ release for the other formats.
     The column "Item" is required to identify the item to which the file is
     attached. It contains the same identifier as above.
 
+To import metadata of files alone, the column "Identifier Field" and "File" are
+required.
+
 2. `Omeka Csv Report`
 
     This is an internal format of Omeka, that you can use if you have such a

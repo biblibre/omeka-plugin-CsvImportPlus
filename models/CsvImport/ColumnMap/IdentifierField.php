@@ -7,7 +7,7 @@
 class CsvImport_ColumnMap_IdentifierField extends CsvImport_ColumnMap
 {
     const IDENTIFIER_FIELD_OPTION_NAME = 'csv_import_identifier_field';
-    const DEFAULT_IDENTIFIER_FIELD = 'internal id';
+    const DEFAULT_IDENTIFIER_FIELD = 'table id';
 
     private $_identifierField;
 
@@ -25,8 +25,8 @@ class CsvImport_ColumnMap_IdentifierField extends CsvImport_ColumnMap
     }
 
     /**
-     * Map a row to the identifier field of a record (internal id or specified
-     * field).
+     * Map a row to the identifier field of a record (table, internal id or
+     * specified field).
      *
      * @param array $row The row to map
      * @param array $result

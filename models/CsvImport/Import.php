@@ -901,7 +901,7 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 // extra data, so we should check one of these columns, not the
                 // Identifier Field column directly.
                 // Nevertheless, this line is never used because there is always
-                // an identifer column. Currently, it returns empty for element
+                // an identifier column. Currently, it returns empty for element
                 // field, so it doesn't change anything.
                 $identifier = $this->_getMappedValue($identifierField);
             }
@@ -940,8 +940,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                     CsvImport_ColumnMap_Action::ACTION_UPDATE_ELSE_CREATE,
                     CsvImport_ColumnMap_Action::ACTION_CREATE,
                 ))) {
-                $msg = 'Cannot process this row: no record found with the identifier "%s".';
-                $this->_log($msg, array($identifier), Zend_Log::WARN);
+                $msg = 'Cannot process this row: no record [%s] found with the identifier "%s".';
+                $this->_log($msg, array($recordType ?: 'no record type', $identifier), Zend_Log::WARN);
                 return false;
             }
             $record = null;
@@ -952,8 +952,8 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         if ($record && $action == CsvImport_ColumnMap_Action::ACTION_CREATE) {
             // A same identifier is possible only for different record (internal id).
             if ($identifierField != 'internal id' || get_class($record) == $recordType) {
-                $msg = 'Cannot create a second record with the same identifier "%s".';
-                $this->_log($msg, array($identifier), Zend_Log::WARN);
+                $msg = 'Cannot create a second record [%s] with the same identifier "%s".';
+                $this->_log($msg, array(get_class($record), $identifier), Zend_Log::WARN);
                 return false;
             }
         }
@@ -1592,6 +1592,12 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
 
         if (empty($identifier)) {
         }
+        elseif ($identifierField == 'table id') {
+            $result = $this->_getImportedRecord($identifier, $recordType);
+            if ($result) {
+                $record = get_record_by_id($result['record_type'], $result['record_id']);
+            }
+        }
         elseif ($identifierField == 'internal id') {
             if (!empty($recordType) && $recordType != 'Any' && class_exists($recordType)) {
                 $record = get_record_by_id($recordType, $identifier);
@@ -1647,25 +1653,11 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
                 $result = $db->fetchRow($sql, $bind);
             }
 
-            // Check if this is an internal identifier of the current
-            // import, that is already imported.
+            // Check if this is a table identifier of the current import, that
+            // is already imported.
             // if (empty($element) || empty($result)) {
             else {
-                $bind = array();
-                $bind['import_id'] = $this->id;
-                $bind['identifier'] = $identifier;
-                if (in_array($recordType, array('Collection', 'Item', 'File'))) {
-                    $bind['record_type'] = $recordType;
-                }
-                $csvImportedRecords = get_db()->getTable('CsvImport_ImportedRecord')
-                    ->findBy($bind, 1);
-                if (!empty($csvImportedRecords)) {
-                    $csvImportedRecord = reset($csvImportedRecords);
-                    $result = array(
-                        'record_type' => $csvImportedRecord->record_type,
-                        'record_id' => $csvImportedRecord->record_id,
-                    );
-                }
+                $result = $this->_getImportedRecord($identifier, $recordType);
             }
 
             if (!empty($result)) {
@@ -1741,6 +1733,36 @@ class CsvImport_Import extends Omeka_Record_AbstractRecord implements Zend_Acl_R
         ));
         $csvImportedRecord->save();
         $this->_importedCount++;
+    }
+
+    /**
+     * Get a record that is previously saved from its table identifier.
+     *
+     * @param string $identifier The identifier of the imported record.
+     * @param string $recordType The type of the imported record, if any.
+     * @param boolean $current Search in current import only.
+     * @return array Associative array with record_type and record_id.
+     */
+    protected function _getImportedRecord($identifier, $recordType = null, $currentImport = true)
+    {
+        $bind = array();
+        if ($currentImport) {
+            $bind['import_id'] = $this->id;
+        }
+        $bind['identifier'] = $identifier;
+        if (in_array($recordType, array('Collection', 'Item', 'File'))) {
+            $bind['record_type'] = $recordType;
+        }
+        $csvImportedRecords = get_db()->getTable('CsvImport_ImportedRecord')
+            ->findBy($bind, 1);
+        if (!empty($csvImportedRecords)) {
+            $csvImportedRecord = reset($csvImportedRecords);
+            $result = array(
+                'record_type' => $csvImportedRecord->record_type,
+                'record_id' => $csvImportedRecord->record_id,
+            );
+            return $result;
+        }
     }
 
     /**

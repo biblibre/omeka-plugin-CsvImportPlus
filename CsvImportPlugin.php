@@ -53,7 +53,7 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
         'csv_import_tag_delimiter' => CsvImport_ColumnMap_Tag::DEFAULT_TAG_DELIMITER,
         'csv_import_file_delimiter' => CsvImport_ColumnMap_File::DEFAULT_FILE_DELIMITER,
         // Option used during the first step only.
-        'csv_import_html_elements' => FALSE,
+        'csv_import_html_elements' => false,
         'csv_import_extra_data' => 'manual',
         // With roles, in particular if Guest User is installed.
         'csv_import_allow_roles' => 'a:1:{i:0;s:5:"super";}',

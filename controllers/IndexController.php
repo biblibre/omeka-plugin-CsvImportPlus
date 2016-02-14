@@ -64,7 +64,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
 
         $identifierField = $this->_elementNameFromPost($form->getValue('identifier_field'));
 
-        $this->session->setExpirationHops(2);
+        $this->session->setExpirationHops(3);
         $this->session->originalFilename = $_FILES['csv_file']['name'];
         $this->session->filePath = $filePath;
         $this->session->action = $form->getValue('action');
@@ -141,9 +141,6 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             'isPublic' => $this->session->recordsArePublic,
             'isFeatured' => $this->session->recordsAreFeatured,
             'elementsAreHtml' => $this->session->elementsAreHtml,
-        );
-
-        $parameters += array(
             'action' => $this->session->action,
             'identifierField' => $this->session->identifierField,
         );
@@ -274,7 +271,7 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
                 $this->_helper->flashMessenger($msg, 'error');
                 $hasError = true;
             }
-            elseif ($identifierField != 'internal id') {
+            elseif ($identifierField != 'table id' && $identifierField != 'internal id') {
                 $elementField = $identifierField;
                 if (is_numeric($identifierField)) {
                     $element = get_record_by_id('Element', $identifierField);
