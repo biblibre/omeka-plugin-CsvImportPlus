@@ -128,8 +128,6 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
             return;
         }
 
-        require_once CSV_IMPORT_DIRECTORY . '/forms/Mapping.php';
-
         $parameters = array(
             'columnNames' => $this->session->columnNames,
             'columnExamples' => $this->session->columnExamples,
@@ -570,7 +568,6 @@ class CsvImport_IndexController extends Omeka_Controller_AbstractActionControlle
      */
     protected function _getMainForm()
     {
-        require_once CSV_IMPORT_DIRECTORY . '/forms/Main.php';
         $csvConfig = $this->_getPluginConfig();
         $form = new CsvImport_Form_Main($csvConfig);
         return $form;
