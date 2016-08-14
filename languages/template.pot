@@ -12,6 +12,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,6 +21,7 @@ msgid "Import Items"
 msgstr ""
 
 #: views/admin/index/browse.php:6 views/admin/index/browse.php:19
+#: views/admin/index/browse.php:21
 msgid "Status"
 msgstr ""
 
@@ -160,11 +162,11 @@ msgstr ""
 msgid "Failed to remove file %s"
 msgstr ""
 
-#: models/CsvImport/File.php:99
+#: models/CsvImport/File.php:99 models/CsvImport/File.php:108
 msgid "Please ensure that all column names are unique."
 msgstr ""
 
-#: models/CsvImport/File.php:103
+#: models/CsvImport/File.php:103 models/CsvImport/File.php:112
 msgid ""
 "Please ensure that the CSV file is formatted correctly and contains the "
 "expected number of columns for each row."
@@ -172,7 +174,7 @@ msgstr ""
 
 #: CsvImportPlugin.php:282 views/admin/index/index.php:2
 #: views/admin/index/map-columns.php:2 views/admin/index/logs.php:1
-#: views/admin/index/browse.php:2
+#: views/admin/index/browse.php:2 CsvImportPlugin.php:410
 msgid "CSV Import"
 msgstr ""
 
@@ -184,27 +186,30 @@ msgstr ""
 msgid "Error uploading file. Please try again."
 msgstr ""
 
-#: controllers/IndexController.php:51
+#: controllers/IndexController.php:51 controllers/IndexController.php:60
 msgid "Your file is incorrectly formatted."
 msgstr ""
 
-#: controllers/IndexController.php:100
+#: controllers/IndexController.php:100 controllers/IndexController.php:126
 msgid "Import settings expired. Please try again."
 msgstr ""
 
-#: controllers/IndexController.php:121
+#: controllers/IndexController.php:121 controllers/IndexController.php:148
+#: controllers/IndexController.php:158
 msgid "Invalid form input. Please try again."
 msgstr ""
 
-#: controllers/IndexController.php:127
+#: controllers/IndexController.php:127 controllers/IndexController.php:164
 msgid "Please map at least one column to an element, file, or tag."
 msgstr ""
 
 #: controllers/IndexController.php:141 controllers/IndexController.php:259
+#: controllers/IndexController.php:481
 msgid "Import started. Reload this page for status updates."
 msgstr ""
 
 #: controllers/IndexController.php:143 controllers/IndexController.php:261
+#: controllers/IndexController.php:484
 msgid "Import could not be started. Please check error logs for more details."
 msgstr ""
 
@@ -220,16 +225,16 @@ msgstr ""
 msgid "Element \"%s\" is not found in element set \"%s\""
 msgstr ""
 
-#: controllers/IndexController.php:287
+#: controllers/IndexController.php:287 controllers/IndexController.php:526
 msgid "Undo import started. Reload this page for status updates."
 msgstr ""
 
-#: controllers/IndexController.php:289
+#: controllers/IndexController.php:289 controllers/IndexController.php:528
 msgid ""
 "Undo import could not be started. Please check error logs for more details."
 msgstr ""
 
-#: controllers/IndexController.php:318
+#: controllers/IndexController.php:318 controllers/IndexController.php:557
 msgid "Cleared import from the history."
 msgstr ""
 
@@ -279,7 +284,7 @@ msgstr ""
 msgid "Remove local files after successful import?"
 msgstr ""
 
-#: forms/Main.php:81
+#: forms/Main.php:81 libraries/CsvImport/Form/Main.php:183
 msgid "Next"
 msgstr ""
 
@@ -376,12 +381,12 @@ msgstr ""
 msgid "Upload CSV File"
 msgstr ""
 
-#: forms/Main.php:337
+#: forms/Main.php:337 libraries/CsvImport/Form/Main.php:227
 #, php-format
 msgid "Maximum file size is %s."
 msgstr ""
 
-#: forms/Main.php:351
+#: forms/Main.php:351 libraries/CsvImport/Form/Main.php:459
 #, php-format
 msgid ""
 "The file you have uploaded exceeds the maximum post size allowed by the "
@@ -484,11 +489,12 @@ msgstr ""
 msgid "Skipped Rows"
 msgstr ""
 
-#: views/admin/index/browse.php:20
+#: views/admin/index/browse.php:20 views/admin/index/browse.php:22
+#: libraries/CsvImport/Form/Main.php:98
 msgid "Action"
 msgstr ""
 
-#: views/admin/index/browse.php:53
+#: views/admin/index/browse.php:53 views/admin/index/browse.php:68
 msgid "Undo Import"
 msgstr ""
 
@@ -496,10 +502,486 @@ msgstr ""
 msgid "Logs"
 msgstr ""
 
-#: views/admin/index/browse.php:67
+#: views/admin/index/browse.php:67 views/admin/index/browse.php:82
 msgid "Clear History"
 msgstr ""
 
-#: views/admin/index/browse.php:77
+#: views/admin/index/browse.php:77 views/admin/index/browse.php:102
 msgid "You have no imports yet."
+msgstr ""
+
+#: views/admin/index/map-columns-form.php:9
+msgid "Column header"
+msgstr ""
+
+#: views/admin/index/map-columns-form.php:13
+msgid "Special values"
+msgstr ""
+
+#: views/admin/index/map-columns-form.php:14
+msgid "Extra data?"
+msgstr ""
+
+#: views/admin/index/browse.php:14
+msgid "Import date / Log"
+msgstr ""
+
+#: views/admin/index/browse.php:15
+msgid "CSV file"
+msgstr ""
+
+#: views/admin/index/browse.php:16
+msgid "Row count"
+msgstr ""
+
+#: views/admin/index/browse.php:17
+msgid "Skipped rows"
+msgstr ""
+
+#: views/admin/index/browse.php:18
+msgid "Imported records"
+msgstr ""
+
+#: views/admin/index/browse.php:19
+msgid "Updated records"
+msgstr ""
+
+#: views/admin/index/browse.php:20
+msgid "Skipped records"
+msgstr ""
+
+#: views/admin/index/browse.php:91
+msgid "Stop Process"
+msgstr ""
+
+#: views/admin/index/browse.php:94
+msgid "No action"
+msgstr ""
+
+#: views/admin/index/index.php:7
+msgid "Step 1: Select file and item settings"
+msgstr ""
+
+#: views/admin/index/check-omeka-csv.php:10
+msgid ""
+"Usually, these are the result of the elements in your Omeka.net site not "
+"having\n"
+"    corresponding elements in this installation of Omeka. Either the Dublin "
+"Core Extended plugin is not\n"
+"    installed, or you created custom item type elements in Omeka.net, but "
+"have not yet created them here."
+msgstr ""
+
+#: views/admin/index/map-columns.php:6
+msgid "Step 2: Map columns to elements, tags, or files"
+msgstr ""
+
+#: views/admin/index/map-columns.php:7
+#, php-format
+msgid "Csv file: %s"
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:1
+msgid "Rights and Roles"
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:4
+msgid "Roles that can use Csv Import"
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:26
+msgid "Slow the process"
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:31
+msgid ""
+"Some providers check if too many files are uploaded in one shot and prevent "
+"the import."
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:32
+msgid ""
+"This option sleeps the process during this number of seconds to avoid such a "
+"limit."
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:38
+msgid "Repeat for Amazon S3"
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:43
+msgid "This option is used only when files are stored on Amazon S3."
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:44
+msgid ""
+"Amazon S3 may stop the process randomly (about every 20 to 200 files), when "
+"too many files are imported in one bucket."
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:45
+msgid ""
+"This option allows to relaunch the process from the last imported row this "
+"number of times."
+msgstr ""
+
+#: views/admin/plugins/csv-import-config-form.php:46
+msgid ""
+"Big imports succeed with \"slow\" = 10, \"repeat\" = 100 and the option "
+"\"plugins.CsvImport.batchSize\" = \"10\", but it may vary with your plan."
+msgstr ""
+
+#: views/admin/forms/csv-import-batch-edit.php:2
+msgid "Csv Import"
+msgstr ""
+
+#: views/admin/forms/csv-import-batch-edit.php:5
+msgid "Order files by filename"
+msgstr ""
+
+#: views/admin/forms/csv-import-batch-edit.php:15
+msgid "Order files of each item by their original filename."
+msgstr ""
+
+#: views/admin/forms/csv-import-batch-edit.php:21
+msgid "Mix images and other files"
+msgstr ""
+
+#: views/admin/forms/csv-import-batch-edit.php:31
+msgid ""
+"If checked, types will be mixed, else images will be ordered before other "
+"files."
+msgstr ""
+
+#: controllers/IndexController.php:177
+msgid "Please map a column to the special value \"Identifier\"."
+msgstr ""
+
+#: controllers/IndexController.php:242
+#, php-format
+msgid "Columns \"%s\" are required."
+msgstr ""
+
+#: controllers/IndexController.php:256
+#, php-format
+msgid "Columns \"%s\" are forbidden."
+msgstr ""
+
+#: controllers/IndexController.php:268
+msgid "There is no \"IdentifierField\" column or a default identifier field."
+msgstr ""
+
+#: controllers/IndexController.php:277
+#, php-format
+msgid "The identifier field \"%s\" does not exist."
+msgstr ""
+
+#: controllers/IndexController.php:286
+#, php-format
+msgid "There is no \"IdentifierField\" column or the default \"%s\" column."
+msgstr ""
+
+#: controllers/IndexController.php:294
+msgid "The file has error, or parameters are not adapted. Check them."
+msgstr ""
+
+#: controllers/IndexController.php:413
+#, php-format
+msgid "Columns \"%s\" are unknown."
+msgstr ""
+
+#: controllers/IndexController.php:425
+#, php-format
+msgid "There is no \"Identifier\" or identifier field \"%s\" column."
+msgstr ""
+
+#: controllers/IndexController.php:510
+msgid "The process is stopping."
+msgstr ""
+
+#: controllers/IndexController.php:512
+msgid "The process cannot be stopped because it is not queued or in progress."
+msgstr ""
+
+#: controllers/IndexController.php:559
+msgid "An error occurs during import: Cannot clear import history."
+msgstr ""
+
+#: tests/suite/Models/ColumnMap/CollectionTest.php:35
+#: tests/suite/Models/ColumnMap/CollectionTest.php:58
+msgid "Since 2.2-full, collections are checked during import."
+msgstr ""
+
+#: libraries/CsvImport/Form/Mapping.php:82
+msgid "Extra data"
+msgstr ""
+
+#: libraries/CsvImport/Form/Mapping.php:92
+msgid "Import CSV file"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:44
+msgid "No default item type"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:46
+msgid "Item type"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:50
+msgid "No default collection"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:52
+msgid "Collection"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:57
+msgid "Make records public"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:58
+msgid "Check to make records (items or collections) public by default."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:62
+msgid "Feature records"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:63
+msgid "Check to make records (items or collections) featured by default."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:67
+msgid "Elements are html"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:68
+msgid "Set default format of all imported elements as html, else raw text."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:84
+msgid "No default identifier field"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:85
+msgid "Table identifier"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:86
+msgid "Internal id"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:91
+msgid "Identifier field (required)"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:92
+msgid ""
+"The default identifier should be available for all record types that are "
+"currently imported in the file."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:101
+msgid "Update the record if it exists, else create one"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:103
+msgid "Create a new record"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:105
+msgid "Update values of specific fields"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:107
+msgid "Add values to specific fields"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:109
+msgid "Replace values of all fields"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:111
+msgid "Delete the record"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:113
+msgid "Skip process of the record"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:114
+msgid "No default action"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:118
+msgid "Contains extra data"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:119
+msgid "Other columns can be used as values for non standard data."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:121
+msgid "No, so unrecognized column names will be noticed"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:122
+msgid "Perhaps, so the mapping should be done manually"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:123
+msgid "Ignore unrecognized column names"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:124
+msgid "Yes, so column names won't be checked"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:151
+msgid "CSV format"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:152
+msgid "Set delimiters and enclosure used in the file."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:165
+msgid "Default values"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:166
+msgid "Set the default values to use when the column doesn't exist."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:177
+msgid "Process"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:178
+msgid "Set features used to process the file."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:223
+msgid "Upload CSV file"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:280
+msgid "Column delimiter"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:281
+#, php-format
+msgid ""
+"A single character that will be used to separate columns in the file (the "
+"previously used \"%s\" by default)."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:299
+msgid "Column delimiter must be one character long."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:318
+msgid "Enclosure"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:319
+msgid ""
+"A zero or single character that will be used to separate columns clearly. It "
+"allows to use the column delimiter as a character in a field. By default, "
+"the quotation mark « \" » is used. Enclosure can be omitted in the csv file."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:323
+msgid "\" (double quote)"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:324
+msgid " ' (single quote)"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:325
+msgid "(empty)"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:326
+msgid "Custom"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:340
+msgid "Enclosure must be zero or one character long."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:364
+msgid "Element delimiter"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:365
+#, php-format
+msgid ""
+"This delimiter will be used to separate metadata elements within a cell (the "
+"previously used \"%s\" by default)."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:366 libraries/CsvImport/Form/Main.php:400
+msgid "If the delimiter is empty, then the whole text will be used."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:367 libraries/CsvImport/Form/Main.php:401
+#: libraries/CsvImport/Form/Main.php:435
+msgid "To use more than one character is allowed."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:398
+msgid "Tag delimiter"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:399
+#, php-format
+msgid ""
+"This delimiter will be used to separate tags within a cell (the previously "
+"used \"%s\" by default)."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:432
+msgid "File delimiter"
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:433
+#, php-format
+msgid ""
+"This delimiter will be used to separate file paths or URLs within a cell "
+"(the previously used \"%s\" by default)."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:434
+msgid ""
+"If the delimiter is empty, then the whole text will be used as the file path "
+"or URL."
+msgstr ""
+
+#: libraries/CsvImport/Form/Main.php:469
+msgid ""
+"The custom delimiter you choose cannot be whitespace and must be one "
+"character long."
+msgstr ""
+
+#: models/CsvImport/ImportTask.php:64
+msgid "The previous error is related to Amazon S3."
+msgstr ""
+
+#: models/CsvImport/ImportTask.php:67
+#, php-format
+msgid "CsvImport tries to relaunch the process #%d: %d/%d."
+msgstr ""
+
+#: models/CsvImport/ImportTask.php:82
+#, php-format
+msgid "CsvImport tried to relaunch the process #%d %d times without success."
+msgstr ""
+
+#: models/CsvImport/ImportTask.php:84
+msgid ""
+"Try to slow process and to increase the number of repetitions in the config "
+"page of CsvImport."
 msgstr ""

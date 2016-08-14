@@ -7,13 +7,14 @@
 # Isabelle Gilles <isabelle.gillesgallet@gmail.com>, 2015
 # Stéphane Loret Sdj <stephane.loret@univ-nantes.fr>, 2015
 # symac <wikitipiac@laposte.net>, 2014
+# Daniel Berthereau <Daniel.github@Berthereau.net>, 2016.
 msgid ""
 msgstr ""
-"Project-Id-Version: Omeka\n"
+"Project-Id-Version: CsvImport\n"
 "Report-Msgid-Bugs-To: https://github.com/omeka/plugin-CsvImport/issues\n"
 "POT-Creation-Date: 2013-03-06 00:06+0900\n"
-"PO-Revision-Date: 2015-04-14 19:40+0000\n"
-"Last-Translator: Isabelle Gilles <isabelle.gillesgallet@gmail.com>\n"
+"PO-Revision-Date: 2016-08-22 00:00+0100\n"
+"Last-Translator: Daniel Berthereau <Daniel.github@Berthereau.net>\n"
 "Language-Team: French (http://www.transifex.com/omeka/omeka/language/fr/)\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -70,7 +71,8 @@ msgstr "Impossible de terminer un import déjà terminé."
 #, php-format
 msgid "Completed importing %1$s items (skipped %2$s items, %3$s rows)."
 msgstr ""
-"Import terminé: %1$s contenus importés (ignorés: %2$s contenus et %3$s lignes)."
+"Import terminé: %1$s contenus importés (ignorés: %2$s contenus et %3$s"
+" lignes)."
 
 msgid "Cannot complete an undo import that is already undone."
 msgstr "Impossible de terminer l'annulation d'un import déjà annulé."
@@ -97,20 +99,16 @@ msgid "Stopped import or undo import due to error: %s"
 msgstr "Import ou annulation d'import arrêté pour cause d'erreur: %s"
 
 msgid "Cannot queue an import that has an error."
-msgstr ""
-"Impossible de mettre en file d'attente un import qui a une erreur."
+msgstr "Impossible de mettre en file d'attente un import qui a une erreur."
 
 msgid "Cannot queue an import that has been stopped."
-msgstr ""
-"Impossible de mettre en file d'attente un import qui a été arrêté."
+msgstr "Impossible de mettre en file d'attente un import qui a été arrêté."
 
 msgid "Cannot queue an import that has been completed."
-msgstr ""
-"Impossible de mettre en file d'attente un import qui a été terminé."
+msgstr "Impossible de mettre en file d'attente un import qui a été terminé."
 
 msgid "Cannot queue an import that has been undone."
-msgstr ""
-"Impossible de mettre en file d'attente un import qui a été annulé."
+msgstr "Impossible de mettre en file d'attente un import qui a été annulé."
 
 msgid "Queued import."
 msgstr "Import mis en file d'attente."
@@ -163,7 +161,7 @@ msgstr ""
 
 #, php-format
 msgid "Found similar items: %s"
-msgstr ""
+msgstr "Contenus similaires trouvés : %s"
 
 #, php-format
 msgid ""
@@ -194,8 +192,8 @@ msgid ""
 "Please ensure that the CSV file is formatted correctly and contains the "
 "expected number of columns for each row."
 msgstr ""
-"Veuillez vous assurer que le fichier CSV est correctement formé et qu'il "
-"contient le nombre de colonnes attendues pour chaque contenu."
+"Veuillez vous assurer que le fichier CSV est correctement formé et qu'il"
+" contient le nombre de colonnes attendues pour chaque contenu."
 
 #: CsvImportPlugin.php:282 views/admin/index/index.php:2
 #: views/admin/index/map-columns.php:2 views/admin/index/logs.php:1
@@ -227,8 +225,8 @@ msgstr "Formulaire non valide. Merci d'essayer à nouveau."
 #: controllers/IndexController.php:127
 msgid "Please map at least one column to an element, file, or tag."
 msgstr ""
-"Veuillez créer l'équivalence pour une colonne au moins vers un élément, "
-"fichier ou mot-clé."
+"Veuillez créer l'équivalence pour une colonne au moins vers un élément,"
+" fichier ou mot-clé."
 
 #: controllers/IndexController.php:141 controllers/IndexController.php:259
 msgid "Import started. Reload this page for status updates."
@@ -245,8 +243,8 @@ msgid ""
 "Invalid column names. Column names must either be one of the following %s, "
 "or have the following format: {ElementSetName}:{ElementName}"
 msgstr ""
-"Nom de colonne non valide. Les noms de colonne doivent être parmi : %s, ou "
-"avoir le format suivant : {ElementSetName}:{ElementName}"
+"Nom de colonne non valide. Les noms de colonne doivent être parmi : %s, ou"
+" avoir le format suivant : {ElementSetName}:{ElementName}"
 
 #: controllers/IndexController.php:195
 #, php-format
@@ -256,15 +254,15 @@ msgstr "L'élément \"%s\" n'appartient pas au jeu d'éléments \"%s\""
 #: controllers/IndexController.php:287
 msgid "Undo import started. Reload this page for status updates."
 msgstr ""
-"Annulation d'import démarrée. Recharger cette page pour une mise à jour du "
-"statut."
+"Annulation d'import démarrée. Recharger cette page pour une mise à jour du"
+" statut."
 
 #: controllers/IndexController.php:289
 msgid ""
 "Undo import could not be started. Please check error logs for more details."
 msgstr ""
-"L'annulation d'import n'a pas démarré. Consultez les logs d'import pour plus "
-"de détails."
+"L'annulation d'import n'a pas démarré. Consultez les logs d'import pour plus"
+" de détails."
 
 #: controllers/IndexController.php:318
 msgid "Cleared import from the history."
@@ -299,9 +297,9 @@ msgid ""
 "Automatically maps columns to elements based on their column names. The "
 "column name must be in the form: <br/> {ElementSetName}:{ElementName}"
 msgstr ""
-"Aligner automatiquement les noms de colonnes avec les éléments en fonction "
-"des titres de colonnes. Les noms de colonne doivent être de la forme : <br/> "
-"{ElementSetName}:{ElementName}"
+"Aligner automatiquement les noms de colonnes avec les éléments en fonction"
+" des titres de colonnes. Les noms de colonne doivent être de la forme : <br/>"
+" {ElementSetName}:{ElementName}"
 
 #: forms/Main.php:54 forms/Main.php:57
 msgid "Select Collection"
@@ -357,9 +355,9 @@ msgid ""
 "A single character that will be used to separate columns in the file (%s by "
 "default). Note that spaces, tabs, and other whitespace are not accepted."
 msgstr ""
-"Un caractère unique sera utilisé comme séparateur de colonnes dans le "
-"fichier (%s par défaut). Veuillez noter que les espaces, tabulations et "
-"caractères vides ne sont pas acceptés."
+"Un caractère unique sera utilisé comme séparateur de colonnes dans le fichier"
+" (%s par défaut). Veuillez noter que les espaces, tabulations et caractères"
+" vides ne sont pas acceptés."
 
 #: forms/Main.php:174 forms/Main.php:182 forms/Main.php:184
 msgid "Column delimiter cannot be whitespace and must be one character long."
@@ -378,11 +376,11 @@ msgid ""
 "used as the file path or URL. Note that spaces, tabs, and other whitespace "
 "are not accepted."
 msgstr ""
-"Un caractère unique sera utilisé pour séparer les chemins vers les fichiers "
-"ou leurs URLs à l'intérieur d'une cellule (%s par défaut). Si le délimiteur "
-"est vide, la cellule entière sera utilisée comme chemin de fichier ou URL. "
-"Veuillez noter que les espaces, tabulations et caractères vides ne sont pas "
-"acceptés."
+"Un caractère unique sera utilisé pour séparer les chemins vers les fichiers"
+" ou leurs URLs à l'intérieur d'une cellule (%s par défaut). Si le délimiteur"
+" est vide, la cellule entière sera utilisée comme chemin de fichier ou URL."
+" Veuillez noter que les espaces, tabulations et caractères vides ne sont pas"
+" acceptés."
 
 #: forms/Main.php:212 forms/Main.php:221 forms/Main.php:223
 msgid ""
@@ -400,9 +398,9 @@ msgid ""
 "A single character that will be used to separate tags within a cell (%s by "
 "default). Note that spaces, tabs, and other whitespace are not accepted."
 msgstr ""
-"Un caractère unique sera utilisé pour séparer les mots clé à l'intérieur "
-"d'une cellule (%s par défaut). Veuillez noter que les espaces, tabulations "
-"et caractères vides ne sont pas acceptés."
+"Un caractère unique sera utilisé pour séparer les mots clé à l'intérieur"
+" d'une cellule (%s par défaut). Veuillez noter que les espaces, tabulations"
+" et caractères vides ne sont pas acceptés."
 
 #: forms/Main.php:250 forms/Main.php:258 forms/Main.php:260
 msgid "Tag delimiter cannot be whitespace and must be one character long."
@@ -421,10 +419,10 @@ msgid ""
 "used as the element text. Note that spaces, tabs, and other whitespace are "
 "not accepted."
 msgstr ""
-"Un caractère unique sera utilisé pour séparer les métadonnées à l'intérieur "
-"d'une cellule (%s par défaut). Si le délimiteur est vide, la cellule entière "
-"sera utilisée comme texte pour l'enregistrement. Veuillez noter que les "
-"espaces, tabulations et caractères vides ne sont pas acceptés."
+"Un caractère unique sera utilisé pour séparer les métadonnées à l'intérieur"
+" d'une cellule (%s par défaut). Si le délimiteur est vide, la cellule entière"
+" sera utilisée comme texte pour l'enregistrement. Veuillez noter que les"
+" espaces, tabulations et caractères vides ne sont pas acceptés."
 
 #: forms/Main.php:288 forms/Main.php:297 forms/Main.php:299
 msgid ""
@@ -448,8 +446,8 @@ msgid ""
 "The file you have uploaded exceeds the maximum post size allowed by the "
 "server. Please upload a file smaller than %s."
 msgstr ""
-"Le fichier téléchargé dépasse la limite imposée par le serveur. Veuillez "
-"charger un fichier de moins de %s."
+"Le fichier téléchargé dépasse la limite imposée par le serveur. Veuillez"
+" charger un fichier de moins de %s."
 
 #: views/admin/index/check-omeka-csv.php:2
 msgid "CSV Import Errors"
@@ -459,8 +457,8 @@ msgstr "Erreur d'importation CSV"
 msgid ""
 "The following problems were found with your CSV file and Omeka installation."
 msgstr ""
-"Les problèmes suivants ont été détectés dans votre fichier CSV et votre "
-"instance d'Omeka."
+"Les problèmes suivants ont été détectés dans votre fichier CSV et votre"
+" instance d'Omeka."
 
 #: views/admin/index/check-omeka-csv.php:10
 msgid ""
@@ -471,11 +469,11 @@ msgid ""
 "    installed, or you created custom item type elements in Omeka.net, but "
 "have not yet created them here."
 msgstr ""
-"D'habitude, l'erreur est causée par des contenus sur votre site hébergé sur "
-"Omeka.net qui n'ont pas d'équivalent sur cette instance d'Omeka. Soit "
-"l'extension Dublin Core Extended n'est pas installée, soit vous avez défini "
-"des types de contenus personnalisés sur votre site Omeka.net qui n'existent "
-"pas encore sur cette instance."
+"D'habitude, l'erreur est causée par des contenus sur votre site hébergé sur"
+" Omeka.net qui n'ont pas d'équivalent sur cette instance d'Omeka. Soit"
+" l'extension Dublin Core Extended n'est pas installée, soit vous avez défini"
+" des types de contenus personnalisés sur votre site Omeka.net qui n'existent"
+" pas encore sur cette instance."
 
 #: views/admin/index/check-omeka-csv.php:14
 msgid "Please correct the errors, then try your import again."
@@ -573,3 +571,4 @@ msgstr "Effacer l'historique"
 #: views/admin/index/browse.php:77
 msgid "You have no imports yet."
 msgstr "Vous n'avez encore aucun import."
+
