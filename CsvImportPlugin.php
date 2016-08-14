@@ -315,6 +315,8 @@ class CsvImportPlugin extends Omeka_Plugin_AbstractPlugin
         $db->query($sql);
         $sql = "DROP TABLE IF EXISTS `{$db->prefix}csv_import_imported_records`";
         $db->query($sql);
+        $sql = "DROP TABLE IF EXISTS `{$db->CsvImport_Log}`";
+        $db->query($sql);
 
         $this->_uninstallOptions();
     }
