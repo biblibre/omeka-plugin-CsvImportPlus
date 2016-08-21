@@ -5,7 +5,7 @@
  * A merge of the classes CsvImportPlus_ColumnMap_ExportedElement and
  * CsvImportPlus_ColumnMap_Element.
  *
- * @package CsvImport
+ * @package CsvImportPlus
  */
 class CsvImportPlus_ColumnMap_MixElement extends CsvImportPlus_ColumnMap
 {

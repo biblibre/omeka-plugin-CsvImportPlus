@@ -2,7 +2,7 @@
 /**
  * CsvImportPlus_ColumnMap_RecordType class
  *
- * @package CsvImport
+ * @package CsvImportPlus
  */
 class CsvImportPlus_ColumnMap_RecordType extends CsvImportPlus_ColumnMap
 {

@@ -4,7 +4,7 @@
  *
  * Same as MixElement, but for extra data that are not elements.
  *
- * @package CsvImport
+ * @package CsvImportPlus
  */
 class CsvImportPlus_ColumnMap_ExtraData extends CsvImportPlus_ColumnMap
 {

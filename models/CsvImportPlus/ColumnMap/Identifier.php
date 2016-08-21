@@ -2,7 +2,7 @@
 /**
  * CsvImportPlus_ColumnMap_Identifier class
  *
- * @package CsvImport
+ * @package CsvImportPlus
  */
 class CsvImportPlus_ColumnMap_Identifier extends CsvImportPlus_ColumnMap
 {
