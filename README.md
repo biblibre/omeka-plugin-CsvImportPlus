@@ -1,11 +1,11 @@
-CSV Import (plugin for Omeka)
-=============================
+CSV Import+ (plugin for Omeka)
+==============================
 
 
-[CSV Import] is a plugin for [Omeka] that allows users to import or update items
-from a simple CSV (comma separated values) file, and then map the CSV column
-data to multiple elements, files, and/or tags. Each row in the file represents
-metadata for a single item.
+[CSV Import+] is a plugin for [Omeka] that allows users to import or update
+items from a simple CSV (comma separated values) file, and then map the CSV
+column data to multiple elements, files, and/or tags. Each row in the file
+represents metadata for a single item.
 This plugin is useful for exporting data from one database and importing that
 data into an Omeka site.
 
@@ -17,14 +17,16 @@ This fork adds some improvments:
 - import extra data of records that are not managed via standard elements but
 via specific tables.
 
-The similar tool [Xml Import] can be useful too, depending on your types of
+It can be installed simultaneously with the upstream [CSV Import].
+
+The similar tool [XML Import] can be useful too, depending on your types of
 data.
 
 
 Installation
 ------------
 
-Uncompress files and rename plugin folder "CsvImport".
+Uncompress files and rename plugin folder "CsvImportPlus".
 
 Then install it like any other Omeka plugin and follow the config instructions.
 
@@ -34,17 +36,17 @@ a parent should be defined before in the file "security.ini" of the plugin.
 Set the proper settings in config.ini like so:
 
 ```
-plugins.CsvImport.columnDelimiter = ","
-plugins.CsvImport.enclosure = '"'
-plugins.CsvImport.memoryLimit = "128M"
-plugins.CsvImport.requiredExtension = "txt"
-plugins.CsvImport.requiredMimeType = "text/csv"
-plugins.CsvImport.maxFileSize = "10M"
-plugins.CsvImport.fileDestination = "/tmp"
-plugins.CsvImport.batchSize = "1000"
+plugins.CsvImportPlus.columnDelimiter = ","
+plugins.CsvImportPlus.enclosure = '"'
+plugins.CsvImportPlus.memoryLimit = "128M"
+plugins.CsvImportPlus.requiredExtension = "txt"
+plugins.CsvImportPlus.requiredMimeType = "text/csv"
+plugins.CsvImportPlus.maxFileSize = "10M"
+plugins.CsvImportPlus.fileDestination = "/tmp"
+plugins.CsvImportPlus.batchSize = "1000"
 ```
 
-All of the above settings are optional.  If not given, CsvImport uses the
+All of the above settings are optional.  If not given, [CSV Import+] uses the
 following default values:
 
 ```
@@ -417,7 +419,7 @@ In some cases, in particular when the item is saved in another process while the
 import job is still working in background, order of files can be broken. In that
 case, simply reorder them. A batch edit form can be do it automatically (select
 items in items/browse and click the main button "Edit", then check the box for
-Csv Import / Order files by filename).
+CSV Import+ / Order files by filename).
 
 
 Warning
@@ -432,7 +434,7 @@ roll back if needed.
 Troubleshooting
 ---------------
 
-See online [Csv Import issues] and [fork issues].
+See online [CSV Import issues] and [CSV Import+ issues].
 
 
 License
@@ -460,8 +462,8 @@ Contact
 
 Current maintainers:
 
-* [Center for History & New Media]
-* Daniel Berthereau (see [Daniel-KM])
+* [Center for History & New Media] [CSV Import]
+* Daniel Berthereau (see [Daniel-KM]) [CSV Import+]
 
 This plugin has been built by [Center for History & New Media]. Next, the
 release 1.3.4 has been forked for [University of Iowa Libraries] and upgraded
@@ -472,22 +474,25 @@ has been upgraded for Omeka 2.0 for [Mines ParisTech].
 Copyright
 ---------
 
-* Copyright Center for History and New Media, 2008-2013
+* Copyright Center for History and New Media, 2008-2016
 * Copyright Shawn Averkamp, 2012
+* Copyright Matti Lassila, 2016
 * Copyright Daniel Berthereau, 2012-2016
 
 
 [Omeka]: https://omeka.org
-[Csv Import]: https://github.com/omeka/plugin-CsvImport
-[Xml Import]: https://github.com/Daniel-KM/XmlImport
+[CSV Import+]: https://github.com/Daniel-KM/CsvImportPlus
+[CSV Import]: https://github.com/omeka/plugin-CsvImport
+[XML Import]: https://github.com/Daniel-KM/XmlImport
 [Wikipedia]: https://www.wikipedia.org
 [Geolocation]: https://omeka.org/add-ons/plugins/geolocation
-[Csv Import issues]: https://omeka.org/forums/forum/plugins
-[fork issues]: https://github.com/Daniel-KM/CsvImport/issues
+[CSV Import issues]: https://omeka.org/forums/forum/plugins
+[CSV Import+ issues]: https://github.com/Daniel-KM/CsvImportPlus/issues
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [Center for History & New Media]: http://chnm.gmu.edu
 [Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
 [saverkamp]: https://github.com/saverkamp "saverkamp"
+[mjlassila]: https://github.com/mjlassila "Matti Lassila"
 [University of Iowa Libraries]: http://www.lib.uiowa.edu
 [École des Ponts ParisTech]: http://bibliotheque.enpc.fr
 [Pop Up Archive]: http://popuparchive.org
