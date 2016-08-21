@@ -6,7 +6,7 @@
  */
 class CsvImportPlus_ColumnMap_IdentifierField extends CsvImportPlus_ColumnMap
 {
-    const IDENTIFIER_FIELD_OPTION_NAME = 'csv_import_identifier_field';
+    const IDENTIFIER_FIELD_OPTION_NAME = 'csv_import_plus_identifier_field';
     const DEFAULT_IDENTIFIER_FIELD = 'table id';
 
     private $_identifierField;

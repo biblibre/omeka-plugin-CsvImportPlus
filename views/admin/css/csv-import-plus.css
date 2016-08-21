@@ -1,17 +1,17 @@
-#csvimport {
+#csvimportplus {
   overflow: visible;
 }
 
-#csv-import-column-mappings-table td {
+#csv-import-plus-column-mappings-table td {
   vertical-align:top;
 }
 
-.csv-import-column-map {
+.csv-import-plus-column-map {
     border-top:2px solid #D7D5C4;
     padding-top:10px;
 }
 
-#csvimport span.add-element {
+#csvimportplus span.add-element {
     background-image: url('../../../../../application/views/scripts/images/silk-icons/add.png');
     background-repeat: no-repeat;
     width: 20px;
@@ -53,6 +53,6 @@ table#column-mappings div.inputs {
     font-weight: bold;
 }
 
-div.csvimportnext {
+div.csvimportplusnext {
   clear:both;
 }

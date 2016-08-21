@@ -8,7 +8,7 @@
  */
 class CsvImportPlus_ColumnMap_Element extends CsvImportPlus_ColumnMap
 {
-    const ELEMENT_DELIMITER_OPTION_NAME = 'csv_import_element_delimiter';
+    const ELEMENT_DELIMITER_OPTION_NAME = 'csv_import_plus_element_delimiter';
     const DEFAULT_ELEMENT_DELIMITER = '';
 
     private $_elementDelimiter;

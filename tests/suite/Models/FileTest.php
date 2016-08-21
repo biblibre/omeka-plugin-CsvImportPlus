@@ -13,7 +13,7 @@ class CsvImportPlus_FileTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->validFilePath = CsvImportPlus_BASE . '/tests/_files/test.csv';
+        $this->validFilePath = CSV_IMPORT_PLUS_BASE . '/tests/_files/test.csv';
         $this->invalidFilePath = dirname(__FILE__) . '/foo/bar.csv';
     }
 

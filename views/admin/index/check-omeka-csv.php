@@ -1,7 +1,7 @@
 <?php
-    echo head(array('title' => __('CSV Import Errors')));
+    echo head(array('title' => __('CSV Import+ Errors')));
 ?>
-<?php echo common('csvimport-nav'); ?>
+<?php echo common('csvimportplus-nav'); ?>
 <div id='primary'>
     <p>
     <?php echo __('The following problems were found with your CSV file and Omeka installation.'); ?>
@@ -16,4 +16,3 @@
 </div>
 <?php
     echo foot();
-?>

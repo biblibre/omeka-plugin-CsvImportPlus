@@ -6,9 +6,9 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
  * @package CsvImport
  */
- 
+
 class CsvImportPlus_IndexControllerTest extends CsvImportPlus_Test_AppTestCase
-{    
+{
     public static function acl()
     {
         return array(
@@ -22,7 +22,7 @@ class CsvImportPlus_IndexControllerTest extends CsvImportPlus_Test_AppTestCase
      */
     public function testAcl($isAllowed, $role, $resource, $privilege)
     {
-        $this->assertEquals($isAllowed, $this->acl->isAllowed($role, 
+        $this->assertEquals($isAllowed, $this->acl->isAllowed($role,
             $resource, $privilege));
     }
 }

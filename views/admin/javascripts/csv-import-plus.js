@@ -2,15 +2,15 @@ if (!Omeka) {
     var Omeka = {};
 }
 
-Omeka.CsvImport = {};
+Omeka.CsvImportPlus = {};
 
 (function ($) {
     /**
      * Allow multiple mappings for each field, and add buttons to allow a mapping
      * to be removed.
      */
-    Omeka.CsvImport.enableElementMapping = function () {
-        $('form#csvimport .map-element').change(function () {
+    Omeka.CsvImportPlus.enableElementMapping = function () {
+        $('form#csvimportplus .map-element').change(function () {
             var select = $(this);
             var addButton = select.siblings('span.add-element');
             if (!addButton.length) {
@@ -30,7 +30,7 @@ Omeka.CsvImport = {};
      * uses the same names are our Omeka fields (or similar names like Creator_1,
      * Creator_2, and Creator_3 that should be mapped to our Creator Omeka field)
      */
-    Omeka.CsvImport.assistWithMapping = function () {
+    Omeka.CsvImportPlus.assistWithMapping = function () {
         jQuery.each(jQuery('select[class="map-element"]'), function() {
             $tr = jQuery(this).parent().parent();
             $label = jQuery($tr).find('strong:eq(0)').text();
@@ -54,7 +54,7 @@ Omeka.CsvImport = {};
     /**
      * Add a confirm step before undoing an import.
      */
-    Omeka.CsvImport.confirm = function () {
+    Omeka.CsvImportPlus.confirm = function () {
         $('.csv-undo-import').click(function () {
             return confirm("Undoing an import will delete all of its imported records. Are you sure you want to undo this import?");
         });
@@ -63,7 +63,7 @@ Omeka.CsvImport = {};
     /**
      * Enable/disable column delimiter field.
      */
-    Omeka.CsvImport.updateColumnDelimiterField = function () {
+    Omeka.CsvImportPlus.updateColumnDelimiterField = function () {
         var fieldSelect = $('#column_delimiter_name');
         var fieldCustom = $('#column_delimiter');
         if (fieldSelect.val() == 'custom') {
@@ -76,7 +76,7 @@ Omeka.CsvImport = {};
     /**
      * Enable/disable enclosure field.
      */
-    Omeka.CsvImport.updateEnclosureField = function () {
+    Omeka.CsvImportPlus.updateEnclosureField = function () {
         var fieldSelect = $('#enclosure_name');
         var fieldCustom = $('#enclosure');
         if (fieldSelect.val() == 'custom') {
@@ -89,7 +89,7 @@ Omeka.CsvImport = {};
     /**
      * Enable/disable element delimiter field.
      */
-    Omeka.CsvImport.updateElementDelimiterField = function () {
+    Omeka.CsvImportPlus.updateElementDelimiterField = function () {
         var fieldSelect = $('#element_delimiter_name');
         var fieldCustom = $('#element_delimiter');
         if (fieldSelect.val() == 'custom') {
@@ -102,7 +102,7 @@ Omeka.CsvImport = {};
     /**
      * Enable/disable tag delimiter field.
      */
-    Omeka.CsvImport.updateTagDelimiterField = function () {
+    Omeka.CsvImportPlus.updateTagDelimiterField = function () {
         var fieldSelect = $('#tag_delimiter_name');
         var fieldCustom = $('#tag_delimiter');
         if (fieldSelect.val() == 'custom') {
@@ -115,7 +115,7 @@ Omeka.CsvImport = {};
     /**
      * Enable/disable file delimiter field.
      */
-    Omeka.CsvImport.updateFileDelimiterField = function () {
+    Omeka.CsvImportPlus.updateFileDelimiterField = function () {
         var fieldSelect = $('#file_delimiter_name');
         var fieldCustom = $('#file_delimiter');
         if (fieldSelect.val() == 'custom') {
@@ -128,11 +128,11 @@ Omeka.CsvImport = {};
     /**
      * Enable/disable options after loading.
      */
-    Omeka.CsvImport.updateOnLoad = function () {
-        Omeka.CsvImport.updateColumnDelimiterField();
-        Omeka.CsvImport.updateEnclosureField();
-        Omeka.CsvImport.updateElementDelimiterField();
-        Omeka.CsvImport.updateTagDelimiterField();
-        Omeka.CsvImport.updateFileDelimiterField();
+    Omeka.CsvImportPlus.updateOnLoad = function () {
+        Omeka.CsvImportPlus.updateColumnDelimiterField();
+        Omeka.CsvImportPlus.updateEnclosureField();
+        Omeka.CsvImportPlus.updateElementDelimiterField();
+        Omeka.CsvImportPlus.updateTagDelimiterField();
+        Omeka.CsvImportPlus.updateFileDelimiterField();
     };
 })(jQuery);

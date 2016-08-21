@@ -1,6 +1,6 @@
 <?php echo head(array('title' => __('CSV Import+'))); ?>
 
-<?php echo common('csvimport-nav'); ?>
+<?php echo common('csvimportplus-nav'); ?>
 
 <div id="primary">
     <h2><?php echo __('Logs for import #%s', $csvImport->id); ?></h2>
@@ -85,4 +85,3 @@
 
 <?php
     echo foot();
-?>

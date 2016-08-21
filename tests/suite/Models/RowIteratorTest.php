@@ -32,7 +32,7 @@ class CsvImportPlus_RowIteratorTest extends CsvImportPlus_Test_AppTestCase
     public function setUp()
     {
         parent::setUp();
-        $this->validFilePath = CsvImportPlus_BASE . '/tests/_files/test.csv';
+        $this->validFilePath = CSV_IMPORT_PLUS_BASE . '/tests/_files/test.csv';
     }
 
     public function testInvalidFile()

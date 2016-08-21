@@ -1,6 +1,6 @@
 <?php
 /**
- * CsvImportPlugin class - represents the Csv Import plugin
+ * CsvImportPlusPlugin class - represents the Csv Import plugin
  *
  * @copyright Copyright 2008-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
@@ -44,21 +44,21 @@ class CsvImportPlusPlugin extends Omeka_Plugin_AbstractPlugin
     protected $_options = array(
         // With some combinations of Apache/FPM/Varnish, the self constant
         // can't be used as key for properties.
-        'csv_import_memory_limit' => '',
-        'csv_import_php_path' => '',
-        'csv_import_identifier_field' => CsvImportPlus_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD,
-        'csv_import_column_delimiter' => CsvImportPlus_RowIterator::DEFAULT_COLUMN_DELIMITER,
-        'csv_import_enclosure' => CsvImportPlus_RowIterator::DEFAULT_ENCLOSURE,
-        'csv_import_element_delimiter' => CsvImportPlus_ColumnMap_Element::DEFAULT_ELEMENT_DELIMITER,
-        'csv_import_tag_delimiter' => CsvImportPlus_ColumnMap_Tag::DEFAULT_TAG_DELIMITER,
-        'csv_import_file_delimiter' => CsvImportPlus_ColumnMap_File::DEFAULT_FILE_DELIMITER,
+        'csv_import_plus_memory_limit' => '',
+        'csv_import_plus_php_path' => '',
+        'csv_import_plus_identifier_field' => CsvImportPlus_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD,
+        'csv_import_plus_column_delimiter' => CsvImportPlus_RowIterator::DEFAULT_COLUMN_DELIMITER,
+        'csv_import_plus_enclosure' => CsvImportPlus_RowIterator::DEFAULT_ENCLOSURE,
+        'csv_import_plus_element_delimiter' => CsvImportPlus_ColumnMap_Element::DEFAULT_ELEMENT_DELIMITER,
+        'csv_import_plus_tag_delimiter' => CsvImportPlus_ColumnMap_Tag::DEFAULT_TAG_DELIMITER,
+        'csv_import_plus_file_delimiter' => CsvImportPlus_ColumnMap_File::DEFAULT_FILE_DELIMITER,
         // Option used during the first step only.
-        'csv_import_html_elements' => false,
-        'csv_import_extra_data' => 'manual',
+        'csv_import_plus_html_elements' => false,
+        'csv_import_plus_extra_data' => 'manual',
         // With roles, in particular if Guest User is installed.
-        'csv_import_allow_roles' => 'a:1:{i:0;s:5:"super";}',
-        'csv_import_slow_process' => 0,
-        'csv_import_repeat_amazon_s3' => 100,
+        'csv_import_plus_allow_roles' => 'a:1:{i:0;s:5:"super";}',
+        'csv_import_plus_slow_process' => 0,
+        'csv_import_plus_repeat_amazon_s3' => 100,
     );
 
     /**
@@ -311,11 +311,11 @@ class CsvImportPlusPlugin extends Omeka_Plugin_AbstractPlugin
         $db = $this->_db;
 
         // Drop the tables.
-        $sql = "DROP TABLE IF EXISTS `{$db->prefix}csv_import_imports`";
+        $sql = "DROP TABLE IF EXISTS `{$db->CsvImportPlus_Import}`";
         $db->query($sql);
-        $sql = "DROP TABLE IF EXISTS `{$db->prefix}csv_import_imported_records`";
+        $sql = "DROP TABLE IF EXISTS `{$db->CsvImportPlus_ImportedRecord}`";
         $db->query($sql);
-        $sql = "DROP TABLE IF EXISTS `{$db->prefix}csv_import_logs`";
+        $sql = "DROP TABLE IF EXISTS `{$db->CsvImportPlus_Log}`";
         $db->query($sql);
 
         $this->_uninstallOptions();
@@ -328,7 +328,7 @@ class CsvImportPlusPlugin extends Omeka_Plugin_AbstractPlugin
     {
         $view = get_view();
         echo $view->partial(
-            'plugins/csv-import-config-form.php'
+            'plugins/csv-import-plus-config-form.php'
         );
     }
 
@@ -426,7 +426,7 @@ class CsvImportPlusPlugin extends Omeka_Plugin_AbstractPlugin
     {
         $view = get_view();
         echo $view->partial(
-            'forms/csv-import-batch-edit.php'
+            'forms/csv-import-plus-batch-edit.php'
         );
     }
 
@@ -438,8 +438,8 @@ class CsvImportPlusPlugin extends Omeka_Plugin_AbstractPlugin
     public function hookItemsBatchEditCustom($args)
     {
         $item = $args['item'];
-        $orderByFilename = $args['custom']['csvimport']['orderByFilename'];
-        $mixImages = $args['custom']['csvimport']['mixImages'];
+        $orderByFilename = $args['custom']['csvimportplus']['orderByFilename'];
+        $mixImages = $args['custom']['csvimportplus']['mixImages'];
 
         if ($orderByFilename) {
             $this->_sortFiles($item, (boolean) $mixImages);

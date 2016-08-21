@@ -1,6 +1,6 @@
 <?php
 /**
- * CsvImportPlus_Form_Main class - represents the form on csv-import/index/index.
+ * CsvImportPlus_Form_Main class - represents the form on csv-import-plus/index/index.
  *
  * @copyright Copyright 2007-2012 Roy Rosenzweig Center for History and New Media
  * @license http://www.gnu.org/licenses/gpl-3.0.txt GNU GPLv3
@@ -30,7 +30,7 @@ class CsvImportPlus_Form_Main extends Omeka_Form
         $this->_tagDelimiter = CsvImportPlus_ColumnMap_Tag::getDefaultTagDelimiter();
         $this->_fileDelimiter = CsvImportPlus_ColumnMap_File::getDefaultFileDelimiter();
 
-        $this->setAttrib('id', 'csvimport');
+        $this->setAttrib('id', 'csvimportplus');
         $this->setMethod('post');
 
         $this->_addFileElement();
@@ -66,10 +66,10 @@ class CsvImportPlus_Form_Main extends Omeka_Form
         $this->addElement('checkbox', 'elements_are_html', array(
             'label' => __('Elements are html'),
             'description' => __('Set default format of all imported elements as html, else raw text.'),
-            'value' => get_option('csv_import_html_elements'),
+            'value' => get_option('csv_import_plus_html_elements'),
         ));
 
-        $identifierField = get_option('csv_import_identifier_field');
+        $identifierField = get_option('csv_import_plus_identifier_field');
         if (!empty($identifierField) && $identifierField != 'table id' && $identifierField != 'internal id') {
             $currentIdentifierField = $this->_getElementFromIdentifierField($identifierField);
             if ($currentIdentifierField) {
@@ -123,7 +123,7 @@ class CsvImportPlus_Form_Main extends Omeka_Form
                 'ignore' => __('Ignore unrecognized column names'),
                 'yes' => __("Yes, so column names won't be checked"),
             ),
-            'value' => get_option('csv_import_extra_data'),
+            'value' => get_option('csv_import_plus_extra_data'),
         ));
 
         $this->addDisplayGroup(
@@ -187,7 +187,7 @@ class CsvImportPlus_Form_Main extends Omeka_Form
             array('ViewHelper',
                 array('HtmlTag',
                     array('tag' => 'div',
-                        'class' => 'csvimportnext'))));
+                        'class' => 'csvimportplusnext'))));
 
         $this->addElement($submit);
 
@@ -561,7 +561,7 @@ class CsvImportPlus_Form_Main extends Omeka_Form
 
         // If the plugin max file size setting is lower, choose it as the strict
         // max size.
-        $pluginMaxSizeRaw = trim(get_option(CsvImportPlugin::MEMORY_LIMIT_OPTION_NAME));
+        $pluginMaxSizeRaw = trim(get_option(CsvImportPlusPlugin::MEMORY_LIMIT_OPTION_NAME));
         if ($pluginMaxSizeRaw != '') {
             $pluginMaxSize = $this->_getBinarySize($pluginMaxSizeRaw);
             if ($pluginMaxSize) {

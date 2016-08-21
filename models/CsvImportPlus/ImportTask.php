@@ -8,7 +8,7 @@
  */
 class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
 {
-    const QUEUE_NAME = 'csv_import_imports';
+    const QUEUE_NAME = 'csv_import_plus_imports';
     const METHOD_START = 'start';
     const METHOD_UNDO = 'undo';
 
@@ -59,7 +59,7 @@ class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
                     $s3Loop = isset($defaultValues['amazonS3CurrentLoop'])
                         ? $defaultValues['amazonS3CurrentLoop']
                         : 0;
-                    $s3LoopMax = get_option('csv_import_repeat_amazon_s3');
+                    $s3LoopMax = get_option('csv_import_plus_repeat_amazon_s3');
 
                     $logMsg = __('The previous error is related to Amazon S3.');
                     if ($s3Loop < $s3LoopMax) {
@@ -94,7 +94,7 @@ class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
 
 
         if ($import->isQueued() || $import->isQueuedUndo()) {
-            $slowProcess = get_option('csv_import_slow_process');
+            $slowProcess = get_option('csv_import_plus_slow_process');
             if ($slowProcess) {
                 sleep($slowProcess);
             }
@@ -131,7 +131,7 @@ class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
         ));
         $csvImportLog->save();
 
-        $prefix = "[CsvImport][#{$this->_importId}]";
+        $prefix = "[CsvImport+][#{$this->_importId}]";
         $msg = vsprintf($msg, $params);
         _log("$prefix $msg", $priority);
     }

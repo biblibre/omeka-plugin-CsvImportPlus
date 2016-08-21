@@ -8,27 +8,27 @@
  */
 class CsvImportPlus_Test_AppTestCase extends Omeka_Test_AppTestCase
 {
-    const PLUGIN_NAME = 'CsvImport';
-    
+    const PLUGIN_NAME = 'CsvImportPlus';
+
     public function setUp()
     {
         parent::setUp();
-        
-        // Authenticate and set the current user 
+
+        // Authenticate and set the current user
         $this->user = $this->db->getTable('User')->find(1);
         $this->_authenticateUser($this->user);
-        
+
         $pluginHelper = new Omeka_Test_Helper_Plugin;
         $pluginHelper->setUp(self::PLUGIN_NAME);
         Omeka_Test_Resource_Db::$runInstaller = true;
     }
-    
+
     public function assertPreConditions()
     {
         $imports = $this->db->getTable('CsvImportPlus_Import')->findAll();
         $this->assertEquals(0, count($imports), 'There should be no imports.');
     }
-    
+
     protected function _deleteAllImports()
     {
         $imports = $this->db->getTable('CsvImportPlus_Import')->findAll();

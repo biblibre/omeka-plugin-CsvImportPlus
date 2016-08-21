@@ -8,9 +8,9 @@
  */
 class CsvImportPlus_RowIterator implements SeekableIterator
 {
-    const COLUMN_DELIMITER_OPTION_NAME = 'csv_import_column_delimiter';
+    const COLUMN_DELIMITER_OPTION_NAME = 'csv_import_plus_column_delimiter';
     const DEFAULT_COLUMN_DELIMITER = ',';
-    const ENCLOSURE_OPTION_NAME = 'csv_import_enclosure';
+    const ENCLOSURE_OPTION_NAME = 'csv_import_plus_enclosure';
     const DEFAULT_ENCLOSURE = '"';
 
     private $_filePath;

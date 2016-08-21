@@ -296,7 +296,7 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
             $this->_helper->redirector->goto('index');
         }
 
-        $this->_helper->redirector->goto('omeka-csv', 'index', 'csv-import');
+        $this->_helper->redirector->goto('omeka-csv', 'index', 'csv-import-plus');
     }
 
     /**
@@ -364,7 +364,7 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
                     $columnMaps[] = new CsvImportPlus_ColumnMap_File($heading, $fileDelimiter);
                     break;
                 // Default can be a normal element or, if not, an extra data
-                // element that can be added via the hook csv_import_extra_data.
+                // element that can be added via the hook csv_import_plus_extra_data.
                 default:
                     // Here, column names are already checked.
                     $columnMap = new CsvImportPlus_ColumnMap_MixElement($heading, $elementDelimiter);
@@ -582,8 +582,8 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
     {
         if (!$this->_pluginConfig) {
             $config = $this->getInvokeArg('bootstrap')->config->plugins;
-            if ($config && isset($config->CsvImport)) {
-                $this->_pluginConfig = $config->CsvImport->toArray();
+            if ($config && isset($config->CsvImportPlus)) {
+                $this->_pluginConfig = $config->CsvImportPlus->toArray();
             }
             if (!array_key_exists('fileDestination', $this->_pluginConfig)) {
                 $this->_pluginConfig['fileDestination'] =

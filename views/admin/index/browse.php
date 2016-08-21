@@ -1,7 +1,7 @@
 <?php
     echo head(array('title' => __('CSV Import+')));
 ?>
-<?php echo common('csvimport-nav'); ?>
+<?php echo common('csvimportplus-nav'); ?>
 <div id="primary">
     <h2><?php echo __('Status'); ?></h2>
     <?php echo flash(); ?>
@@ -106,7 +106,7 @@
 <script type="text/javascript">
 //<![CDATA[
 jQuery(document).ready(function () {
-    Omeka.CsvImport.confirm();
+    Omeka.CsvImportPlus.confirm();
 });
 //]]>
 </script>

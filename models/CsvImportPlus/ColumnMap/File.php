@@ -8,7 +8,7 @@
  */
 class CsvImportPlus_ColumnMap_File extends CsvImportPlus_ColumnMap
 {
-    const FILE_DELIMITER_OPTION_NAME = 'csv_import_file_delimiter';
+    const FILE_DELIMITER_OPTION_NAME = 'csv_import_plus_file_delimiter';
     const DEFAULT_FILE_DELIMITER = ',';
 
     private $_fileDelimiter;

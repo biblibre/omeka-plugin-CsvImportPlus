@@ -1,5 +1,5 @@
-<fieldset id="csvimport-item-metadata">
-    <h2><?php echo __('Csv Import'); ?></h2>
+<fieldset id="csvimportplus-item-metadata">
+    <h2><?php echo __('CSV Import+'); ?></h2>
     <div class="field">
         <label class="two columns alpha">
             <?php echo __('Order files by filename'); ?>
@@ -7,7 +7,7 @@
         <div class="inputs five columns omega">
             <label class="order-by-filename">
                 <?php
-                    echo $this->formCheckbox('custom[csvimport][orderByFilename]', null, array(
+                    echo $this->formCheckbox('custom[csvimportplus][orderByFilename]', null, array(
                         'checked' => false, 'class' => 'order-by-filename-checkbox'));
                 ?>
             </label>
@@ -23,7 +23,7 @@
         <div class="inputs five columns omega">
             <label class="mix-images">
                 <?php
-                    echo $this->formCheckbox('custom[csvimport][mixImages]', null, array(
+                    echo $this->formCheckbox('custom[csvimportplus][mixImages]', null, array(
                         'checked' => false, 'class' => 'mix-images-checkbox'));
                 ?>
             </label>

@@ -8,7 +8,7 @@
  */
 class CsvImportPlus_ColumnMap_Tag extends CsvImportPlus_ColumnMap
 {
-    const TAG_DELIMITER_OPTION_NAME = 'csv_import_tag_delimiter';
+    const TAG_DELIMITER_OPTION_NAME = 'csv_import_plus_tag_delimiter';
     const DEFAULT_TAG_DELIMITER = ',';
 
     private $_tagDelimiter;

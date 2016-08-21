@@ -1,4 +1,4 @@
-<form id="csvimport" method="post" action="">
+<form id="csvimportplus" method="post" action="">
 <?php
     $colNames = $this->columnNames;
     $colExamples = $this->columnExamples;

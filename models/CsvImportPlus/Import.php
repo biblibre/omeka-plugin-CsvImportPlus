@@ -689,7 +689,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
                 $rows->seek($startAt);
             }
 
-            $slowProcess = get_option('csv_import_slow_process');
+            $slowProcess = get_option('csv_import_plus_slow_process');
             $rows->skipInvalidRows(true);
             $this->_log('Running item import loop. Memory usage: %s.',
                 array(memory_get_usage()));
@@ -1799,7 +1799,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
         ));
         $csvImportLog->save();
 
-        $prefix = "[CsvImport][#{$this->id}]";
+        $prefix = "[CsvImport+][#{$this->id}]";
         $msg = vsprintf($msg, $params);
         _log("$prefix $msg", $priority);
     }
@@ -2048,7 +2048,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
      */
     protected function _allowLocalPath($fileUrl)
     {
-        $settings = Zend_Registry::get('csv_import');
+        $settings = Zend_Registry::get('csv_import_plus');
 
         // Check the security setting.
         if ($settings->local_folders->allow != '1') {

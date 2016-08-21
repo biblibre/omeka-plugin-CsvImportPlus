@@ -14,7 +14,7 @@ class CsvImportPlus_ColumnMap_Action extends CsvImportPlus_ColumnMap
     const ACTION_DELETE = 'Delete';
     const ACTION_SKIP = 'Skip';
 
-    const ACTION_OPTION_NAME = 'csv_import_action';
+    const ACTION_OPTION_NAME = 'csv_import_plus_action';
     const DEFAULT_ACTION = 'Update else create';
 
     private $_action;
