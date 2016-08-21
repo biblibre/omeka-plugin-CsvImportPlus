@@ -1,4 +1,4 @@
-# Translation for the Csv Import plugin for Omeka.
+# Translation for the Csv Import Plus plugin for Omeka.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Omeka package.
 # 
@@ -6,8 +6,8 @@
 # Daniel Alves <daniel_r_alves@hotmail.com>, 2015
 msgid ""
 msgstr ""
-"Project-Id-Version: Omeka\n"
-"Report-Msgid-Bugs-To: https://github.com/omeka/plugin-CsvImport/issues\n"
+"Project-Id-Version: CsvImportPlus\n"
+"Report-Msgid-Bugs-To: https://github.com/Daniel-KM/CsvImportPlus/issues\n"
 "POT-Creation-Date: 2013-03-06 00:06+0900\n"
 "PO-Revision-Date: 2015-03-07 00:01+0000\n"
 "Last-Translator: Daniel Alves <daniel_r_alves@hotmail.com>\n"
