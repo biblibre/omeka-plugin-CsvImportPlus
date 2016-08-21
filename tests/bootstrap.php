@@ -7,8 +7,8 @@
  * @package CsvImport
  */
 
-define('CSVIMPORT_BASE', realpath(dirname(__FILE__) . '/../')); 
-set_include_path(get_include_path() . PATH_SEPARATOR . CSVIMPORT_BASE);
+define('CsvImportPlus_BASE', realpath(dirname(__FILE__) . '/../')); 
+set_include_path(get_include_path() . PATH_SEPARATOR . CsvImportPlus_BASE);
 
 require_once dirname(dirname(dirname(dirname(__FILE__)))) . '/application/tests/bootstrap.php';
-require_once 'CsvImport_Test_AppTestCase.php';
+require_once 'CsvImportPlus_Test_AppTestCase.php';
