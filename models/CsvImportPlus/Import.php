@@ -1766,7 +1766,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
         if (in_array($recordType, array('Collection', 'Item', 'File'))) {
             $bind['record_type'] = $recordType;
         }
-        $csvImportedRecords = get_db()->getTable('CsvImport_ImportedRecord')
+        $csvImportedRecords = get_db()->getTable('CsvImportPlus_ImportedRecord')
             ->findBy($bind, 1);
         if (!empty($csvImportedRecords)) {
             $csvImportedRecord = reset($csvImportedRecords);
@@ -1782,7 +1782,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
      * Log an import message
      * Every message will log the import ID.
      *
-     * @internal See CsvImport_ImportTask::_log()
+     * @internal See CsvImportPlus_ImportTask::_log()
      *
      * @param string $msg The message to log
      * @param array $params Params to pass the translation function __()

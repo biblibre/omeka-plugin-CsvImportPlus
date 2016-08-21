@@ -72,7 +72,7 @@ class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
                         // from the row with the error.
                         $defaultValues['amazonS3CurrentLoop'] = $s3Loop;
                         $import->setDefaultValues($defaultValues);
-                        $import->status = CsvImport_Import::STATUS_QUEUED;
+                        $import->status = CsvImportPlus_Import::STATUS_QUEUED;
                         $import->save();
 
                         $flagLoop = true;
@@ -114,7 +114,7 @@ class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
      * Log an import message
      * Every message will log the import ID.
      *
-     * @internal See CsvImport_Import::_log(), but with the local import id.
+     * @internal See CsvImportPlus_Import::_log(), but with the local import id.
      *
      * @param string $msg The message to log
      * @param array $params Params to pass the translation function __()
@@ -122,7 +122,7 @@ class CsvImportPlus_ImportTask extends Omeka_Job_AbstractJob
      */
     protected function _log($msg, $params = array(), $priority = Zend_Log::DEBUG)
     {
-        $csvImportLog = new CsvImport_Log();
+        $csvImportLog = new CsvImportPlus_Log();
         $csvImportLog->setArray(array(
             'import_id' => $this->_importId,
             'priority' => $priority,

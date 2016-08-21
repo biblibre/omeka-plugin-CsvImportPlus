@@ -7,7 +7,7 @@
  * @package CsvImport
  */
 
-require_once 'models/CsvImport/Import.php';
+require_once 'models/CsvImportPlus/Import.php';
 
 class CsvImportPlus_ImportTest extends CsvImportPlus_Test_AppTestCase
 {

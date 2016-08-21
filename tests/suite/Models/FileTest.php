@@ -7,7 +7,7 @@
  * @package CsvImport
  */
 
-require_once 'models/CsvImport/File.php';
+require_once 'models/CsvImportPlus/File.php';
 
 class CsvImportPlus_FileTest extends PHPUnit_Framework_TestCase
 {

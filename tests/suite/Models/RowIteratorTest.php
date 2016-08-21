@@ -7,7 +7,7 @@
  * @package CsvImport
  */
 
-require_once 'models/CsvImport/RowIterator.php';
+require_once 'models/CsvImportPlus/RowIterator.php';
 
 class CsvImportPlus_RowIteratorTest extends CsvImportPlus_Test_AppTestCase
 {
