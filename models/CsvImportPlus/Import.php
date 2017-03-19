@@ -867,7 +867,8 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
             }
             // If there are multiple files, this is an item.
             elseif (isset($map[CsvImportPlus_ColumnMap::TYPE_FILE])
-                     && count($map[CsvImportPlus_ColumnMap::TYPE_FILE]) > 1
+                    && !is_null($map[CsvImportPlus_ColumnMap::TYPE_FILE])
+                    && count($map[CsvImportPlus_ColumnMap::TYPE_FILE]) > 1
                  ) {
                 $recordType = 'Item';
             }
@@ -1097,7 +1098,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
         // Looking for the item id.
         // Check if the file url is present.
         $fileUrl = $map[CsvImportPlus_ColumnMap::TYPE_FILE];
-        if (count($fileUrl) > 1) {
+        if ($fileUrl && count($fileUrl) > 1) {
             $msg = 'A file can have only one url or path.';
             $this->_log($msg, array(), Zend_Log::ERR);
             return false;

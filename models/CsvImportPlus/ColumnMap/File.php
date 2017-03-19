@@ -32,7 +32,7 @@ class CsvImportPlus_ColumnMap_File extends CsvImportPlus_ColumnMap
      *
      * @param array $row The row to map
      * @param array $result
-     * @return array The result
+     * @return array|null The result
      */
     public function map($row, $result)
     {
