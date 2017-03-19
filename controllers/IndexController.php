@@ -370,6 +370,7 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
                     $columnMap = new CsvImportPlus_ColumnMap_MixElement($heading, $elementDelimiter);
                     // If this is an element.
                     $columnElementId = $columnMap->getElementId();
+                    $options = array();
                     if ($columnElementId) {
                         $options = array(
                             'columnNameDelimiter' => $columnMap::DEFAULT_COLUMN_NAME_DELIMITER,
