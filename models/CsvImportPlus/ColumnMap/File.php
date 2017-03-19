@@ -53,6 +53,10 @@ class CsvImportPlus_ColumnMap_File extends CsvImportPlus_ColumnMap
             $result = array_filter($result);
             $result = array_unique($result);
         }
+        // No value (but there is a column, else it is null).
+        else {
+            $result = array();
+        }
 
         return $result;
     }
