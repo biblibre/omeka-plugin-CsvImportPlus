@@ -477,7 +477,7 @@ Copyright
 * Copyright Center for History and New Media, 2008-2016
 * Copyright Shawn Averkamp, 2012
 * Copyright Matti Lassila, 2016
-* Copyright Daniel Berthereau, 2012-2016
+* Copyright Daniel Berthereau, 2012-2017
 
 
 [Omeka]: https://omeka.org
