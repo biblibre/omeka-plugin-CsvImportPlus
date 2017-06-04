@@ -152,15 +152,16 @@ tests.
     Extra data can be set to "Perhaps". If set to "No", then the second step
     will be skipped.
 
-4. `test_files_metadata.csv`
+4. `test_files_metadata_full.csv` and `test_files_metadata_update.csv`
 
-    A file used to import metadata of files. To try it, you should import items
-    before with any of the previous csv files, select `tabulation` as column
-    delimiter, no enclosure, and `|` as element, file and tag delimiters. Then,
-    you can import it manually or automatically. If manually, set "Perhaps" for
-    extra data, then the special values "identifier field" to the identifier field and
-    "Identifier" to the filename. If automatically, simply set "No" or "Yes" for
-    the extra data.
+    A file used to import metadata of files. The first is autonomous, so the
+    previous files didn't need to be imported. To try the second, you should
+    import items before with any of the previous csv files. Then, select
+    `tabulation` as column delimiter, no enclosure, and `|` as element, file and
+    tag delimiters, and Dublin Core:Identifier as default identifier. Then, you
+    can import it manually or automatically. If manually, set "Perhaps" for
+    extra data, then the special values "Identifier field" to the identifier
+    field and "Identifier" to the filename. There is no extra data.
 
 5. `test_mixed_records.csv`
 
