@@ -844,7 +844,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
         $map = &$this->_currentMap;
 
         $action = $this->_getMappedValue(CsvImportPlus_ColumnMap::TYPE_ACTION);
-        // Avoid a empty choice by the user.
+        // Avoid an empty choice by the user.
         if (empty($action)) {
             $action = CsvImportPlus_ColumnMap_Action::DEFAULT_ACTION;
         }
@@ -908,6 +908,17 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
             }
         }
 
+        // Get the parent item of a file if set. This is useless for item and
+        // collection.
+        $parentRecord = null;
+        if ($recordType == 'File') {
+            $itemIdentifier = $this->_getMappedValue(CsvImportPlus_ColumnMap::TYPE_ITEM);
+            if ($itemIdentifier && isset($this->_defaultValues[CsvImportPlus_ColumnMap::TYPE_IDENTIFIER_FIELD])) {
+                $recordIdentifierField = $this->_defaultValues[CsvImportPlus_ColumnMap::TYPE_IDENTIFIER_FIELD];
+                $parentRecord = $this->_getRecordFromIdentifier($itemIdentifier, 'Item', $recordIdentifierField);
+            }
+        }
+
         $record = $this->_getRecordFromIdentifier($identifier, $recordType, $identifierField);
 
         // Another way to find a file when there is no identifier.
@@ -916,7 +927,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
             if (!empty($file) && count($file) == 1) {
                 $identifierField = 'original filename';
                 $identifier = reset($file);
-                $record = $this->_getRecordFromIdentifier($identifier, $recordType, $identifierField);
+                $record = $this->_getRecordFromIdentifier($identifier, $recordType, $identifierField, $parentRecord);
             }
         }
 
@@ -1593,6 +1604,8 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
      * @param string $identifier The identifier of the record to update.
      * @param string $recordType The type of the record to update.
      * @param string $identifierField The type of identifier used to identify
+     * @param Record $parentRecord For file, when multiple files have the same
+     * name, the item can be identified.
      * the record to update.
      *
      * @return Record|boolean The record to update or false if no one exists.
@@ -1600,7 +1613,8 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
     protected function _getRecordFromIdentifier(
         $identifier,
         $recordType = CsvImportPlus_ColumnMap_RecordType::DEFAULT_RECORD_TYPE,
-        $identifierField = CsvImportPlus_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD
+        $identifierField = CsvImportPlus_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD,
+        $parentRecord
     ) {
         $record = false;
 
@@ -1628,14 +1642,22 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
                 if ($field == 'md5') {
                     $field = 'authentication';
                 }
-                $record = get_db()->getTable('File')->findBySql($field . ' = ?', array($identifier), true);
+                if ($parentRecord) {
+                    $record = get_db()->getTable('File')->findBySql($field . ' = ? AND item_id = ?', array($identifier, $parentRecord->id), true);
+                } else {
+                    $record = get_db()->getTable('File')->findBySql($field . ' = ?', array($identifier), true);
+                }
                 if (empty($record)
                         && $field == 'original_filename'
                         // && plugin_is_active('ArchiveRepertory')
                         && get_option('archive_repertory_file_base_original_name')
                         && basename($identifier) != ''
                     ) {
-                    $record = get_db()->getTable('File')->findBySql($field . ' = ?', array(basename($identifier)), true);
+                    if ($parentRecord) {
+                        $record = get_db()->getTable('File')->findBySql($field . ' = ? AND item_id = ?', array(basename($identifier), $parentRecord->id), true);
+                    } else {
+                        $record = get_db()->getTable('File')->findBySql($field . ' = ?', array(basename($identifier)), true);
+                    }
                 }
             }
         }
@@ -1650,10 +1672,15 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
                 $bind = array();
                 $bind[] = $element->id;
                 $bind[] = $identifier;
-                $sql_record_type = '';
+                $sqlRecordType = '';
+                $sqlParentRecord = '';
                 if (!empty($recordType) && $recordType != 'Any') {
-                    $sql_record_type = 'AND element_texts.record_type = ?';
+                    $sqlRecordType = 'AND element_texts.record_type = ?';
                     $bind[] = $recordType;
+                    if ($recordType == 'File' && $parentRecord) {
+                        $sqlParentRecord = 'AND item_id = ?';
+                        $bind[] = $parentRecord->id;
+                    }
                 }
 
                 $sql = "
@@ -1661,7 +1688,8 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
                     FROM {$db->ElementText} element_texts
                     WHERE element_texts.element_id = ?
                         AND element_texts.text = ?
-                        $sql_record_type
+                        $sqlRecordType
+                        $sqlParentRecord
                     LIMIT 1
                 ";
                 $result = $db->fetchRow($sql, $bind);
