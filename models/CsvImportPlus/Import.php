@@ -1614,7 +1614,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
         $identifier,
         $recordType = CsvImportPlus_ColumnMap_RecordType::DEFAULT_RECORD_TYPE,
         $identifierField = CsvImportPlus_ColumnMap_IdentifierField::DEFAULT_IDENTIFIER_FIELD,
-        $parentRecord
+        $parentRecord = null
     ) {
         $record = false;
 
