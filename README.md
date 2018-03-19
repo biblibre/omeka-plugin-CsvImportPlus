@@ -428,8 +428,8 @@ Warning
 
 Use it at your own risk.
 
-It's always recommended to backup your files and database regularly so you can
-roll back if needed.
+It’s always recommended to backup your files and your databases and to check
+your archives regularly so you can roll back if needed.
 
 
 Troubleshooting
@@ -482,13 +482,13 @@ Copyright
 
 
 [Omeka]: https://omeka.org
-[CSV Import+]: https://github.com/Daniel-KM/CsvImportPlus
+[CSV Import+]: https://github.com/Daniel-KM/Omeka-plugin-CsvImportPlus
 [CSV Import]: https://github.com/omeka/plugin-CsvImport
-[XML Import]: https://github.com/Daniel-KM/XmlImport
+[XML Import]: https://github.com/Daniel-KM/Omeka-plugin-XmlImport
 [Wikipedia]: https://www.wikipedia.org
 [Geolocation]: https://omeka.org/add-ons/plugins/geolocation
 [CSV Import issues]: https://omeka.org/forums/forum/plugins
-[CSV Import+ issues]: https://github.com/Daniel-KM/CsvImportPlus/issues
+[CSV Import+ issues]: https://github.com/Daniel-KM/Omeka-plugin-CsvImportPlus/issues
 [GNU/GPL]: https://www.gnu.org/licenses/gpl-3.0.html
 [Center for History & New Media]: http://chnm.gmu.edu
 [Daniel-KM]: https://github.com/Daniel-KM "Daniel Berthereau"
