@@ -680,6 +680,7 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
         return array(
             'comma' => ',',
             'semi-colon' => ';',
+            'colon' => ':',
             'pipe' => '|',
             'tabulation' => "\t",
             'carriage return' => "\r",
@@ -699,6 +700,7 @@ class CsvImportPlus_IndexController extends Omeka_Controller_AbstractActionContr
         return array(
             'double-quote' => '"',
             'quote' => "'",
+            'hash' => '#',
             'empty' => '',
         );
     }
