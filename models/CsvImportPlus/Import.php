@@ -1229,7 +1229,7 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
         $itemType = $itemType ?: null;
 
         // Check collection, if any.
-        $collectionId = $this->_getMappedValue(CsvImportPlus_ColumnMap::TYPE_COLLECTION);
+        $collectionId = $this->_currentMap[CsvImportPlus_ColumnMap::TYPE_COLLECTION];
         if (!empty($collectionId)) {
             $collection = $this->_getRecordFromIdentifier($collectionId, 'Collection', $this->_defaultValues['IdentifierField']);
             $collectionId = $collection ? $collection->id : null;
@@ -1237,6 +1237,10 @@ class CsvImportPlus_Import extends Omeka_Record_AbstractRecord implements Zend_A
         // Collection should be null, not 0 or "".
         else {
             $collectionId = $collectionId ?: null;
+        }
+
+        if (empty($collectionId)) {
+            $collectionId = $this->_defaultValues[CsvImportPlus_ColumnMap::TYPE_COLLECTION] ?: null;
         }
 
         // Set values. Default and empty are managed directly in column map.
